@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Search, Camera, Briefcase, MessageCircle, Pin, CheckCheck, MoreHorizontal } from 'lucide-react-native';
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
@@ -618,17 +618,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 32,
-    ...Platform.select({
-      ios: {
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 16,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
   },
   navButton: {
     width: 48,
