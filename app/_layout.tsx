@@ -4,7 +4,13 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { StyleSheet } from "react-native";
+import { StyleSheet, LogBox } from "react-native";
+
+// Ignore specific warnings
+LogBox.ignoreLogs([
+  'JSON Parse error',
+  'Unexpected character',
+]);
 
 SplashScreen.preventAutoHideAsync();
 
