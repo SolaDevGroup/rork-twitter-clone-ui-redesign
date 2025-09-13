@@ -1,0 +1,16 @@
+export const colors = {
+  primary: '#1D9BF0',
+  primaryDark: '#1A8CD8',
+  black: '#0F1419',
+  darkGray: '#536471',
+  mediumGray: '#8B98A5',
+  lightGray: '#EFF3F4',
+  extraLightGray: '#F7F9FA',
+  white: '#FFFFFF',
+  red: '#F4212E',
+  green: '#00BA7C',
+  border: '#EFF3F4',
+  verified: '#1D9BF0',
+  background: '#FFFFFF',
+  modalBackground: 'rgba(0, 0, 0, 0.4)',
+};
