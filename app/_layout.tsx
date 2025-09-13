@@ -1,3 +1,4 @@
+import '@/utils/reanimated-polyfill';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -5,9 +6,39 @@ import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { StyleSheet, LogBox } from "react-native";
+import { StyleSheet, LogBox, Platform } from "react-native";
 
-// Ignore specific warnings
+// Ignore specific warnings - especially reanimated issues on web
+if (Platform.OS === 'web') {
+  // Suppress all reanimated warnings on web
+  const originalWarn = console.warn;
+  const originalError = console.error;
+  
+  console.warn = (...args) => {
+    const message = args[0]?.toString() || '';
+    if (message.includes('reanimated') || 
+        message.includes('JSON Parse error') ||
+        message.includes('worklet') ||
+        message.includes('logger.ts') ||
+        message.includes('JSReanimated')) {
+      return;
+    }
+    originalWarn(...args);
+  };
+  
+  console.error = (...args) => {
+    const message = args[0]?.toString() || '';
+    if (message.includes('reanimated') || 
+        message.includes('JSON Parse error') ||
+        message.includes('worklet') ||
+        message.includes('logger.ts') ||
+        message.includes('JSReanimated')) {
+      return;
+    }
+    originalError(...args);
+  };
+}
+
 LogBox.ignoreLogs([
   'JSON Parse error: Unexpected character',
   'react-native-reanimated',
@@ -18,6 +49,8 @@ LogBox.ignoreLogs([
   'Shared values are defined using',
   'Function that logs to LogBox',
   'Registers the logger configuration',
+  'registerSensor',
+  'this.platform',
 ]);
 
 SplashScreen.preventAutoHideAsync();
