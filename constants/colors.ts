@@ -1,16 +1,43 @@
 export const colors = {
-  primary: '#A19375',
-  primaryDark: '#8B7F66',
-  green: '#1ED760',
-  black: '#181818',
-  darkGray: '#262626',
-  mediumGray: 'rgba(255, 255, 255, 0.64)',
-  lightGray: 'rgba(255, 255, 255, 0.48)',
-  extraLightGray: 'rgba(255, 255, 255, 0.16)',
+  // Single accent color - brown/gold
+  primary: '#B8860B',
+  primaryDark: '#9A7209',
+  primaryLight: '#DAA520',
+  
+  // Dark mode colors
+  dark: {
+    background: '#000000',
+    surface: '#1A1A1A',
+    text: '#FFFFFF',
+    textSecondary: '#8B8B8B',
+    border: 'rgba(255, 255, 255, 0.12)',
+    inputBackground: 'rgba(255, 255, 255, 0.04)',
+  },
+  
+  // Light mode colors
+  light: {
+    background: '#FFFFFF',
+    surface: '#F8F8F8',
+    text: '#000000',
+    textSecondary: '#666666',
+    border: 'rgba(0, 0, 0, 0.12)',
+    inputBackground: 'rgba(0, 0, 0, 0.04)',
+  },
+  
+  // Semantic colors
+  success: '#22C55E',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
+  
+  // Legacy colors for compatibility
+  black: '#000000',
   white: '#FFFFFF',
-  red: '#F4212E',
-  border: 'rgba(255, 255, 255, 0.08)',
-  verified: '#1ED760',
-  background: '#121212',
-  modalBackground: 'rgba(0, 0, 0, 0.4)',
+  darkGray: '#666666',
+  mediumGray: '#8B8B8B',
+  lightGray: '#B3B3B3',
+  border: 'rgba(255, 255, 255, 0.12)',
+  verified: '#B8860B',
+  background: '#000000',
+  modalBackground: 'rgba(0, 0, 0, 0.5)',
 };

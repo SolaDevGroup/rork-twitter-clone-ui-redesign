@@ -13,13 +13,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Icon } from '@/components/Icon';
-import { colors } from '@/constants/colors';
-import { fontSizes } from '@/constants/fonts';
+import { fontSizes, borderRadius } from '@/constants/fonts';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Login() {
   const router = useRouter();
   const { login } = useAuth();
+  const { colors, primary } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -58,9 +59,9 @@ export default function Login() {
               style={styles.closeButton}
               onPress={() => router.back()}
             >
-              <Icon name="close" size={24} color={colors.black} />
+              <Icon name="close" size={24} color={colors.text} />
             </TouchableOpacity>
-            <Icon name="flutter-dash" size={32} color={colors.primary} />
+            <Icon name="flutter-dash" size={32} color={primary} />
             <View style={styles.placeholder} />
           </View>
 
@@ -71,7 +72,7 @@ export default function Login() {
               <TextInput
                 style={styles.input}
                 placeholder="Phone, email, or username"
-                placeholderTextColor={colors.mediumGray}
+                placeholderTextColor={colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
@@ -83,7 +84,7 @@ export default function Login() {
               <TextInput
                 style={styles.input}
                 placeholder="Password"
-                placeholderTextColor={colors.mediumGray}
+                placeholderTextColor={colors.textSecondary}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -96,7 +97,7 @@ export default function Login() {
                 <Icon 
                   name={showPassword ? "visibility" : "visibility-off"} 
                   size={20} 
-                  color={colors.mediumGray} 
+                  color={colors.textSecondary} 
                 />
               </TouchableOpacity>
             </View>

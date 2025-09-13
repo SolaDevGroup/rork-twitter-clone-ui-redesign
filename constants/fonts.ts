@@ -34,4 +34,7 @@ export const borderRadius = {
   md: 8,
   lg: 10,
   xl: 12,
+  input: 12, // Standard input border radius
+  button: 8,
+  card: 12,
 };

@@ -1,7 +1,9 @@
 import createContextHook from '@nkzw/create-context-hook';
 import { useState, useCallback, useMemo } from 'react';
+import { useColorScheme } from 'react-native';
 import { currentUser } from '@/mocks/data';
 import { User, Collection, Post } from '@/types';
+import { colors } from '@/constants/colors';
 
 export const [AuthProvider, useAuth] = createContextHook(() => {
   const [user, setUser] = useState<User | null>(null);
