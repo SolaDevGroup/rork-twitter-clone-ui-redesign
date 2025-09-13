@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Icon } from '@/components/Icon';
-import { fontSizes, borderRadius } from '@/constants/fonts';
+import { fontSizes } from '@/constants/fonts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -24,6 +24,132 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    keyboardView: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    closeButton: {
+      padding: 8,
+    },
+    placeholder: {
+      width: 40,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 32,
+      paddingTop: 20,
+    },
+    title: {
+      fontSize: fontSizes.xxxl,
+      fontWeight: '700' as const,
+      color: colors.text,
+      marginBottom: 32,
+    },
+    inputContainer: {
+      marginBottom: 20,
+      position: 'relative',
+    },
+    input: {
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 16,
+      fontSize: fontSizes.md,
+      color: colors.text,
+    },
+    eyeIcon: {
+      position: 'absolute',
+      right: 12,
+      top: 18,
+    },
+    forgotPassword: {
+      marginBottom: 20,
+    },
+    forgotPasswordText: {
+      color: primary,
+      fontSize: fontSizes.sm,
+    },
+    loginButton: {
+      backgroundColor: primary,
+      borderRadius: 24,
+      paddingVertical: 12,
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    loginButtonDisabled: {
+      backgroundColor: colors.textSecondary,
+      opacity: 0.5,
+    },
+    loginButtonText: {
+      color: '#FFFFFF',
+      fontSize: fontSizes.md,
+      fontWeight: '600' as const,
+    },
+    dividerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 20,
+    },
+    divider: {
+      flex: 1,
+      height: 1,
+      backgroundColor: colors.border,
+    },
+    dividerText: {
+      marginHorizontal: 16,
+      color: colors.textSecondary,
+      fontSize: fontSizes.sm,
+    },
+    socialButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 24,
+      paddingVertical: 12,
+      marginBottom: 12,
+    },
+    socialButtonText: {
+      marginLeft: 8,
+      fontSize: fontSizes.md,
+      fontWeight: '500' as const,
+      color: colors.text,
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      paddingVertical: 20,
+      paddingHorizontal: 32,
+    },
+    footerText: {
+      color: colors.textSecondary,
+      fontSize: fontSizes.sm,
+    },
+    signUpText: {
+      color: primary,
+      fontSize: fontSizes.sm,
+      fontWeight: '600' as const,
+    },
+  });
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -124,12 +250,12 @@ export default function Login() {
             </View>
 
             <TouchableOpacity style={styles.socialButton}>
-              <Icon name="g-mobiledata" size={24} color={colors.black} />
+              <Icon name="g-mobiledata" size={24} color={colors.text} />
               <Text style={styles.socialButtonText}>Continue with Google</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.socialButton}>
-              <Icon name="apple" size={24} color={colors.black} />
+              <Icon name="apple" size={24} color={colors.text} />
               <Text style={styles.socialButtonText}>Continue with Apple</Text>
             </TouchableOpacity>
           </View>
@@ -146,126 +272,3 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  closeButton: {
-    padding: 8,
-  },
-  placeholder: {
-    width: 40,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 32,
-    paddingTop: 20,
-  },
-  title: {
-    fontSize: fontSizes.xxxl,
-    fontWeight: '700' as const,
-    color: colors.black,
-    marginBottom: 32,
-  },
-  inputContainer: {
-    marginBottom: 20,
-    position: 'relative',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    fontSize: fontSizes.md,
-    color: colors.black,
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: 12,
-    top: 18,
-  },
-  forgotPassword: {
-    marginBottom: 20,
-  },
-  forgotPasswordText: {
-    color: colors.primary,
-    fontSize: fontSizes.sm,
-  },
-  loginButton: {
-    backgroundColor: colors.black,
-    borderRadius: 24,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  loginButtonDisabled: {
-    backgroundColor: colors.mediumGray,
-    opacity: 0.5,
-  },
-  loginButtonText: {
-    color: colors.white,
-    fontSize: fontSizes.md,
-    fontWeight: '600' as const,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: colors.mediumGray,
-    fontSize: fontSizes.sm,
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    paddingVertical: 12,
-    marginBottom: 12,
-  },
-  socialButtonText: {
-    marginLeft: 8,
-    fontSize: fontSizes.md,
-    fontWeight: '500' as const,
-    color: colors.black,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 32,
-  },
-  footerText: {
-    color: colors.mediumGray,
-    fontSize: fontSizes.sm,
-  },
-  signUpText: {
-    color: colors.primary,
-    fontSize: fontSizes.sm,
-    fontWeight: '600' as const,
-  },
-});

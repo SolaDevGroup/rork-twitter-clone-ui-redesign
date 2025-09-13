@@ -4,8 +4,8 @@ import { Camera, Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Plus } fr
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/constants/colors';
 import { fonts, fontSizes, spacing } from '@/constants/fonts';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const stories = [
   {
@@ -102,6 +102,7 @@ const instagramPosts = [
 
 export default function Home() {
   const insets = useSafeAreaInsets();
+  const { colors, primary } = useTheme();
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set(['2']));
   const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set(['2']));
 
@@ -131,7 +132,7 @@ export default function Home() {
         <Image source={{ uri: item.user.avatar }} style={styles.storyImage} />
         {item.isYourStory && (
           <View style={styles.addStoryButton}>
-            <Plus size={12} color={colors.white} />
+            <Plus size={12} color="#FFFFFF" />
           </View>
         )}
       </View>
@@ -166,7 +167,7 @@ export default function Home() {
             </View>
           </View>
           <TouchableOpacity style={styles.moreButton}>
-            <MoreHorizontal size={20} color={colors.white} />
+            <MoreHorizontal size={20} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -182,15 +183,15 @@ export default function Home() {
             >
               <Heart 
                 size={24} 
-                color={isLiked ? colors.red : colors.white} 
-                fill={isLiked ? colors.red : 'transparent'}
+                color={isLiked ? '#EF4444' : colors.text} 
+                fill={isLiked ? '#EF4444' : 'transparent'}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
-              <MessageCircle size={24} color={colors.white} />
+              <MessageCircle size={24} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
-              <Send size={24} color={colors.white} />
+              <Send size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity 
@@ -199,8 +200,8 @@ export default function Home() {
           >
             <Bookmark 
               size={24} 
-              color={colors.white} 
-              fill={isSaved ? colors.white : 'transparent'}
+              color={colors.text} 
+              fill={isSaved ? colors.text : 'transparent'}
             />
           </TouchableOpacity>
         </View>
@@ -220,16 +221,198 @@ export default function Home() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.lg,
+      backgroundColor: colors.background,
+    },
+    headerTitle: {
+      fontSize: fontSizes.xl,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      letterSpacing: -0.5,
+    },
+    storiesContainer: {
+      backgroundColor: colors.background,
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    storiesContent: {
+      paddingHorizontal: spacing.lg,
+      gap: spacing.lg,
+    },
+    storyItem: {
+      alignItems: 'center',
+      width: 70,
+    },
+    storyImageContainer: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      padding: 2,
+      marginBottom: spacing.xs,
+      position: 'relative',
+    },
+    storyImageContainerNew: {
+      backgroundColor: primary,
+    },
+    storyImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      borderWidth: 2,
+      borderColor: colors.background,
+    },
+    addStoryButton: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.background,
+    },
+    storyName: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    feedContent: {
+      paddingBottom: spacing.xxxl,
+    },
+    postContainer: {
+      backgroundColor: colors.background,
+      marginBottom: spacing.lg,
+    },
+    postHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.lg,
+    },
+    postUserInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    postAvatar: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      marginRight: spacing.lg,
+    },
+    postUserDetails: {
+      flex: 1,
+    },
+    usernameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
+    postUsername: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    verifiedBadge: {
+      width: 14,
+      height: 14,
+      borderRadius: 7,
+      backgroundColor: primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    verifiedText: {
+      fontSize: 8,
+      color: '#FFFFFF',
+      fontFamily: fonts.bold,
+    },
+    postLocation: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    moreButton: {
+      padding: spacing.xs,
+    },
+    postImage: {
+      width: '100%',
+      aspectRatio: 1,
+    },
+    postActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.lg,
+    },
+    leftActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.lg,
+    },
+    actionButton: {
+      padding: spacing.xs,
+    },
+    postInfo: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.lg,
+      gap: spacing.xs,
+    },
+    likesCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    captionContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    captionUsername: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    captionText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      flex: 1,
+    },
+    timestamp: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+  });
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + spacing.lg }]}>
         <TouchableOpacity onPress={() => router.push('/camera-preview')}>
-          <Camera size={24} color={colors.white} />
+          <Camera size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>BandMate</Text>
         <TouchableOpacity>
-          <Send size={24} color={colors.white} />
+          <Send size={24} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -255,185 +438,3 @@ export default function Home() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.black,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
-    backgroundColor: colors.black,
-  },
-  headerTitle: {
-    fontSize: fontSizes.xl,
-    fontFamily: fonts.bold,
-    color: colors.white,
-    letterSpacing: -0.5,
-  },
-  storiesContainer: {
-    backgroundColor: colors.black,
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  storiesContent: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.lg,
-  },
-  storyItem: {
-    alignItems: 'center',
-    width: 70,
-  },
-  storyImageContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    padding: 2,
-    marginBottom: spacing.xs,
-    position: 'relative',
-  },
-  storyImageContainerNew: {
-    backgroundColor: colors.primary,
-  },
-  storyImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: colors.black,
-  },
-  addStoryButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.black,
-  },
-  storyName: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.regular,
-    color: colors.white,
-    textAlign: 'center',
-  },
-  feedContent: {
-    paddingBottom: spacing.xxxl,
-  },
-  postContainer: {
-    backgroundColor: colors.black,
-    marginBottom: spacing.lg,
-  },
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
-  },
-  postUserInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  postAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: spacing.lg,
-  },
-  postUserDetails: {
-    flex: 1,
-  },
-  usernameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  postUsername: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-  },
-  verifiedBadge: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  verifiedText: {
-    fontSize: 8,
-    color: colors.white,
-    fontFamily: fonts.bold,
-  },
-  postLocation: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    marginTop: 2,
-  },
-  moreButton: {
-    padding: spacing.xs,
-  },
-  postImage: {
-    width: '100%',
-    aspectRatio: 1,
-  },
-  postActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
-  },
-  leftActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.lg,
-  },
-  actionButton: {
-    padding: spacing.xs,
-  },
-  postInfo: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
-    gap: spacing.xs,
-  },
-  likesCount: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-  },
-  captionContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  captionUsername: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-  },
-  captionText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.white,
-    flex: 1,
-  },
-  timestamp: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    marginTop: spacing.xs,
-  },
-});
