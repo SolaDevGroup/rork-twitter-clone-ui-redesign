@@ -11,6 +11,12 @@ LogBox.ignoreLogs([
   'JSON Parse error: Unexpected character',
   'react-native-reanimated',
   'logger.ts',
+  'JSReanimated',
+  'Unexpected character: o',
+  'worklet',
+  'Shared values are defined using',
+  'Function that logs to LogBox',
+  'Registers the logger configuration',
 ]);
 
 SplashScreen.preventAutoHideAsync();
