@@ -8,8 +8,9 @@ import { StyleSheet, LogBox } from "react-native";
 
 // Ignore specific warnings
 LogBox.ignoreLogs([
-  'JSON Parse error',
-  'Unexpected character',
+  'JSON Parse error: Unexpected character',
+  'react-native-reanimated',
+  'logger.ts',
 ]);
 
 SplashScreen.preventAutoHideAsync();
