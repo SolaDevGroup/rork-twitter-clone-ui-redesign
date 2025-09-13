@@ -1,18 +1,20 @@
 import { Tabs } from "expo-router";
 import { Home, Search, Bell, Mail, User } from "lucide-react-native";
 import React from "react";
+import { colors } from '@/constants/colors';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#1DA1F2',
-        tabBarInactiveTintColor: '#687684',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.mediumGray,
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
+          backgroundColor: colors.black,
           borderTopWidth: 1,
-          borderTopColor: '#F0F3F4',
+          borderTopColor: colors.border,
         },
       }}
     >

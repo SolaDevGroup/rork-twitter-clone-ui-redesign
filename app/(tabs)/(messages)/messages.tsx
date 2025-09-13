@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { Search, Camera, Briefcase, MessageCircle, Pin, CheckCheck, MoreHorizontal } from 'lucide-react-native';
+import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreHorizontal } from 'lucide-react-native';
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -265,43 +265,7 @@ export default function Messages() {
         </View>
       </View>
 
-      {/* Fixed Bottom Navigation */}
-      <View style={[styles.bottomNav, { paddingBottom: insets.bottom + spacing.lg }]}>
-        <View style={styles.navGradient} />
-        <View style={styles.navContainer}>
-          <TouchableOpacity 
-            style={styles.navButton}
-            accessible={true}
-            accessibilityLabel="Messages"
-            accessibilityRole="button"
-          >
-            <MessageCircle size={20} color={colors.black} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.navButtonSecondary}
-            accessible={true}
-            accessibilityLabel="Search"
-            accessibilityRole="button"
-          >
-            <Search size={24} color={colors.mediumGray} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.navButtonSecondary}
-            accessible={true}
-            accessibilityLabel="Camera"
-            accessibilityRole="button"
-          >
-            <Camera size={24} color={colors.mediumGray} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            accessible={true}
-            accessibilityLabel="Profile"
-            accessibilityRole="button"
-          >
-            <Image source={{ uri: currentUser.avatar }} style={styles.navAvatar} />
-          </TouchableOpacity>
-        </View>
-      </View>
+
     </View>
   );
 }
@@ -592,51 +556,5 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
   },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingTop: spacing.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 3,
-  },
-  navGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.black,
-  },
-  navContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.xs,
-    gap: spacing.sm,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 32,
-  },
-  navButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  navButtonSecondary: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  navAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
+
 });
