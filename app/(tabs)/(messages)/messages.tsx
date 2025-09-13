@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreHorizontal } from 'lucide-react-native';
+import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreVertical, Plus } from 'lucide-react-native';
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,14 +25,14 @@ const pinnedConversations = [
   {
     id: 'p2',
     user: {
-      name: 'Viktor Sola',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+      name: 'Sarah Chen',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
       isVerified: true,
     },
-    topic: 'Looking for Jam Session',
-    lastMessage: 'Heyy, how are you Julian?',
-    timestamp: '10:55 PM',
-    unreadCount: 12,
+    topic: 'Looking for Vocalist',
+    lastMessage: 'I can do the session tomorrow',
+    timestamp: '9:30 PM',
+    unreadCount: 3,
     isOnline: false,
     hasDoubleCheck: true,
   },
@@ -42,14 +42,14 @@ const allConversations = [
   {
     id: 'c1',
     user: {
-      name: 'Viktor Sola',
+      name: 'Alex Thompson',
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
       isVerified: true,
     },
-    topic: 'Looking for Jam Session',
-    lastMessage: 'Heyy, how are you Julian?',
-    timestamp: '10:55 PM',
-    unreadCount: 12,
+    topic: 'Looking for Drummer',
+    lastMessage: 'What style do you usually play?',
+    timestamp: '8:45 PM',
+    unreadCount: 2,
     isOnline: false,
     hasDoubleCheck: true,
     yourTurn: true,
@@ -57,28 +57,42 @@ const allConversations = [
   {
     id: 'c2',
     user: {
-      name: 'Viktor Sola',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
+      name: 'Emma Wilson',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+      isVerified: false,
     },
-    topic: 'Looking for Jam Session',
-    lastMessage: 'Yes, I love both genres.',
-    timestamp: '10:55 PM',
-    unreadCount: 12,
+    topic: 'Studio Recording',
+    lastMessage: 'The studio is booked for Friday',
+    timestamp: '7:20 PM',
+    unreadCount: 0,
     isOnline: true,
     hasDoubleCheck: true,
   },
   {
     id: 'c3',
     user: {
-      name: 'Viktor Sola',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+      name: 'Mike Davis',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
       isVerified: true,
     },
-    topic: 'Looking for Jam Session',
-    lastMessage: 'Heyy, how are you Julian?',
-    timestamp: '10:55 PM',
-    unreadCount: 12,
+    topic: 'Guitar Lessons',
+    lastMessage: 'Let me know your availability',
+    timestamp: '6:15 PM',
+    unreadCount: 5,
+    isOnline: false,
+    hasDoubleCheck: false,
+  },
+  {
+    id: 'c4',
+    user: {
+      name: 'Lisa Park',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face',
+      isVerified: false,
+    },
+    topic: 'Band Practice',
+    lastMessage: 'See you at the rehearsal space',
+    timestamp: '5:00 PM',
+    unreadCount: 0,
     isOnline: false,
     hasDoubleCheck: true,
   },
@@ -157,9 +171,9 @@ export default function Messages() {
       >
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Pin size={12} color="#FFFFFF" />
+            <Pin size={12} color={colors.white} />
             <Text style={styles.sectionTitle}>ALL PINNED</Text>
-            <Text style={styles.sectionCount}>4</Text>
+            <Text style={styles.sectionCount}>{pinnedConversations.length}</Text>
           </View>
           <View style={styles.sectionContent}>
             {pinnedConversations.map((item) => (
@@ -172,9 +186,9 @@ export default function Messages() {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <MessageCircle size={12} color="#FFFFFF" />
+            <MessageCircle size={12} color={colors.white} />
             <Text style={styles.sectionTitle}>ALL CONVERSATIONS</Text>
-            <Text style={styles.sectionCount}>4</Text>
+            <Text style={styles.sectionCount}>{allConversations.length}</Text>
           </View>
           <View style={styles.sectionContent}>
             {allConversations.map((item) => (
@@ -187,7 +201,7 @@ export default function Messages() {
       </ScrollView>
 
       {/* Fixed Header */}
-      <View style={[styles.header, { paddingTop: insets.top + spacing.lg }]}>
+      <View style={[styles.header, { paddingTop: insets.top }]}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
             <TouchableOpacity
@@ -215,7 +229,7 @@ export default function Messages() {
               accessibilityLabel="More options"
               accessibilityRole="button"
             >
-              <MoreHorizontal size={24} color={colors.mediumGray} />
+              <MoreVertical size={24} color={colors.mediumGray} />
             </TouchableOpacity>
           </View>
         </View>
@@ -265,7 +279,25 @@ export default function Messages() {
         </View>
       </View>
 
-
+      {/* Bottom Action Bar */}
+      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 34 }]}>
+        <View style={styles.bottomBarContent}>
+          <TouchableOpacity style={styles.bottomActionButton}>
+            <View style={styles.bottomActionIcon}>
+              <Plus size={20} color={colors.background} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.bottomActionButton}>
+            <MessageCircle size={24} color={colors.mediumGray} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.bottomActionButton}>
+            <Search size={24} color={colors.mediumGray} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image source={{ uri: currentUser.avatar }} style={styles.bottomProfileAvatar} />
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
@@ -556,5 +588,51 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
   },
-
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+    paddingTop: spacing.sm,
+    paddingHorizontal: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 3,
+  },
+  bottomBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderRadius: 100,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.xs,
+    shadowColor: '#141414',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.24,
+    shadowRadius: 56.8889,
+    elevation: 10,
+  },
+  bottomActionButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomActionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomProfileAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
 });
