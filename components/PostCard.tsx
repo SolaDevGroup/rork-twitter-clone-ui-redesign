@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, Share as RNShare, Platform, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Share as RNShare, Platform, Modal, TextInput } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { Post } from '@/types';
 import { router } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface PostCardProps {
   post: Post;
@@ -15,6 +15,7 @@ interface PostCardProps {
 
 export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const { collections, addCollection, addToCollection } = useAuth();
+  const { colors, primary } = useTheme();
   const [liked, setLiked] = useState(post.isLiked || false);
   const [likeCount, setLikeCount] = useState(post.likes);
   const [reposted, setReposted] = useState(post.isReposted || false);
@@ -27,6 +28,234 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    header: {
+      flexDirection: 'row',
+      marginBottom: spacing.md,
+    },
+    avatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      marginRight: spacing.lg,
+    },
+    headerContent: {
+      flex: 1,
+    },
+    userInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    name: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      marginRight: spacing.xs,
+    },
+    verified: {
+      color: primary,
+      fontSize: fontSizes.base,
+      marginRight: spacing.xs,
+    },
+    username: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginRight: spacing.xs,
+    },
+    dot: {
+      color: colors.textSecondary,
+      marginRight: spacing.xs,
+    },
+    timestamp: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    bio: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    moreButton: {
+      padding: spacing.xs,
+    },
+    content: {
+      marginLeft: 60,
+    },
+    text: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      lineHeight: 20,
+      marginBottom: spacing.lg,
+    },
+    mention: {
+      color: primary,
+      fontFamily: fonts.medium,
+    },
+    hashtag: {
+      color: primary,
+      fontFamily: fonts.medium,
+    },
+    postImage: {
+      width: '100%',
+      height: 200,
+      borderRadius: borderRadius.xl,
+      marginBottom: spacing.lg,
+    },
+    actions: {
+      flexDirection: 'row',
+      marginLeft: 52,
+      justifyContent: 'space-between',
+      paddingRight: 20,
+    },
+    actionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing.xs,
+    },
+    actionText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      marginLeft: spacing.xs,
+    },
+    locationContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: spacing.md,
+      marginBottom: spacing.xs,
+    },
+    locationText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginLeft: spacing.xs,
+    },
+    translateButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: spacing.md,
+      marginBottom: spacing.md,
+    },
+    translateText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      marginLeft: spacing.sm,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-end',
+    },
+    modalContent: {
+      backgroundColor: colors.background,
+      borderTopLeftRadius: borderRadius.xl,
+      borderTopRightRadius: borderRadius.xl,
+      padding: spacing.xl,
+      maxHeight: '80%',
+    },
+    modalTitle: {
+      fontSize: fontSizes.lg,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: spacing.xl,
+    },
+    collectionItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    collectionName: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+    collectionCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    createCollectionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    createCollectionText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: primary,
+      marginLeft: spacing.md,
+    },
+    createCollectionForm: {
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    collectionInput: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      marginBottom: spacing.lg,
+    },
+    createCollectionButtons: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      gap: spacing.lg,
+    },
+    cancelButton: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+    },
+    cancelButtonText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+    createButton: {
+      backgroundColor: primary,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      borderRadius: 12,
+    },
+    createButtonText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: 'white',
+    },
+    modalCloseButton: {
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+      marginTop: spacing.lg,
+    },
+    modalCloseText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+  });
+
   const handleLike = () => {
     setLiked(!liked);
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
@@ -50,12 +279,10 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
 
   const handleBookmark = () => {
     if (Platform.OS === 'web') {
-      // Simple bookmark for web
       setBookmarked(!bookmarked);
       setBookmarkCount(bookmarked ? bookmarkCount - 1 : bookmarkCount + 1);
       onBookmark?.();
     } else {
-      // Show collection modal for native
       setShowCollectionModal(true);
     }
   };
@@ -77,23 +304,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   };
 
   const handleMoreOptions = () => {
-    if (Platform.OS === 'web') {
-      Alert.alert('Options', 'More options coming soon');
-    } else {
-      Alert.alert(
-        'Post Options',
-        '',
-        [
-          { text: 'Copy link to post', onPress: () => console.log('Copy link') },
-          { text: 'Share post via...', onPress: handleShare },
-          { text: bookmarked ? 'Remove bookmark' : 'Bookmark', onPress: handleBookmark },
-          { text: 'Not interested in this', onPress: () => console.log('Not interested') },
-          { text: 'Report post', onPress: () => console.log('Report'), style: 'destructive' },
-          { text: 'Cancel', style: 'cancel' },
-        ],
-        { cancelable: true }
-      );
-    }
+    console.log('More options');
   };
 
   const handleTranslate = async () => {
@@ -128,7 +339,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       setShowTranslation(true);
     } catch (error) {
       console.error('Translation error:', error);
-      Alert.alert('Translation failed', 'Could not translate this post');
     } finally {
       setIsTranslating(false);
     }
@@ -150,8 +360,8 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
           </View>
           {post.user.bio && <Text style={styles.bio}>{post.user.bio}</Text>}
         </View>
-        <TouchableOpacity style={styles.moreButton} onPress={() => handleMoreOptions()}>
-          <Icon name="more-horiz" size={20} color={colors.darkGray} />
+        <TouchableOpacity style={styles.moreButton} onPress={handleMoreOptions}>
+          <Icon name="more-horiz" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
 
@@ -163,7 +373,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
               if (word.startsWith('@')) {
                 return (
                   <Text
-                    key={index}
+                    key={`mention-${index}-${word}`}
                     style={styles.mention}
                     onPress={() => {
                       const username = word.substring(1);
@@ -176,7 +386,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
               } else if (word.startsWith('#')) {
                 return (
                   <Text
-                    key={index}
+                    key={`hashtag-${index}-${word}`}
                     style={styles.hashtag}
                     onPress={() => {
                       router.push(`/search-results?query=${word.substring(1)}`);
@@ -192,14 +402,14 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
         
         {post.location && (
           <View style={styles.locationContainer}>
-            <Icon name="location-on" size={14} color={colors.darkGray} />
+            <Icon name="location-on" size={14} color={colors.textSecondary} />
             <Text style={styles.locationText}>{post.location}</Text>
           </View>
         )}
 
         <TouchableOpacity onPress={handleTranslate} style={styles.translateButton}>
-          <Icon name="translate" size={16} color={colors.primary} />
-          <Text style={styles.translateText}>
+          <Icon name="translate" size={16} color={primary} />
+          <Text style={[styles.translateText, { color: primary }]}>
             {isTranslating ? 'Translating...' : showTranslation ? 'Show original' : 'Translate post'}
           </Text>
         </TouchableOpacity>
@@ -211,12 +421,12 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={onComment}>
-          <Icon name="chat-bubble-outline" size={18} color={colors.darkGray} />
-          <Text style={styles.actionText}>{post.comments}</Text>
+          <Icon name="chat-bubble-outline" size={18} color={colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }]}>{post.comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={handleRepost}>
-          <Icon name="repeat" size={20} color={reposted ? colors.green : colors.darkGray} />
-          <Text style={[styles.actionText, reposted && styles.reposted]}>
+          <Icon name="repeat" size={20} color={reposted ? '#22C55E' : colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }, reposted && { color: '#22C55E' }]}>
             {repostCount}
           </Text>
         </TouchableOpacity>
@@ -224,9 +434,9 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
           <Icon 
             name={liked ? "favorite" : "favorite-border"} 
             size={18} 
-            color={liked ? colors.red : colors.darkGray} 
+            color={liked ? '#EF4444' : colors.textSecondary} 
           />
-          <Text style={[styles.actionText, liked && styles.liked]}>
+          <Text style={[styles.actionText, { color: colors.textSecondary }, liked && { color: '#EF4444' }]}>
             {likeCount}
           </Text>
         </TouchableOpacity>
@@ -234,14 +444,14 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
           <Icon 
             name={bookmarked ? "bookmark" : "bookmark-border"} 
             size={18} 
-            color={bookmarked ? colors.primary : colors.darkGray} 
+            color={bookmarked ? primary : colors.textSecondary} 
           />
-          <Text style={[styles.actionText, bookmarked && styles.bookmarked]}>
+          <Text style={[styles.actionText, { color: colors.textSecondary }, bookmarked && { color: primary }]}>
             {bookmarkCount}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-          <Icon name="share" size={18} color={colors.darkGray} />
+          <Icon name="share" size={18} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
       
@@ -271,7 +481,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
                 <TextInput
                   style={styles.collectionInput}
                   placeholder="Collection name"
-                  placeholderTextColor={colors.darkGray}
+                  placeholderTextColor={colors.textSecondary}
                   value={newCollectionName}
                   onChangeText={setNewCollectionName}
                   autoFocus
@@ -299,7 +509,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
                 style={styles.createCollectionButton}
                 onPress={() => setIsCreatingCollection(true)}
               >
-                <Icon name="add" size={20} color={colors.primary} />
+                <Icon name="add" size={20} color={primary} />
                 <Text style={styles.createCollectionText}>Create new collection</Text>
               </TouchableOpacity>
             )}
@@ -316,239 +526,3 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  header: {
-    flexDirection: 'row',
-    marginBottom: spacing.md,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: spacing.lg,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  name: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-    marginRight: spacing.xs,
-  },
-  verified: {
-    color: colors.verified,
-    fontSize: fontSizes.base,
-    marginRight: spacing.xs,
-  },
-  username: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginRight: spacing.xs,
-  },
-  dot: {
-    color: colors.darkGray,
-    marginRight: spacing.xs,
-  },
-  timestamp: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  bio: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginTop: 2,
-  },
-  moreButton: {
-    padding: spacing.xs,
-  },
-  content: {
-    marginLeft: 60,
-  },
-  text: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.black,
-    lineHeight: 20,
-    marginBottom: spacing.lg,
-  },
-  mention: {
-    color: colors.primary,
-    fontFamily: fonts.medium,
-  },
-  hashtag: {
-    color: colors.primary,
-    fontFamily: fonts.medium,
-  },
-  postImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: borderRadius.xl,
-    marginBottom: spacing.lg,
-  },
-  actions: {
-    flexDirection: 'row',
-    marginLeft: 52,
-    justifyContent: 'space-between',
-    paddingRight: 20,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.xs,
-  },
-  actionText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginLeft: spacing.xs,
-  },
-  liked: {
-    color: colors.red,
-  },
-  reposted: {
-    color: colors.green,
-  },
-  bookmarked: {
-    color: colors.primary,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
-  },
-  locationText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginLeft: spacing.xs,
-  },
-  translateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.md,
-  },
-  translateText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.primary,
-    marginLeft: spacing.sm,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.modalBackground,
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: borderRadius.xl,
-    borderTopRightRadius: borderRadius.xl,
-    padding: spacing.xl,
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    fontSize: fontSizes.lg,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-    textAlign: 'center',
-    marginBottom: spacing.xl,
-  },
-  collectionItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  collectionName: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.black,
-  },
-  collectionCount: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  createCollectionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  createCollectionText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.primary,
-    marginLeft: spacing.md,
-  },
-  createCollectionForm: {
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  collectionInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: borderRadius.md,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    marginBottom: spacing.lg,
-  },
-  createCollectionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: spacing.lg,
-  },
-  cancelButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-  cancelButtonText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.darkGray,
-  },
-  createButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.md,
-  },
-  createButtonText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.white,
-  },
-  modalCloseButton: {
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    marginTop: spacing.lg,
-  },
-  modalCloseText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.darkGray,
-  },
-});

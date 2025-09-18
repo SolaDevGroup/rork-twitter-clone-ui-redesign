@@ -1,440 +1,567 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Camera, Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Plus } from 'lucide-react-native';
-import { currentUser } from '@/mocks/data';
-import { router } from 'expo-router';
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Platform,
+  Image,
+  TextInput,
+  Modal,
+  ScrollView,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { fonts, fontSizes, spacing } from '@/constants/fonts';
+import { router } from 'expo-router';
+import { PostCard } from '@/components/PostCard';
+import { posts as mockPosts, trendingTopics, currentUser } from '@/mocks/data';
+import { Post, TrendingTopic } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash } from 'lucide-react-native';
 
-const stories = [
-  {
-    id: 'your-story',
-    user: currentUser,
-    isYourStory: true,
-    hasNewStory: false,
-  },
+type FeedFilter = 'for-you' | 'following' | 'trending';
+
+interface Story {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+  image: string;
+  isViewed: boolean;
+}
+
+const stories: Story[] = [
   {
     id: '1',
     user: {
-      id: '2',
-      name: 'Viktor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+      id: '1',
+      name: 'Your Story',
+      avatar: currentUser.avatar,
     },
-    hasNewStory: true,
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+    isViewed: false,
   },
   {
     id: '2',
     user: {
-      id: '3',
-      name: 'Sarah',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
+      id: '2',
+      name: 'Codesistency',
+      avatar: 'https://ui-avatars.com/api/?name=Codesistency&background=0891b2&color=fff&size=200',
     },
-    hasNewStory: true,
+    image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400',
+    isViewed: true,
   },
   {
     id: '3',
     user: {
-      id: '4',
-      name: 'Alex',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+      id: '3',
+      name: 'James Doe',
+      avatar: 'https://ui-avatars.com/api/?name=James+Doe&background=6366f1&color=fff&size=200',
     },
-    hasNewStory: true,
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400',
+    isViewed: false,
   },
   {
     id: '4',
     user: {
-      id: '5',
-      name: 'Emma',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+      id: '4',
+      name: 'Coffee Lover',
+      avatar: 'https://ui-avatars.com/api/?name=Coffee+Lover&background=8b5cf6&color=fff&size=200',
     },
-    hasNewStory: false,
+    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
+    isViewed: false,
   },
 ];
 
-const instagramPosts = [
-  {
-    id: '1',
-    user: {
-      name: 'viktor_music',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
-    },
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=800&fit=crop',
-    caption: 'New track dropping soon! 🎵 Been working on this for months and finally ready to share it with you all. What genre should I explore next?',
-    likes: 1247,
-    timestamp: '2 hours ago',
-    location: 'Nashville, TN',
-    isLiked: false,
-    isSaved: false,
-  },
-  {
-    id: '2',
-    user: {
-      name: 'sarah_designs',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
-      isVerified: false,
-    },
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop',
-    caption: 'Morning coffee and design inspiration ☕️ Working on a new brand identity project today. Love how the colors are coming together!',
-    likes: 892,
-    timestamp: '4 hours ago',
-    location: 'San Francisco, CA',
-    isLiked: true,
-    isSaved: true,
-  },
-  {
-    id: '3',
-    user: {
-      name: 'alex_travels',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-      isVerified: false,
-    },
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=800&fit=crop',
-    caption: 'Sunset views from the mountains 🏔️ Nothing beats this feeling of being on top of the world. Nature therapy at its finest.',
-    likes: 2156,
-    timestamp: '6 hours ago',
-    location: 'Rocky Mountains, CO',
-    isLiked: false,
-    isSaved: false,
-  },
-];
-
-export default function Home() {
-  const insets = useSafeAreaInsets();
+export default function HomeScreen() {
   const { colors, primary } = useTheme();
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set(['2']));
-  const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set(['2']));
+  const insets = useSafeAreaInsets();
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FeedFilter>('for-you');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [showTrendingModal, setShowTrendingModal] = useState(false);
 
-  const toggleLike = (postId: string) => {
-    const newLikedPosts = new Set(likedPosts);
-    if (newLikedPosts.has(postId)) {
-      newLikedPosts.delete(postId);
-    } else {
-      newLikedPosts.add(postId);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await new Promise((resolve) => {
+      if (typeof resolve === 'function') {
+        setTimeout(resolve, 1000);
+      }
+    });
+    setRefreshing(false);
+  }, []);
+
+  const filteredPosts = useMemo(() => {
+    switch (activeFilter) {
+      case 'following':
+        return posts.filter(post => post.user.id !== currentUser.id);
+      case 'trending':
+        return posts.filter(post => (post.likes + post.reposts + post.comments) > 20);
+      default:
+        return posts;
     }
-    setLikedPosts(newLikedPosts);
+  }, [posts, activeFilter]);
+
+  const handleCreatePost = () => {
+    if (Platform.OS === 'web') {
+      setShowCreateModal(true);
+    } else {
+      router.push('/create-post');
+    }
   };
 
-  const toggleSave = (postId: string) => {
-    const newSavedPosts = new Set(savedPosts);
-    if (newSavedPosts.has(postId)) {
-      newSavedPosts.delete(postId);
-    } else {
-      newSavedPosts.add(postId);
+  const handleSubmitPost = () => {
+    if (newPostContent.trim()) {
+      const newPost: Post = {
+        id: Date.now().toString(),
+        user: currentUser,
+        content: newPostContent.trim(),
+        timestamp: 'now',
+        likes: 0,
+        comments: 0,
+        reposts: 0,
+        bookmarks: 0,
+        hashtags: [],
+      };
+      setPosts([newPost, ...posts]);
+      setNewPostContent('');
+      setShowCreateModal(false);
     }
-    setSavedPosts(newSavedPosts);
   };
 
-  const renderStoryItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.storyItem}>
-      <View style={[styles.storyImageContainer, item.hasNewStory && styles.storyImageContainerNew]}>
-        <Image source={{ uri: item.user.avatar }} style={styles.storyImage} />
-        {item.isYourStory && (
-          <View style={styles.addStoryButton}>
-            <Plus size={12} color="#FFFFFF" />
+  const handleStoryPress = (story: Story) => {
+    if (story.user.id === currentUser.id) {
+      router.push('/camera-preview');
+    } else {
+      console.log('Viewing story:', story.user.name);
+    }
+  };
+
+  const handleCommentPress = (post: Post) => {
+    router.push({
+      pathname: '/comments',
+      params: { postId: post.id }
+    });
+  };
+
+  const renderStory = ({ item }: { item: Story }) => (
+    <TouchableOpacity
+      style={styles.storyContainer}
+      onPress={() => handleStoryPress(item)}
+    >
+      <View style={[
+        styles.storyImageContainer,
+        { borderColor: item.isViewed ? colors.border : primary }
+      ]}>
+        <Image source={{ uri: item.image }} style={styles.storyImage} />
+        {item.user.id === currentUser.id && (
+          <View style={[styles.addStoryButton, { backgroundColor: primary }]}>
+            <Plus size={12} color="white" />
           </View>
         )}
       </View>
-      <Text style={styles.storyName} numberOfLines={1}>
-        {item.isYourStory ? 'Your story' : item.user.name}
+      <Text style={[styles.storyName, { color: colors.text }]} numberOfLines={1}>
+        {item.user.name}
       </Text>
     </TouchableOpacity>
   );
 
-  const renderPostItem = ({ item }: { item: any }) => {
-    const isLiked = likedPosts.has(item.id);
-    const isSaved = savedPosts.has(item.id);
-    
-    return (
-      <View style={styles.postContainer}>
-        {/* Post Header */}
-        <View style={styles.postHeader}>
-          <View style={styles.postUserInfo}>
-            <Image source={{ uri: item.user.avatar }} style={styles.postAvatar} />
-            <View style={styles.postUserDetails}>
-              <View style={styles.usernameRow}>
-                <Text style={styles.postUsername}>{item.user.name}</Text>
-                {item.user.isVerified && (
-                  <View style={styles.verifiedBadge}>
-                    <Text style={styles.verifiedText}>✓</Text>
-                  </View>
-                )}
-              </View>
-              {item.location && (
-                <Text style={styles.postLocation}>{item.location}</Text>
-              )}
-            </View>
-          </View>
-          <TouchableOpacity style={styles.moreButton}>
-            <MoreHorizontal size={20} color={colors.text} />
-          </TouchableOpacity>
-        </View>
+  const renderPost = ({ item }: { item: Post }) => (
+    <PostCard
+      post={item}
+      onComment={() => handleCommentPress(item)}
+      onBookmark={() => console.log('Bookmark', item.id)}
+    />
+  );
 
-        {/* Post Image */}
-        <Image source={{ uri: item.image }} style={styles.postImage} />
+  const renderTrendingTopic = ({ item }: { item: TrendingTopic }) => (
+    <TouchableOpacity
+      style={[styles.trendingItem, { backgroundColor: colors.surface }]}
+      onPress={() => router.push(`/search-results?query=${item.name.replace('#', '')}`)}
+    >
+      <Text style={[styles.trendingCategory, { color: colors.textSecondary }]}>
+        {item.category}
+      </Text>
+      <Text style={[styles.trendingName, { color: colors.text }]}>
+        {item.name}
+      </Text>
+      <Text style={[styles.trendingCount, { color: colors.textSecondary }]}>
+        {item.tweets}
+      </Text>
+    </TouchableOpacity>
+  );
 
-        {/* Post Actions */}
-        <View style={styles.postActions}>
-          <View style={styles.leftActions}>
-            <TouchableOpacity 
-              style={styles.actionButton}
-              onPress={() => toggleLike(item.id)}
-            >
-              <Heart 
-                size={24} 
-                color={isLiked ? '#EF4444' : colors.text} 
-                fill={isLiked ? '#EF4444' : 'transparent'}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <MessageCircle size={24} color={colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Send size={24} color={colors.text} />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => toggleSave(item.id)}
-          >
-            <Bookmark 
-              size={24} 
-              color={colors.text} 
-              fill={isSaved ? colors.text : 'transparent'}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Post Info */}
-        <View style={styles.postInfo}>
-          <Text style={styles.likesCount}>
-            {item.likes.toLocaleString()} likes
-          </Text>
-          <View style={styles.captionContainer}>
-            <Text style={styles.captionUsername}>{item.user.name}</Text>
-            <Text style={styles.captionText}> {item.caption}</Text>
-          </View>
-          <Text style={styles.timestamp}>{item.timestamp}</Text>
-        </View>
+  const FilterButton = ({ filter, title, icon }: { filter: FeedFilter; title: string; icon: React.ReactNode }) => (
+    <TouchableOpacity
+      style={[
+        styles.filterButton,
+        {
+          backgroundColor: activeFilter === filter ? primary : 'transparent',
+          borderColor: activeFilter === filter ? primary : colors.border,
+        }
+      ]}
+      onPress={() => setActiveFilter(filter)}
+    >
+      <View style={styles.filterButtonContent}>
+        {icon}
+        <Text style={[
+          styles.filterText,
+          {
+            color: activeFilter === filter ? 'white' : colors.text,
+            marginLeft: 8,
+          }
+        ]}>
+          {title}
+        </Text>
       </View>
-    );
-  };
+    </TouchableOpacity>
+  );
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing.lg,
-      paddingBottom: spacing.lg,
-      backgroundColor: colors.background,
-    },
-    headerTitle: {
-      fontSize: fontSizes.xl,
-      fontFamily: fonts.bold,
-      color: colors.text,
-      letterSpacing: -0.5,
-    },
-    storiesContainer: {
-      backgroundColor: colors.background,
-      paddingVertical: spacing.lg,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    storiesContent: {
-      paddingHorizontal: spacing.lg,
-      gap: spacing.lg,
-    },
-    storyItem: {
-      alignItems: 'center',
-      width: 70,
-    },
-    storyImageContainer: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-      padding: 2,
-      marginBottom: spacing.xs,
-      position: 'relative',
-    },
-    storyImageContainerNew: {
-      backgroundColor: primary,
-    },
-    storyImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      borderWidth: 2,
-      borderColor: colors.background,
-    },
-    addStoryButton: {
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      backgroundColor: primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderWidth: 2,
-      borderColor: colors.background,
-    },
-    storyName: {
-      fontSize: fontSizes.xs,
-      fontFamily: fonts.regular,
-      color: colors.text,
-      textAlign: 'center',
-    },
-    feedContent: {
-      paddingBottom: spacing.xxxl,
-    },
-    postContainer: {
-      backgroundColor: colors.background,
-      marginBottom: spacing.lg,
-    },
-    postHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.lg,
-    },
-    postUserInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      flex: 1,
-    },
-    postAvatar: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      marginRight: spacing.lg,
-    },
-    postUserDetails: {
-      flex: 1,
-    },
-    usernameRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.xs,
-    },
-    postUsername: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.semiBold,
-      color: colors.text,
-    },
-    verifiedBadge: {
-      width: 14,
-      height: 14,
-      borderRadius: 7,
-      backgroundColor: primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    verifiedText: {
-      fontSize: 8,
-      color: '#FFFFFF',
-      fontFamily: fonts.bold,
-    },
-    postLocation: {
-      fontSize: fontSizes.xs,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
-      marginTop: 2,
-    },
-    moreButton: {
-      padding: spacing.xs,
-    },
-    postImage: {
-      width: '100%',
-      aspectRatio: 1,
-    },
-    postActions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.lg,
-    },
-    leftActions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.lg,
-    },
-    actionButton: {
-      padding: spacing.xs,
-    },
-    postInfo: {
-      paddingHorizontal: spacing.lg,
-      paddingBottom: spacing.lg,
-      gap: spacing.xs,
-    },
-    likesCount: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.semiBold,
-      color: colors.text,
-    },
-    captionContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-    },
-    captionUsername: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.semiBold,
-      color: colors.text,
-    },
-    captionText: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      color: colors.text,
-      flex: 1,
-    },
-    timestamp: {
-      fontSize: fontSizes.xs,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
-      marginTop: spacing.xs,
-    },
-  });
+  const ListHeader = () => (
+    <View>
+      {/* Stories Section */}
+      <View style={styles.storiesSection}>
+        <FlatList
+          data={stories}
+          renderItem={renderStory}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.storiesContainer}
+        />
+      </View>
+
+      {/* Feed Filters */}
+      <View style={styles.filtersContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <FilterButton
+            filter="for-you"
+            title="For You"
+            icon={<Sparkles size={16} color={activeFilter === 'for-you' ? 'white' : colors.text} />}
+          />
+          <FilterButton
+            filter="following"
+            title="Following"
+            icon={<Users size={16} color={activeFilter === 'following' ? 'white' : colors.text} />}
+          />
+          <FilterButton
+            filter="trending"
+            title="Trending"
+            icon={<TrendingUp size={16} color={activeFilter === 'trending' ? 'white' : colors.text} />}
+          />
+        </ScrollView>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + spacing.lg }]}>
-        <TouchableOpacity onPress={() => router.push('/camera-preview')}>
-          <Camera size={24} color={colors.text} />
+      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
+        <TouchableOpacity onPress={() => router.push('/settings')}>
+          <Settings size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>BandMate</Text>
-        <TouchableOpacity>
-          <Send size={24} color={colors.text} />
-        </TouchableOpacity>
+        
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Home</Text>
+        
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => setShowTrendingModal(true)}
+          >
+            <Hash size={24} color={colors.text} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => router.push('/camera-preview')}
+          >
+            <Camera size={24} color={colors.text} />
+          </TouchableOpacity>
+        </View>
       </View>
 
+      {/* Main Content */}
       <FlatList
-        data={instagramPosts}
+        data={filteredPosts}
+        renderItem={renderPost}
         keyExtractor={(item) => item.id}
-        renderItem={renderPostItem}
+        ListHeaderComponent={ListHeader}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View style={styles.storiesContainer}>
-            <FlatList
-              data={stories}
-              keyExtractor={(item) => item.id}
-              renderItem={renderStoryItem}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.storiesContent}
-            />
-          </View>
-        }
-        contentContainerStyle={styles.feedContent}
+        contentContainerStyle={styles.feedContainer}
       />
+
+      {/* Floating Action Button */}
+      <TouchableOpacity
+        style={[styles.fab, { backgroundColor: primary }]}
+        onPress={handleCreatePost}
+      >
+        <Plus size={24} color="white" />
+      </TouchableOpacity>
+
+      {/* Create Post Modal (Web) */}
+      <Modal
+        visible={showCreateModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCreateModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.createModalContent, { backgroundColor: colors.background }]}>
+            <Text style={[styles.createModalTitle, { color: colors.text }]}>Create Post</Text>
+            
+            <TextInput
+              style={[
+                styles.createPostInput,
+                {
+                  backgroundColor: colors.inputBackground,
+                  color: colors.text,
+                  borderColor: colors.border,
+                }
+              ]}
+              placeholder="What's happening?"
+              placeholderTextColor={colors.textSecondary}
+              value={newPostContent}
+              onChangeText={setNewPostContent}
+              multiline
+              maxLength={280}
+              autoFocus
+            />
+            
+            <View style={styles.createModalActions}>
+              <TouchableOpacity
+                style={[styles.createModalButton, { backgroundColor: colors.surface }]}
+                onPress={() => setShowCreateModal(false)}
+              >
+                <Text style={[styles.createModalButtonText, { color: colors.text }]}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.createModalButton, { backgroundColor: primary }]}
+                onPress={handleSubmitPost}
+                disabled={!newPostContent.trim()}
+              >
+                <Text style={[styles.createModalButtonText, { color: 'white' }]}>Post</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Trending Modal */}
+      <Modal
+        visible={showTrendingModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTrendingModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.trendingModalContent, { backgroundColor: colors.background }]}>
+            <Text style={[styles.trendingModalTitle, { color: colors.text }]}>Trending Topics</Text>
+            
+            <FlatList
+              data={trendingTopics}
+              renderItem={renderTrendingTopic}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+            
+            <TouchableOpacity
+              style={[styles.modalCloseButton, { backgroundColor: colors.surface }]}
+              onPress={() => setShowTrendingModal(false)}
+            >
+              <Text style={[styles.modalCloseText, { color: colors.text }]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerButton: {
+    marginLeft: 16,
+  },
+  storiesSection: {
+    paddingVertical: 16,
+  },
+  storiesContainer: {
+    paddingHorizontal: 16,
+  },
+  storyContainer: {
+    alignItems: 'center',
+    marginRight: 16,
+    width: 70,
+  },
+  storyImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    padding: 2,
+    position: 'relative',
+  },
+  storyImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 26,
+  },
+  addStoryButton: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  storyName: {
+    fontSize: 12,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  filtersContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    marginRight: 12,
+  },
+  filterButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  feedContainer: {
+    paddingBottom: 100,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  createModalContent: {
+    width: '90%',
+    maxWidth: 400,
+    borderRadius: 12,
+    padding: 20,
+  },
+  createModalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  createPostInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    minHeight: 120,
+    textAlignVertical: 'top',
+    marginBottom: 20,
+  },
+  createModalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  createModalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  createModalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  trendingModalContent: {
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: '80%',
+    borderRadius: 12,
+    padding: 20,
+  },
+  trendingModalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  trendingItem: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  trendingCategory: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  trendingName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  trendingCount: {
+    fontSize: 14,
+  },
+  modalCloseButton: {
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

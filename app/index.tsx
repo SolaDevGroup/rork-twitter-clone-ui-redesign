@@ -5,7 +5,7 @@ export default function Index() {
   const { isAuthenticated } = useAuth();
   
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)/(search)/search" />;
+    return <Redirect href="/(tabs)/(home)/home" />;
   }
   
   return <Redirect href="/login" />;
