@@ -4,7 +4,7 @@ import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreVertical, Plus }
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { fonts, fontSizes, spacing, borderRadius } from '@/constants/fonts';
 
 const pinnedConversations = [
@@ -68,54 +68,22 @@ const allConversations = [
     isOnline: true,
     hasDoubleCheck: true,
   },
-  {
-    id: 'c3',
-    user: {
-      name: 'Mike Davis',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
-    },
-    topic: 'Guitar Lessons',
-    lastMessage: 'Let me know your availability',
-    timestamp: '6:15 PM',
-    unreadCount: 5,
-    isOnline: false,
-    hasDoubleCheck: false,
-  },
-  {
-    id: 'c4',
-    user: {
-      name: 'Lisa Park',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face',
-      isVerified: false,
-    },
-    topic: 'Band Practice',
-    lastMessage: 'See you at the rehearsal space',
-    timestamp: '5:00 PM',
-    unreadCount: 0,
-    isOnline: false,
-    hasDoubleCheck: true,
-  },
 ];
 
 export default function Messages() {
   const [activeTab, setActiveTab] = useState<'1on1' | 'groups' | 'rooms'>('1on1');
   const insets = useSafeAreaInsets();
+  const { colors, primary, success } = useTheme();
 
   const renderConversationItem = ({ item }: { item: any }) => (
     <TouchableOpacity 
       style={styles.conversationItem}
       onPress={() => router.push(`/(tabs)/(messages)/${item.id}`)}
-      accessible={true}
-      accessibilityLabel={`Conversation with ${item.user.name}. Topic: ${item.topic}. Last message: ${item.lastMessage}. ${item.unreadCount} unread messages.`}
-      accessibilityRole="button"
     >
-      <View style={[styles.avatarContainer, item.isOnline && styles.onlineAvatarContainer]}>
+      <View style={[styles.avatarContainer, item.isOnline && { backgroundColor: success }]}>
         <Image 
           source={{ uri: item.user.avatar }} 
           style={styles.avatar}
-          accessible={true}
-          accessibilityLabel={`${item.user.name}'s profile picture`}
         />
       </View>
       <View style={styles.conversationContent}>
@@ -124,7 +92,7 @@ export default function Messages() {
             <Text style={styles.topicText}>{item.topic}</Text>
           </View>
           {item.yourTurn && (
-            <View style={styles.yourTurnBadge}>
+            <View style={[styles.yourTurnBadge, { backgroundColor: primary }]}>
               <Text style={styles.yourTurnText}>Your Turn</Text>
             </View>
           )}
@@ -135,17 +103,17 @@ export default function Messages() {
               <Text style={styles.userName}>{item.user.name}</Text>
               {item.user.isVerified && (
                 <View style={styles.verifiedIcon}>
-                  <CheckCheck size={12} color={colors.primary} />
+                  <CheckCheck size={12} color={primary} />
                 </View>
               )}
             </View>
             <View style={styles.messageRow}>
-              <View style={styles.messageIndicator} />
+              <View style={[styles.messageIndicator, { backgroundColor: primary }]} />
               <Text style={styles.lastMessage} numberOfLines={1}>
                 {item.lastMessage}
               </Text>
               <View style={styles.messageSeparator} />
-              <CheckCheck size={12} color={colors.primary} />
+              <CheckCheck size={12} color={primary} />
             </View>
           </View>
         </View>
@@ -153,13 +121,336 @@ export default function Messages() {
       <View style={styles.rightColumn}>
         <Text style={styles.timestamp}>{item.timestamp}</Text>
         {item.unreadCount > 0 && (
-          <View style={styles.unreadBadge}>
+          <View style={[styles.unreadBadge, { backgroundColor: primary }]}>
             <Text style={styles.unreadCount}>{item.unreadCount}</Text>
           </View>
         )}
       </View>
     </TouchableOpacity>
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      position: 'relative',
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      gap: spacing.xs,
+      paddingBottom: 120,
+    },
+    header: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.sm,
+      gap: spacing.xl,
+      zIndex: 2,
+      minHeight: 147,
+    },
+    headerContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 44,
+    },
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.lg,
+      flex: 1,
+    },
+    profileButton: {
+      minWidth: 44,
+      minHeight: 44,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    profileAvatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+    },
+    headerTitle: {
+      fontSize: fontSizes.xxxl,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      letterSpacing: -0.5,
+      flex: 1,
+    },
+    headerIcons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    headerIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.inputBackground,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    tabContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      height: 44,
+    },
+    briefcaseIcon: {
+      minWidth: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.inputBackground,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+    },
+    tab: {
+      paddingHorizontal: spacing.lg,
+      height: 44,
+      borderRadius: 22,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: 44,
+    },
+    activeTab: {
+      backgroundColor: colors.text,
+    },
+    tabText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    activeTabText: {
+      color: colors.background,
+    },
+    roomsBadge: {
+      borderRadius: borderRadius.lg,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      marginLeft: spacing.xs,
+      minWidth: 24,
+      height: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    roomsBadgeText: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    section: {
+      backgroundColor: colors.background,
+      padding: spacing.lg,
+      gap: spacing.lg,
+    },
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      minHeight: 24,
+    },
+    sectionTitle: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+      flex: 1,
+    },
+    sectionCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+    sectionContent: {
+      gap: spacing.xl,
+      borderRadius: borderRadius.md,
+    },
+    conversationItem: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: spacing.lg,
+      minHeight: 64,
+      paddingVertical: spacing.sm,
+    },
+    avatarContainer: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.inputBackground,
+      padding: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    avatar: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+    },
+    conversationContent: {
+      flex: 1,
+      gap: spacing.xs,
+      justifyContent: 'center',
+    },
+    topRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      flexWrap: 'wrap',
+    },
+    topicContainer: {
+      backgroundColor: colors.inputBackground,
+      borderRadius: borderRadius.xs,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    topicText: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    yourTurnBadge: {
+      borderRadius: borderRadius.lg,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    yourTurnText: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.semiBold,
+      color: colors.background,
+      textAlign: 'center',
+    },
+    bottomRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    leftBottomContent: {
+      flex: 1,
+      gap: spacing.xs,
+    },
+    userNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
+    userName: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    verifiedIcon: {
+      width: 16,
+      height: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    messageRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      flex: 1,
+    },
+    messageIndicator: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+    },
+    lastMessage: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      flex: 1,
+    },
+    messageSeparator: {
+      width: 4,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.textSecondary,
+    },
+    rightColumn: {
+      alignItems: 'flex-end',
+      gap: spacing.xs,
+      justifyContent: 'center',
+      minWidth: 60,
+    },
+    timestamp: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      textAlign: 'right',
+    },
+    unreadBadge: {
+      borderRadius: borderRadius.lg,
+      minWidth: 20,
+      height: 20,
+      paddingHorizontal: spacing.xs,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    unreadCount: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.semiBold,
+      color: colors.background,
+      textAlign: 'center',
+    },
+    bottomBar: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: 'transparent',
+      paddingTop: spacing.sm,
+      paddingHorizontal: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 3,
+    },
+    bottomBarContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.sm,
+      backgroundColor: colors.inputBackground,
+      borderRadius: 100,
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.xs,
+    },
+    bottomActionButton: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    bottomActionIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.text,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    bottomProfileAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -171,7 +462,7 @@ export default function Messages() {
       >
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Pin size={12} color={colors.white} />
+            <Pin size={12} color={colors.textSecondary} />
             <Text style={styles.sectionTitle}>ALL PINNED</Text>
             <Text style={styles.sectionCount}>{pinnedConversations.length}</Text>
           </View>
@@ -186,7 +477,7 @@ export default function Messages() {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <MessageCircle size={12} color={colors.white} />
+            <MessageCircle size={12} color={colors.textSecondary} />
             <Text style={styles.sectionTitle}>ALL CONVERSATIONS</Text>
             <Text style={styles.sectionCount}>{allConversations.length}</Text>
           </View>
@@ -204,75 +495,43 @@ export default function Messages() {
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
-            <TouchableOpacity
-              accessible={true}
-              accessibilityLabel="Profile"
-              accessibilityRole="button"
-              style={styles.profileButton}
-            >
+            <TouchableOpacity style={styles.profileButton}>
               <Image source={{ uri: currentUser.avatar }} style={styles.profileAvatar} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Inbox</Text>
           </View>
           <View style={styles.headerIcons}>
-            <TouchableOpacity 
-              style={styles.headerIcon}
-              accessible={true}
-              accessibilityLabel="Search conversations"
-              accessibilityRole="button"
-            >
-              <Search size={24} color={colors.mediumGray} />
+            <TouchableOpacity style={styles.headerIcon}>
+              <Search size={24} color={colors.textSecondary} />
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.headerIcon}
-              accessible={true}
-              accessibilityLabel="More options"
-              accessibilityRole="button"
-            >
-              <MoreVertical size={24} color={colors.mediumGray} />
+            <TouchableOpacity style={styles.headerIcon}>
+              <MoreVertical size={24} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
-            style={styles.briefcaseIcon}
-            accessible={true}
-            accessibilityLabel="Work conversations"
-            accessibilityRole="button"
-          >
-            <Briefcase size={16} color={colors.primary} />
+          <TouchableOpacity style={styles.briefcaseIcon}>
+            <Briefcase size={16} color={primary} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.tab, activeTab === '1on1' && styles.activeTab]}
             onPress={() => setActiveTab('1on1')}
-            accessible={true}
-            accessibilityLabel="One on one conversations"
-            accessibilityRole="tab"
-            accessibilityState={{ selected: activeTab === '1on1' }}
           >
             <Text style={[styles.tabText, activeTab === '1on1' && styles.activeTabText]}>1 on 1</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.tab, activeTab === 'groups' && styles.activeTab]}
             onPress={() => setActiveTab('groups')}
-            accessible={true}
-            accessibilityLabel="Group conversations"
-            accessibilityRole="tab"
-            accessibilityState={{ selected: activeTab === 'groups' }}
           >
             <Text style={[styles.tabText, activeTab === 'groups' && styles.activeTabText]}>Groups</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.tab, activeTab === 'rooms' && styles.activeTab]}
             onPress={() => setActiveTab('rooms')}
-            accessible={true}
-            accessibilityLabel="Room conversations, 36 new"
-            accessibilityRole="tab"
-            accessibilityState={{ selected: activeTab === 'rooms' }}
           >
             <Text style={[styles.tabText, activeTab === 'rooms' && styles.activeTabText]}>Rooms</Text>
-            <View style={styles.roomsBadge}>
+            <View style={[styles.roomsBadge, { backgroundColor: primary }]}>
               <Text style={styles.roomsBadgeText}>+36</Text>
             </View>
           </TouchableOpacity>
@@ -288,10 +547,10 @@ export default function Messages() {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomActionButton}>
-            <MessageCircle size={24} color={colors.mediumGray} />
+            <MessageCircle size={24} color={colors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomActionButton}>
-            <Search size={24} color={colors.mediumGray} />
+            <Search size={24} color={colors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image source={{ uri: currentUser.avatar }} style={styles.bottomProfileAvatar} />
@@ -301,338 +560,3 @@ export default function Messages() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.black,
-    position: 'relative',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    gap: spacing.xs,
-    paddingBottom: 120,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.black,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-    gap: spacing.xl,
-    zIndex: 2,
-    minHeight: 147,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 44,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.lg,
-    flex: 1,
-  },
-  profileButton: {
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  headerTitle: {
-    fontSize: fontSizes.xxxl,
-    fontFamily: fonts.bold,
-    color: colors.white,
-    letterSpacing: -0.5,
-    flex: 1,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  headerIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    height: 44,
-  },
-  briefcaseIcon: {
-    minWidth: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(29, 155, 240, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-  },
-  tab: {
-    paddingHorizontal: spacing.lg,
-    height: 44,
-    borderRadius: 22,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: 44,
-  },
-  activeTab: {
-    backgroundColor: colors.white,
-  },
-  tabText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.mediumGray,
-    textAlign: 'center',
-  },
-  activeTabText: {
-    color: colors.black,
-  },
-  roomsBadge: {
-    backgroundColor: colors.primary,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    marginLeft: spacing.xs,
-    minWidth: 24,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  roomsBadgeText: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-    textAlign: 'center',
-  },
-  section: {
-    backgroundColor: colors.black,
-    padding: spacing.lg,
-    gap: spacing.lg,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    minHeight: 24,
-  },
-  sectionTitle: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.medium,
-    color: colors.mediumGray,
-    flex: 1,
-  },
-  sectionCount: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.medium,
-    color: colors.white,
-  },
-  sectionContent: {
-    gap: spacing.xl,
-    borderRadius: borderRadius.md,
-  },
-  conversationItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: spacing.lg,
-    minHeight: 64,
-    paddingVertical: spacing.sm,
-  },
-  avatarContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  onlineAvatarContainer: {
-    backgroundColor: colors.green,
-  },
-  avatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-  },
-  conversationContent: {
-    flex: 1,
-    gap: spacing.xs,
-    justifyContent: 'center',
-  },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  topicContainer: {
-    backgroundColor: colors.darkGray,
-    borderRadius: borderRadius.xs,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  topicText: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.medium,
-    color: colors.lightGray,
-    textAlign: 'center',
-  },
-  yourTurnBadge: {
-    backgroundColor: colors.primary,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  yourTurnText: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-    textAlign: 'center',
-  },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  leftBottomContent: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  userNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  userName: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-  },
-  verifiedIcon: {
-    width: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  messageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    flex: 1,
-  },
-  messageIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
-  },
-  lastMessage: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    flex: 1,
-  },
-  messageSeparator: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.mediumGray,
-  },
-  rightColumn: {
-    alignItems: 'flex-end',
-    gap: spacing.xs,
-    justifyContent: 'center',
-    minWidth: 60,
-  },
-  timestamp: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    textAlign: 'right',
-  },
-  unreadBadge: {
-    backgroundColor: colors.primary,
-    borderRadius: borderRadius.lg,
-    minWidth: 20,
-    height: 20,
-    paddingHorizontal: spacing.xs,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  unreadCount: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-    textAlign: 'center',
-  },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'transparent',
-    paddingTop: spacing.sm,
-    paddingHorizontal: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 3,
-  },
-  bottomBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
-    borderRadius: 100,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.xs,
-    shadowColor: '#141414',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.24,
-    shadowRadius: 56.8889,
-    elevation: 10,
-  },
-  bottomActionButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomActionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomProfileAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-});

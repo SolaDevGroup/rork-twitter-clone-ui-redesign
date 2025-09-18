@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Profile() {
   const { logout } = useAuth();
+  const { colors, primary } = useTheme();
   const [activeTab, setActiveTab] = useState<'posts' | 'retweets' | 'mentions'>('posts');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'engagement'>('recent');
   const [showImagesOnly, setShowImagesOnly] = useState(false);
@@ -71,10 +72,10 @@ export default function Profile() {
             <Image source={{ uri: currentUser.avatar }} style={styles.avatar} />
             <View style={styles.headerButtons}>
               <TouchableOpacity style={styles.iconButton} onPress={handleSettings}>
-                <Settings size={20} color={colors.black} />
+                <Settings size={20} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
-                <MoreHorizontal size={20} color={colors.black} />
+                <MoreHorizontal size={20} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
                 <Text style={styles.editButtonText}>Edit profile</Text>
@@ -93,11 +94,11 @@ export default function Profile() {
 
           <View style={styles.details}>
             <View style={styles.detailItem}>
-              <MapPin size={16} color="#687684" />
+              <MapPin size={16} color={colors.textSecondary} />
               <Text style={styles.detailText}>{currentUser.location}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Calendar size={16} color="#687684" />
+              <Calendar size={16} color={colors.textSecondary} />
               <Text style={styles.detailText}>Joined {currentUser.joinedDate}</Text>
             </View>
           </View>
@@ -175,7 +176,7 @@ export default function Profile() {
         </View>
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <LogOut size={20} color="#F91880" />
+          <LogOut size={20} color={colors.error} />
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -389,6 +390,6 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: fontSizes.md,
     fontFamily: fonts.semiBold,
-    color: colors.red,
+    color: colors.error,
   },
 });

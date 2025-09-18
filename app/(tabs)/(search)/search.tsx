@@ -4,20 +4,80 @@ import { Search as SearchIcon } from 'lucide-react-native';
 import { trendingTopics } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@/contexts/ThemeContext';
+import { fontSizes } from '@/constants/fonts';
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState('');
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
+
+
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    searchInput: {
+      flex: 1,
+      marginLeft: 8,
+      fontSize: fontSizes.md,
+      color: colors.text,
+    },
+    sectionTitle: {
+      fontSize: fontSizes.xl,
+      fontWeight: '700' as const,
+      color: colors.text,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    trendItem: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    trendCategory: {
+      fontSize: fontSizes.sm,
+      color: colors.textSecondary,
+      marginBottom: 2,
+    },
+    trendName: {
+      fontSize: fontSizes.md,
+      fontWeight: '600' as const,
+      color: colors.text,
+      marginBottom: 2,
+    },
+    trendTweets: {
+      fontSize: fontSizes.sm,
+      color: colors.textSecondary,
+    },
+  });
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <View style={styles.searchContainer}>
-          <SearchIcon size={20} color="#687684" />
+          <SearchIcon size={20} color={colors.textSecondary} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search Twitter"
-            placeholderTextColor="#687684"
+            placeholderTextColor={colors.textSecondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -47,58 +107,3 @@ export default function Search() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F0F3F4',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 8,
-    fontSize: 15,
-    color: '#0F1419',
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#0F1419',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  trendItem: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
-  },
-  trendCategory: {
-    fontSize: 13,
-    color: '#687684',
-    marginBottom: 2,
-  },
-  trendName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#0F1419',
-    marginBottom: 2,
-  },
-  trendTweets: {
-    fontSize: 13,
-    color: '#687684',
-  },
-});

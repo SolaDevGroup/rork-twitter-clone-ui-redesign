@@ -4,9 +4,12 @@ import { Heart, MessageCircle, UserPlus, Repeat2, Trash2 } from 'lucide-react-na
 import { notifications } from '@/mocks/data';
 import { Notification } from '@/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@/contexts/ThemeContext';
+import { fontSizes } from '@/constants/fonts';
 
 export default function Notifications() {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const renderIcon = (type: Notification['type']) => {
     switch (type) {
       case 'like':
@@ -58,10 +61,92 @@ export default function Notifications() {
         </View>
       </View>
       <TouchableOpacity style={styles.deleteButton}>
-        <Trash2 size={18} color="#687684" />
+        <Trash2 size={18} color={colors.textSecondary} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    notificationItem: {
+      flexDirection: 'row',
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    iconContainer: {
+      marginRight: 12,
+      marginTop: 4,
+    },
+    notificationContent: {
+      flex: 1,
+    },
+    userInfo: {
+      flexDirection: 'row',
+    },
+    avatar: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      marginRight: 8,
+    },
+    textContent: {
+      flex: 1,
+    },
+    userName: {
+      fontSize: fontSizes.md,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    username: {
+      fontWeight: '400' as const,
+      color: colors.textSecondary,
+    },
+    action: {
+      fontSize: fontSizes.md,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    postContent: {
+      fontSize: fontSizes.sm,
+      color: colors.text,
+      marginTop: 8,
+      lineHeight: 18,
+    },
+    postImage: {
+      width: '100%',
+      height: 150,
+      borderRadius: 12,
+      marginTop: 8,
+    },
+    commentContainer: {
+      marginTop: 8,
+      padding: 8,
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+    },
+    commentLabel: {
+      fontSize: fontSizes.xs,
+      color: colors.textSecondary,
+      marginBottom: 4,
+    },
+    commentText: {
+      fontSize: fontSizes.sm,
+      color: colors.text,
+      fontStyle: 'italic',
+    },
+    timestamp: {
+      fontSize: fontSizes.sm,
+      color: colors.textSecondary,
+      marginTop: 4,
+    },
+    deleteButton: {
+      padding: 4,
+    },
+  });
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -73,85 +158,3 @@ export default function Notifications() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  notificationItem: {
-    flexDirection: 'row',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
-  },
-  iconContainer: {
-    marginRight: 12,
-    marginTop: 4,
-  },
-  notificationContent: {
-    flex: 1,
-  },
-  userInfo: {
-    flexDirection: 'row',
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  textContent: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#0F1419',
-  },
-  username: {
-    fontWeight: '400',
-    color: '#687684',
-  },
-  action: {
-    fontSize: 15,
-    color: '#687684',
-    marginTop: 2,
-  },
-  postContent: {
-    fontSize: 14,
-    color: '#0F1419',
-    marginTop: 8,
-    lineHeight: 18,
-  },
-  postImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 12,
-    marginTop: 8,
-  },
-  commentContainer: {
-    marginTop: 8,
-    padding: 8,
-    backgroundColor: '#F7F9FA',
-    borderRadius: 8,
-  },
-  commentLabel: {
-    fontSize: 12,
-    color: '#687684',
-    marginBottom: 4,
-  },
-  commentText: {
-    fontSize: 14,
-    color: '#0F1419',
-    fontStyle: 'italic',
-  },
-  timestamp: {
-    fontSize: 13,
-    color: '#687684',
-    marginTop: 4,
-  },
-  deleteButton: {
-    padding: 4,
-  },
-});

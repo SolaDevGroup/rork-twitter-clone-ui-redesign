@@ -159,7 +159,7 @@ export default function Login() {
     
     login();
     
-    router.replace('/(tabs)/(home)/home');
+    router.replace('/(tabs)/(search)/search');
   };
 
   const handleForgotPassword = () => {
