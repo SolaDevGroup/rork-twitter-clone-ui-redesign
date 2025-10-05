@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Heart, ImageIcon } from 'lucide-react-native';
+import { Home, Heart, Plus } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,7 +78,7 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
       width: 56,
       height: 56,
       borderRadius: 28,
-      backgroundColor: colors.textSecondary,
+      backgroundColor: primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -138,7 +138,7 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
         accessibilityRole="button"
         accessibilityLabel="Create a post"
       >
-        <ImageIcon size={24} color={colors.background} />
+        <Plus size={28} color={colors.background} />
       </TouchableOpacity>
     </View>
   );
