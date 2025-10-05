@@ -102,3 +102,21 @@ export interface TrendingTopic {
   name: string;
   tweets: string;
 }
+
+export interface Story {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+  posts: StoryPost[];
+  isViewed: boolean;
+}
+
+export interface StoryPost {
+  id: string;
+  image: string;
+  dominantColor?: string;
+  isViewed: boolean;
+}

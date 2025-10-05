@@ -1,4 +1,4 @@
-import { User, Post, Notification, Message, TrendingTopic, Comment, Room } from '@/types';
+import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story } from '@/types';
 
 export const currentUser: User = {
   id: '1',
@@ -241,6 +241,113 @@ export const comments: Comment[] = [
     content: 'so cute ❤️❤️',
     timestamp: '31m',
     postId: '2',
+  },
+];
+
+export const stories: Story[] = [
+  {
+    id: '1',
+    user: {
+      id: '1',
+      name: 'Your Story',
+      avatar: currentUser.avatar,
+    },
+    posts: [
+      {
+        id: '1-1',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+        dominantColor: '#4A90E2',
+        isViewed: false,
+      },
+    ],
+    isViewed: false,
+  },
+  {
+    id: '2',
+    user: {
+      id: '2',
+      name: 'Codesistency',
+      avatar: 'https://ui-avatars.com/api/?name=Codesistency&background=0891b2&color=fff&size=200',
+    },
+    posts: [
+      {
+        id: '2-1',
+        image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400',
+        dominantColor: '#E8A87C',
+        isViewed: true,
+      },
+      {
+        id: '2-2',
+        image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400',
+        dominantColor: '#5D9B9B',
+        isViewed: true,
+      },
+      {
+        id: '2-3',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+        dominantColor: '#7B9E89',
+        isViewed: false,
+      },
+    ],
+    isViewed: false,
+  },
+  {
+    id: '3',
+    user: {
+      id: '3',
+      name: 'James Doe',
+      avatar: 'https://ui-avatars.com/api/?name=James+Doe&background=6366f1&color=fff&size=200',
+    },
+    posts: [
+      {
+        id: '3-1',
+        image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400',
+        dominantColor: '#3B5998',
+        isViewed: false,
+      },
+      {
+        id: '3-2',
+        image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400',
+        dominantColor: '#2C3E50',
+        isViewed: false,
+      },
+    ],
+    isViewed: false,
+  },
+  {
+    id: '4',
+    user: {
+      id: '4',
+      name: 'Coffee Lover',
+      avatar: 'https://ui-avatars.com/api/?name=Coffee+Lover&background=8b5cf6&color=fff&size=200',
+    },
+    posts: [
+      {
+        id: '4-1',
+        image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
+        dominantColor: '#D4A574',
+        isViewed: true,
+      },
+      {
+        id: '4-2',
+        image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',
+        dominantColor: '#8B4513',
+        isViewed: true,
+      },
+      {
+        id: '4-3',
+        image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400',
+        dominantColor: '#6F4E37',
+        isViewed: true,
+      },
+      {
+        id: '4-4',
+        image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400',
+        dominantColor: '#A0826D',
+        isViewed: true,
+      },
+    ],
+    isViewed: true,
   },
 ];
 

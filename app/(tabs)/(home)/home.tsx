@@ -14,72 +14,20 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { PostCard } from '@/components/PostCard';
-import { posts as mockPosts, trendingTopics, currentUser } from '@/mocks/data';
-import { Post, TrendingTopic } from '@/types';
+import { posts as mockPosts, trendingTopics, currentUser, stories as mockStories } from '@/mocks/data';
+import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash, Bell } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
 
-interface Story {
-  id: string;
-  user: {
-    id: string;
-    name: string;
-    avatar: string;
-  };
-  image: string;
-  isViewed: boolean;
-}
-
-const stories: Story[] = [
-  {
-    id: '1',
-    user: {
-      id: '1',
-      name: 'Your Story',
-      avatar: currentUser.avatar,
-    },
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
-    isViewed: false,
-  },
-  {
-    id: '2',
-    user: {
-      id: '2',
-      name: 'Codesistency',
-      avatar: 'https://ui-avatars.com/api/?name=Codesistency&background=0891b2&color=fff&size=200',
-    },
-    image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400',
-    isViewed: true,
-  },
-  {
-    id: '3',
-    user: {
-      id: '3',
-      name: 'James Doe',
-      avatar: 'https://ui-avatars.com/api/?name=James+Doe&background=6366f1&color=fff&size=200',
-    },
-    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400',
-    isViewed: false,
-  },
-  {
-    id: '4',
-    user: {
-      id: '4',
-      name: 'Coffee Lover',
-      avatar: 'https://ui-avatars.com/api/?name=Coffee+Lover&background=8b5cf6&color=fff&size=200',
-    },
-    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
-    isViewed: false,
-  },
-];
-
 export default function HomeScreen() {
-  const { colors, primary } = useTheme();
+  const { colors, primary, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   
+  const [stories] = useState<Story[]>(mockStories);
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -115,17 +63,37 @@ export default function HomeScreen() {
       width: 70,
     },
     storyImageContainer: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      borderWidth: 2,
-      padding: 2,
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      padding: 3,
+      position: 'relative' as const,
+    },
+    storyRing: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+    },
+    storyImageWrapper: {
+      width: '100%' as const,
+      height: '100%' as const,
+      borderRadius: 29,
+      overflow: 'hidden' as const,
       position: 'relative' as const,
     },
     storyImage: {
       width: '100%' as const,
       height: '100%' as const,
-      borderRadius: 26,
+    },
+    storyGradient: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     addStoryButton: {
       position: 'absolute' as const,
@@ -332,27 +300,113 @@ export default function HomeScreen() {
     });
   };
 
-  const renderStory = ({ item }: { item: Story }) => (
-    <TouchableOpacity
-      style={styles.storyContainer}
-      onPress={() => handleStoryPress(item)}
-    >
-      <View style={[
-        styles.storyImageContainer,
-        { borderColor: item.isViewed ? colors.border : primary }
-      ]}>
-        <Image source={{ uri: item.image }} style={styles.storyImage} />
-        {item.user.id === currentUser.id && (
-          <View style={[styles.addStoryButton, { backgroundColor: primary }]}>
-            <Plus size={12} color="white" />
-          </View>
-        )}
+  const renderStoryRing = (story: Story) => {
+    const totalPosts = story.posts.length;
+    if (totalPosts === 1) {
+      const isViewed = story.posts[0].isViewed;
+      return (
+        <View
+          style={[
+            styles.storyRing,
+            {
+              borderWidth: 2,
+              borderColor: isViewed
+                ? isDark
+                  ? 'rgba(255, 255, 255, 0.16)'
+                  : 'rgba(0, 0, 0, 0.16)'
+                : primary,
+            },
+          ]}
+        />
+      );
+    }
+
+    const segmentAngle = 360 / totalPosts;
+
+    return (
+      <View style={styles.storyRing}>
+        {story.posts.map((post, index) => {
+          const startAngle = index * segmentAngle;
+          const isViewed = post.isViewed;
+
+          const segmentColor = isViewed
+            ? isDark
+              ? 'rgba(255, 255, 255, 0.16)'
+              : 'rgba(0, 0, 0, 0.16)'
+            : primary;
+
+          return (
+            <View
+              key={post.id}
+              style={{
+                position: 'absolute' as const,
+                top: 0,
+                left: 0,
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                borderWidth: 2,
+                borderColor: segmentColor,
+                transform: [{ rotate: `${startAngle}deg` }],
+                borderTopColor: segmentColor,
+                borderRightColor: 'transparent',
+                borderBottomColor: 'transparent',
+                borderLeftColor: 'transparent',
+              }}
+            />
+          );
+        })}
       </View>
-      <Text style={[styles.storyName, { color: colors.text }]} numberOfLines={1}>
-        {item.user.name}
-      </Text>
-    </TouchableOpacity>
-  );
+    );
+  };
+
+  const renderStory = ({ item }: { item: Story }) => {
+    const firstPost = item.posts[0];
+    const dominantColor = firstPost.dominantColor || '#000000';
+
+    return (
+      <TouchableOpacity
+        style={styles.storyContainer}
+        onPress={() => handleStoryPress(item)}
+      >
+        <View style={styles.storyImageContainer}>
+          {renderStoryRing(item)}
+          <View style={styles.storyImageWrapper}>
+            <Image source={{ uri: firstPost.image }} style={styles.storyImage} />
+            <View
+              style={[
+                styles.storyGradient,
+                {
+                  backgroundColor: 'transparent',
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: `${dominantColor}00`,
+                }}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: dominantColor,
+                }}
+              />
+            </View>
+            {item.user.id === currentUser.id && (
+              <View style={[styles.addStoryButton, { backgroundColor: primary }]}>
+                <Plus size={12} color="white" />
+              </View>
+            )}
+          </View>
+        </View>
+        <Text style={[styles.storyName, { color: colors.text }]} numberOfLines={1}>
+          {item.user.name}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderPost = ({ item }: { item: Post }) => (
     <PostCard
