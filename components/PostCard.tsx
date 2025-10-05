@@ -16,8 +16,9 @@ interface PostCardProps {
 export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const { collections, addCollection, addToCollection } = useAuth();
   const { colors, primary } = useTheme();
-  const [liked, setLiked] = useState(post.isLiked || false);
-  const [likeCount, setLikeCount] = useState(post.likes);
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
+  const [voteCount, setVoteCount] = useState(post.likes);
   const [reposted, setReposted] = useState(post.isReposted || false);
   const [repostCount, setRepostCount] = useState(post.reposts);
   const [bookmarked, setBookmarked] = useState(post.isBookmarked || false);
@@ -133,10 +134,12 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       width: '100%',
       aspectRatio: 1,
       marginTop: spacing.md,
+      paddingHorizontal: 6,
     },
     postImage: {
       width: '100%',
       height: '100%',
+      borderRadius: 28,
     },
     actions: {
       flexDirection: 'row',
@@ -269,9 +272,34 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     },
   });
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+  const handleUpvote = () => {
+    if (upvoted) {
+      setUpvoted(false);
+      setVoteCount(voteCount - 1);
+    } else {
+      setUpvoted(true);
+      if (downvoted) {
+        setDownvoted(false);
+        setVoteCount(voteCount + 2);
+      } else {
+        setVoteCount(voteCount + 1);
+      }
+    }
+  };
+
+  const handleDownvote = () => {
+    if (downvoted) {
+      setDownvoted(false);
+      setVoteCount(voteCount + 1);
+    } else {
+      setDownvoted(true);
+      if (upvoted) {
+        setUpvoted(false);
+        setVoteCount(voteCount - 2);
+      } else {
+        setVoteCount(voteCount - 1);
+      }
+    }
   };
 
   const handleRepost = () => {
@@ -439,30 +467,39 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       )}
 
       <View style={styles.actions}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleUpvote}>
+            <Icon 
+              name="arrow-upward" 
+              size={24} 
+              color={upvoted ? '#22C55E' : colors.textSecondary} 
+            />
+          </TouchableOpacity>
+          <Text style={[styles.actionText, { color: colors.textSecondary, marginHorizontal: 4 }, upvoted && { color: '#22C55E' }, downvoted && { color: '#EF4444' }]}>
+            {voteCount}
+          </Text>
+          <TouchableOpacity style={styles.actionButton} onPress={handleDownvote}>
+            <Icon 
+              name="arrow-downward" 
+              size={24} 
+              color={downvoted ? '#EF4444' : colors.textSecondary} 
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.actionButton} onPress={onComment}>
-          <Icon name="chat-bubble-outline" size={18} color={colors.textSecondary} />
+          <Icon name="chat-bubble-outline" size={24} color={colors.textSecondary} />
           <Text style={[styles.actionText, { color: colors.textSecondary }]}>{post.comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={handleRepost}>
-          <Icon name="repeat" size={20} color={reposted ? '#22C55E' : colors.textSecondary} />
+          <Icon name="repeat" size={24} color={reposted ? '#22C55E' : colors.textSecondary} />
           <Text style={[styles.actionText, { color: colors.textSecondary }, reposted && { color: '#22C55E' }]}>
             {repostCount}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-          <Icon 
-            name={liked ? "favorite" : "favorite-border"} 
-            size={18} 
-            color={liked ? '#EF4444' : colors.textSecondary} 
-          />
-          <Text style={[styles.actionText, { color: colors.textSecondary }, liked && { color: '#EF4444' }]}>
-            {likeCount}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={handleBookmark}>
           <Icon 
             name={bookmarked ? "bookmark" : "bookmark-border"} 
-            size={18} 
+            size={24} 
             color={bookmarked ? primary : colors.textSecondary} 
           />
           <Text style={[styles.actionText, { color: colors.textSecondary }, bookmarked && { color: primary }]}>
@@ -470,7 +507,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-          <Icon name="share" size={18} color={colors.textSecondary} />
+          <Icon name="share" size={24} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
       
