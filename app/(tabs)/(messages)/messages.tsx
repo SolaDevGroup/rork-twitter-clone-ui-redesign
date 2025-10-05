@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreVertical, Plus } from 'lucide-react-native';
+import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreVertical } from 'lucide-react-native';
 import { currentUser } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -408,48 +408,7 @@ export default function Messages() {
       color: colors.background,
       textAlign: 'center',
     },
-    bottomBar: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: 'transparent',
-      paddingTop: spacing.sm,
-      paddingHorizontal: 0,
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 3,
-    },
-    bottomBarContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing.sm,
-      backgroundColor: colors.inputBackground,
-      borderRadius: 100,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.xs,
-    },
-    bottomActionButton: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    bottomActionIcon: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      backgroundColor: colors.text,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    bottomProfileAvatar: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-    },
+
   });
 
   return (
@@ -538,25 +497,7 @@ export default function Messages() {
         </View>
       </View>
 
-      {/* Bottom Action Bar */}
-      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 34 }]}>
-        <View style={styles.bottomBarContent}>
-          <TouchableOpacity style={styles.bottomActionButton}>
-            <View style={styles.bottomActionIcon}>
-              <Plus size={20} color={colors.background} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.bottomActionButton}>
-            <MessageCircle size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.bottomActionButton}>
-            <Search size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={{ uri: currentUser.avatar }} style={styles.bottomProfileAvatar} />
-          </TouchableOpacity>
-        </View>
-      </View>
+
     </View>
   );
 }
