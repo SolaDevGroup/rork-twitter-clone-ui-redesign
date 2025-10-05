@@ -7,7 +7,6 @@ import { useLocalSearchParams, Stack } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function UserProfileScreen() {
   const { profileId } = useLocalSearchParams();
@@ -15,7 +14,6 @@ export default function UserProfileScreen() {
   const [activeTab, setActiveTab] = useState<'posts' | 'retweets' | 'mentions'>('posts');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'engagement'>('recent');
   const [showImagesOnly, setShowImagesOnly] = useState(false);
-  const insets = useSafeAreaInsets();
   
   const user = users.find(u => u.id === profileId);
 
@@ -265,11 +263,10 @@ export default function UserProfileScreen() {
   });
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <Stack.Screen 
         options={{ 
           title: user.name,
-          headerShown: true,
         }} 
       />
       <ScrollView>

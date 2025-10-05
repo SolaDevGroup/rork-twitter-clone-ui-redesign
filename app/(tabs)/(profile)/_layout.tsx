@@ -4,7 +4,13 @@ export default function ProfileLayout() {
   return (
     <Stack>
       <Stack.Screen name="profile" options={{ headerShown: false }} />
-      <Stack.Screen name="[profileId]" options={{ headerShown: false }} />
+      <Stack.Screen 
+        name="[profileId]" 
+        options={{ 
+          headerShown: true,
+          headerBackTitle: 'Back',
+        }} 
+      />
     </Stack>
   );
 }
