@@ -90,7 +90,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       padding: spacing.xs,
     },
     content: {
-      marginLeft: 60,
+      marginTop: spacing.md,
     },
     text: {
       fontSize: fontSizes.base,
@@ -115,7 +115,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     },
     actions: {
       flexDirection: 'row',
-      marginLeft: 52,
       justifyContent: 'space-between',
       paddingRight: 20,
     },
