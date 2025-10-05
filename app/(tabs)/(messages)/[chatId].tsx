@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Platform, Alert, ActionSheetIOS } from 'react-native';
-import { Send, Plus, Mic, Image as ImageIcon, Video, Smile, BarChart3, Copy, Heart, Reply, Edit3, Trash2, X } from 'lucide-react-native';
+import { Send, Plus, Mic, Image as ImageIcon, Video, Smile, BarChart3, Heart, X } from 'lucide-react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { messages } from '@/mocks/data';
 import { ChatMessage } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import * as ImagePicker from 'expo-image-picker';
-import { Audio } from 'expo-av';
+import { useAudioRecorder, RecordingPresets } from 'expo-audio';
 
 const mockChatMessages: ChatMessage[] = [
   {
@@ -42,7 +42,7 @@ export default function ChatScreen() {
   const [editingMessage, setEditingMessage] = useState<ChatMessage | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
 
   const user = messages.find(m => m.id === chatId)?.user;
 
@@ -229,56 +229,37 @@ export default function ChatScreen() {
   const startRecording = async () => {
     try {
       if (Platform.OS !== 'web') {
-        const { status } = await Audio.requestPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert('Permission required', 'Please grant microphone permission');
-          return;
-        }
-
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-        });
-
-        const recording = new Audio.Recording();
-        await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-        
-        await recording.startAsync();
-        recordingRef.current = recording;
+        await audioRecorder.record();
         setIsRecording(true);
       }
     } catch (error) {
       console.error('Failed to start recording:', error);
+      Alert.alert('Error', 'Failed to start recording');
     }
   };
 
   const stopRecording = async () => {
     try {
-      if (recordingRef.current && Platform.OS !== 'web') {
-        await recordingRef.current.stopAndUnloadAsync();
-        const uri = recordingRef.current.getURI();
+      if (Platform.OS !== 'web' && audioRecorder.isRecording) {
+        await audioRecorder.stop();
         
-        if (uri) {
+        if (audioRecorder.uri) {
           const newMessage: ChatMessage = {
             id: Date.now().toString(),
             content: 'Voice message',
             timestamp: 'now',
             isSent: true,
             type: 'audio',
-            mediaUrl: uri,
+            mediaUrl: audioRecorder.uri,
           };
           setChatMessages([...chatMessages, newMessage]);
         }
         
-        recordingRef.current = null;
         setIsRecording(false);
-        
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-        });
       }
     } catch (error) {
       console.error('Failed to stop recording:', error);
+      Alert.alert('Error', 'Failed to stop recording');
     }
   };
 
