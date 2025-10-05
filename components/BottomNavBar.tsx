@@ -12,6 +12,13 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
   const { user } = useAuth();
   const router = useRouter();
 
+  const currentRoute = state.routes[state.index];
+  const shouldHideTabBar = currentRoute.name === '(shorts)';
+
+  if (shouldHideTabBar) {
+    return null;
+  }
+
   const getIcon = (routeName: string, isFocused: boolean) => {
     const color = isFocused ? primary : colors.textSecondary;
     const size = 24;
