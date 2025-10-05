@@ -79,6 +79,189 @@ const stories: Story[] = [
 export default function HomeScreen() {
   const { colors, primary } = useTheme();
   const insets = useSafeAreaInsets();
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+    },
+    headerTitle: {
+      fontSize: 20,
+      fontWeight: '600' as const,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    headerButton: {
+      marginLeft: 16,
+    },
+    storiesSection: {
+      paddingVertical: 16,
+    },
+    storiesContainer: {
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+    },
+    storyContainer: {
+      alignItems: 'center',
+      marginRight: 16,
+      width: 70,
+    },
+    storyImageContainer: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      borderWidth: 2,
+      padding: 2,
+      position: 'relative' as const,
+    },
+    storyImage: {
+      width: '100%' as const,
+      height: '100%' as const,
+      borderRadius: 26,
+    },
+    addStoryButton: {
+      position: 'absolute' as const,
+      bottom: -2,
+      right: -2,
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    storyName: {
+      fontSize: 12,
+      marginTop: 4,
+      textAlign: 'center' as const,
+    },
+    filtersContainer: {
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingBottom: 16,
+    },
+    filterButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1,
+      marginRight: 12,
+    },
+    filterButtonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    filterText: {
+      fontSize: 14,
+      fontWeight: '500' as const,
+    },
+    feedContainer: {
+      paddingBottom: 100,
+    },
+    fab: {
+      position: 'absolute' as const,
+      bottom: 20,
+      right: 20,
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    createModalContent: {
+      width: '90%' as const,
+      maxWidth: 400,
+      borderRadius: 12,
+      padding: 20,
+    },
+    createModalTitle: {
+      fontSize: 18,
+      fontWeight: '600' as const,
+      textAlign: 'center' as const,
+      marginBottom: 20,
+    },
+    createPostInput: {
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+      padding: 16,
+      fontSize: 16,
+      minHeight: 120,
+      textAlignVertical: 'top' as const,
+      marginBottom: 20,
+    },
+    createModalActions: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      gap: 12,
+    },
+    createModalButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    createModalButtonText: {
+      fontSize: 16,
+      fontWeight: '600' as const,
+    },
+    trendingModalContent: {
+      width: '90%' as const,
+      maxWidth: 400,
+      maxHeight: '80%' as const,
+      borderRadius: 12,
+      padding: 20,
+    },
+    trendingModalTitle: {
+      fontSize: 18,
+      fontWeight: '600' as const,
+      textAlign: 'center' as const,
+      marginBottom: 20,
+    },
+    trendingItem: {
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 8,
+    },
+    trendingCategory: {
+      fontSize: 12,
+      marginBottom: 4,
+    },
+    trendingName: {
+      fontSize: 16,
+      fontWeight: '600' as const,
+      marginBottom: 4,
+    },
+    trendingCount: {
+      fontSize: 14,
+    },
+    modalCloseButton: {
+      paddingVertical: 12,
+      borderRadius: 12,
+      alignItems: 'center',
+      marginTop: 16,
+    },
+    modalCloseText: {
+      fontSize: 16,
+      fontWeight: '600' as const,
+    },
+  });
   const [posts, setPosts] = useState<Post[]>(mockPosts);
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FeedFilter>('for-you');
@@ -320,9 +503,7 @@ export default function HomeScreen() {
               style={[
                 styles.createPostInput,
                 {
-                  backgroundColor: colors.inputBackground,
                   color: colors.text,
-                  borderColor: colors.border,
                 }
               ]}
               placeholder="What's happening?"
@@ -383,186 +564,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerButton: {
-    marginLeft: 16,
-  },
-  storiesSection: {
-    paddingVertical: 16,
-  },
-  storiesContainer: {
-    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-  },
-  storyContainer: {
-    alignItems: 'center',
-    marginRight: 16,
-    width: 70,
-  },
-  storyImageContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    borderWidth: 2,
-    padding: 2,
-    position: 'relative',
-  },
-  storyImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 26,
-  },
-  addStoryButton: {
-    position: 'absolute',
-    bottom: -2,
-    right: -2,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  storyName: {
-    fontSize: 12,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  filtersContainer: {
-    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingBottom: 16,
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginRight: 12,
-  },
-  filterButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  feedContainer: {
-    paddingBottom: 100,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  createModalContent: {
-    width: '90%',
-    maxWidth: 400,
-    borderRadius: 12,
-    padding: 20,
-  },
-  createModalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  createPostInput: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    minHeight: 120,
-    textAlignVertical: 'top',
-    marginBottom: 20,
-  },
-  createModalActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  createModalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  createModalButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  trendingModalContent: {
-    width: '90%',
-    maxWidth: 400,
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 20,
-  },
-  trendingModalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  trendingItem: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  trendingCategory: {
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  trendingName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  trendingCount: {
-    fontSize: 14,
-  },
-  modalCloseButton: {
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  modalCloseText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

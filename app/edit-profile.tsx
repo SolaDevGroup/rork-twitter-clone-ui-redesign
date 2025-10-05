@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { currentUser } from '@/mocks/data';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { useTheme } from '@/contexts/ThemeContext';
+import { fontSizes } from '@/constants/fonts';
 
 export default function EditProfileModal() {
+  const { colors, primary } = useTheme();
   const [name, setName] = useState(currentUser.name);
   const [username, setUsername] = useState(currentUser.username);
   const [bio, setBio] = useState(currentUser.bio || '');
@@ -15,11 +19,66 @@ export default function EditProfileModal() {
     router.back();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    cancelButton: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    headerTitle: {
+      fontSize: fontSizes.xl,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    saveButton: {
+      fontSize: 16,
+      color: primary,
+      fontWeight: '600' as const,
+    },
+    content: {
+      flex: 1,
+      padding: SCREEN_HORIZONTAL_PADDING,
+    },
+    inputGroup: {
+      gap: 8,
+      marginBottom: 24,
+    },
+    label: {
+      fontSize: fontSizes.md,
+      color: colors.textSecondary,
+    },
+    input: {
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      fontSize: 16,
+      color: colors.text,
+    },
+    bioInput: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+  });
+
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.cancelButton}>Cancel</Text>
@@ -38,7 +97,7 @@ export default function EditProfileModal() {
             value={name}
             onChangeText={setName}
             placeholder="Name"
-            placeholderTextColor="#687684"
+            placeholderTextColor={colors.textSecondary}
           />
         </View>
 
@@ -49,7 +108,7 @@ export default function EditProfileModal() {
             value={username}
             onChangeText={setUsername}
             placeholder="Username"
-            placeholderTextColor="#687684"
+            placeholderTextColor={colors.textSecondary}
           />
         </View>
 
@@ -60,7 +119,7 @@ export default function EditProfileModal() {
             value={bio}
             onChangeText={setBio}
             placeholder="Bio"
-            placeholderTextColor="#687684"
+            placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={3}
           />
@@ -73,61 +132,11 @@ export default function EditProfileModal() {
             value={location}
             onChangeText={setLocation}
             placeholder="Location"
-            placeholderTextColor="#687684"
+            placeholderTextColor={colors.textSecondary}
           />
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
-  },
-  cancelButton: {
-    fontSize: 16,
-    color: '#0F1419',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#0F1419',
-  },
-  saveButton: {
-    fontSize: 16,
-    color: '#1DA1F2',
-    fontWeight: '600',
-  },
-  content: {
-    flex: 1,
-    padding: SCREEN_HORIZONTAL_PADDING,
-  },
-  inputGroup: {
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 14,
-    color: '#687684',
-    marginBottom: 8,
-  },
-  input: {
-    paddingVertical: 8,
-    fontSize: 16,
-    color: '#0F1419',
-  },
-  bioInput: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-});

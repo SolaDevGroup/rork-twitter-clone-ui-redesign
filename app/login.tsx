@@ -59,11 +59,15 @@ export default function Login() {
       fontSize: fontSizes.xxxl,
       fontWeight: '700' as const,
       color: colors.text,
+    },
+    titleWrapper: {
       marginBottom: 32,
     },
     inputContainer: {
-      marginBottom: 20,
-      position: 'relative',
+      position: 'relative' as const,
+    },
+    inputsWrapper: {
+      gap: 20,
     },
     input: {
       backgroundColor: colors.inputBackground,
@@ -189,40 +193,44 @@ export default function Login() {
           </View>
 
           <View style={styles.content}>
-            <Text style={styles.title}>Log in to X</Text>
-
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Phone, email, or username"
-                placeholderTextColor={colors.textSecondary}
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
+            <View style={styles.titleWrapper}>
+              <Text style={styles.title}>Log in to X</Text>
             </View>
 
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor={colors.textSecondary}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-              />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Icon 
-                  name={showPassword ? "visibility" : "visibility-off"} 
-                  size={20} 
-                  color={colors.textSecondary} 
+            <View style={styles.inputsWrapper}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone, email, or username"
+                  placeholderTextColor={colors.textSecondary}
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                 />
-              </TouchableOpacity>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor={colors.textSecondary}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Icon 
+                    name={showPassword ? "visibility" : "visibility-off"} 
+                    size={20} 
+                    color={colors.textSecondary} 
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <TouchableOpacity 
