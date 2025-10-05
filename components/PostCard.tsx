@@ -32,7 +32,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: colors.background,
-      paddingHorizontal: spacing.lg,
       paddingVertical: spacing.lg,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
@@ -40,6 +39,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     header: {
       flexDirection: 'row',
       marginBottom: spacing.md,
+      paddingHorizontal: spacing.lg,
     },
     avatar: {
       width: 48,
@@ -86,18 +86,30 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       color: colors.textSecondary,
       marginTop: 2,
     },
+    locationContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 2,
+    },
+    locationText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginLeft: spacing.xs,
+    },
     moreButton: {
       padding: spacing.xs,
     },
     content: {
       marginTop: spacing.md,
+      paddingHorizontal: spacing.lg,
     },
     text: {
       fontSize: fontSizes.base,
       fontFamily: fonts.regular,
       color: colors.text,
       lineHeight: 20,
-      marginBottom: spacing.lg,
+      marginBottom: spacing.md,
     },
     mention: {
       color: primary,
@@ -107,15 +119,19 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       color: primary,
       fontFamily: fonts.medium,
     },
+    postImageContainer: {
+      width: '100%',
+      aspectRatio: 1,
+      marginTop: spacing.md,
+    },
     postImage: {
       width: '100%',
-      height: 200,
-      borderRadius: borderRadius.xl,
-      marginBottom: spacing.lg,
+      height: '100%',
     },
     actions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
       paddingRight: 20,
     },
     actionButton: {
@@ -126,18 +142,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     actionText: {
       fontSize: fontSizes.sm,
       fontFamily: fonts.regular,
-      marginLeft: spacing.xs,
-    },
-    locationContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: spacing.md,
-      marginBottom: spacing.xs,
-    },
-    locationText: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
       marginLeft: spacing.xs,
     },
     translateButton: {
@@ -358,6 +362,12 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
             <Text style={styles.timestamp}>{post.timestamp}</Text>
           </View>
           {post.user.bio && <Text style={styles.bio}>{post.user.bio}</Text>}
+          {post.location && (
+            <View style={styles.locationContainer}>
+              <Icon name="location-on" size={14} color={colors.textSecondary} />
+              <Text style={styles.locationText}>{post.location}</Text>
+            </View>
+          )}
         </View>
         <TouchableOpacity style={styles.moreButton} onPress={handleMoreOptions}>
           <Icon name="more-horiz" size={20} color={colors.textSecondary} />
@@ -398,13 +408,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
               return word + ' ';
             })}
         </Text>
-        
-        {post.location && (
-          <View style={styles.locationContainer}>
-            <Icon name="location-on" size={14} color={colors.textSecondary} />
-            <Text style={styles.locationText}>{post.location}</Text>
-          </View>
-        )}
 
         <TouchableOpacity onPress={handleTranslate} style={styles.translateButton}>
           <Icon name="translate" size={16} color={primary} />
@@ -412,11 +415,13 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
             {isTranslating ? 'Translating...' : showTranslation ? 'Show original' : 'Translate post'}
           </Text>
         </TouchableOpacity>
-
-        {post.image && (
-          <Image source={{ uri: post.image }} style={styles.postImage} />
-        )}
       </View>
+
+      {post.image && (
+        <View style={styles.postImageContainer}>
+          <Image source={{ uri: post.image }} style={styles.postImage} resizeMode="cover" />
+        </View>
+      )}
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={onComment}>
