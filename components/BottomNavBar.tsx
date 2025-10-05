@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Heart } from 'lucide-react-native';
+import { Home, Heart, MessageCircle } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 export default function BottomNavBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { colors, primary, isDark } = useTheme();
+  const { user } = useAuth();
 
   const getIcon = (routeName: string, isFocused: boolean) => {
     const color = isFocused ? primary : colors.textSecondary;
@@ -17,6 +19,21 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
         return <Home size={size} color={color} />;
       case '(matching)':
         return <Heart size={size} color={color} fill={isFocused ? color : 'none'} />;
+      case '(messages)':
+        return <MessageCircle size={size} color={color} />;
+      case '(profile)':
+        return (
+          <Image
+            source={{ uri: user?.avatar || 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              borderWidth: isFocused ? 2 : 0,
+              borderColor: primary,
+            }}
+          />
+        );
       default:
         return null;
     }
