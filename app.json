@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.twitter-clone-ui-redesign",
+      "bundleIdentifier": "solagroup.psc",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
@@ -35,7 +35,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.twitter-clone-ui-redesign",
+      "package": "solagroup.psc",
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
