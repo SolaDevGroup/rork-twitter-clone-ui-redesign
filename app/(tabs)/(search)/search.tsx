@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes } from '@/constants/fonts';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +21,7 @@ export default function Search() {
       backgroundColor: colors.background,
     },
     header: {
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
@@ -30,7 +31,7 @@ export default function Search() {
       alignItems: 'center',
       backgroundColor: colors.inputBackground,
       borderRadius: 12,
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
     },
     searchInput: {
@@ -43,11 +44,11 @@ export default function Search() {
       fontSize: fontSizes.xl,
       fontWeight: '700' as const,
       color: colors.text,
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
     },
     trendItem: {
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,

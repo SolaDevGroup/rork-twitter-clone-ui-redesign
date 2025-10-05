@@ -15,6 +15,7 @@ import {
   Search
 } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 export default function Settings() {
   const { user } = useAuth();
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 12,
   },
   backButton: {
@@ -166,9 +167,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1A1A1A',
     borderRadius: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 10,
-    marginHorizontal: 16,
+    marginHorizontal: SCREEN_HORIZONTAL_PADDING,
     marginVertical: 12,
   },
   searchInput: {
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   },
   optionItem: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#2F3336',
@@ -191,13 +192,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F91880',
     borderWidth: 2,
     borderColor: '#F91880',
-    marginHorizontal: 16,
+    marginHorizontal: SCREEN_HORIZONTAL_PADDING,
     marginVertical: 4,
     borderRadius: 8,
   },
   optionContent: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: SCREEN_HORIZONTAL_PADDING,
   },
   optionTitle: {
     fontSize: 16,

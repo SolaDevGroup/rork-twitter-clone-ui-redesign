@@ -4,6 +4,7 @@ import { X } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { posts, comments as mockComments, currentUser } from '@/mocks/data';
 import { PostCard } from '@/components/PostCard';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 export default function CommentsModal() {
   const { postId } = useLocalSearchParams();
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F3F4',
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   },
   commentItem: {
     flexDirection: 'row',
-    padding: 16,
+    padding: SCREEN_HORIZONTAL_PADDING,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F3F4',
   },
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   replyContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    padding: 16,
+    padding: SCREEN_HORIZONTAL_PADDING,
     borderTopWidth: 1,
     borderTopColor: '#F0F3F4',
   },

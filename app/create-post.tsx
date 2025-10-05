@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Icon } from '@/components/Icon';
 import { fontSizes } from '@/constants/fonts';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import * as ImagePicker from 'expo-image-picker';
@@ -65,7 +66,7 @@ export default function CreatePost() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
@@ -93,7 +94,7 @@ export default function CreatePost() {
     },
     content: {
       flex: 1,
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     },
     audienceSelector: {
       flexDirection: 'row',
@@ -219,7 +220,7 @@ export default function CreatePost() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderTopWidth: 1,
       borderTopColor: colors.border,

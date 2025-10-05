@@ -18,6 +18,7 @@ import { posts as mockPosts, trendingTopics, currentUser } from '@/mocks/data';
 import { Post, TrendingTopic } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash } from 'lucide-react-native';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
 
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 12,
     borderBottomWidth: 1,
   },
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   storiesContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
   },
   storyContainer: {
     alignItems: 'center',
@@ -446,7 +447,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   filtersContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingBottom: 16,
   },
   filterButton: {

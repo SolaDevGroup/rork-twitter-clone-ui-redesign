@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { currentUser } from '@/mocks/data';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 export default function EditProfileModal() {
   const [name, setName] = useState(currentUser.name);
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F3F4',
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: SCREEN_HORIZONTAL_PADDING,
   },
   inputGroup: {
     marginBottom: 24,

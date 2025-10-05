@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Profile() {
@@ -79,7 +80,7 @@ export default function Profile() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'flex-end',
-      paddingHorizontal: spacing.lg,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       marginTop: -30,
     },
     headerButtons: {
@@ -118,7 +119,7 @@ export default function Profile() {
       color: colors.text,
     },
     profileInfo: {
-      padding: spacing.lg,
+      padding: SCREEN_HORIZONTAL_PADDING,
     },
     nameContainer: {
       flexDirection: 'row',
@@ -213,7 +214,7 @@ export default function Profile() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: spacing.lg,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: spacing.md,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,

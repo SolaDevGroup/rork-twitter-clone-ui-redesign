@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Icon } from '@/components/Icon';
 import { fontSizes } from '@/constants/fonts';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -40,7 +41,7 @@ export default function Login() {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
     },
     closeButton: {
@@ -51,7 +52,7 @@ export default function Login() {
     },
     content: {
       flex: 1,
-      paddingHorizontal: 32,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: 20,
     },
     title: {
@@ -134,7 +135,7 @@ export default function Login() {
       flexDirection: 'row',
       justifyContent: 'center',
       paddingVertical: 20,
-      paddingHorizontal: 32,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     },
     footerText: {
       color: colors.textSecondary,
