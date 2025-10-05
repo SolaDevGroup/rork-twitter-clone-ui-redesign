@@ -6,9 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Platform,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { videos } from '@/mocks/data';
@@ -48,15 +47,9 @@ export default function ShowsScreen() {
           source={{ uri: video.channel.avatar }}
           style={styles.channelAvatarOverlay}
         />
-        {Platform.OS !== 'web' ? (
-          <BlurView intensity={20} style={styles.durationBadge}>
-            <Text style={styles.durationText}>{video.duration}</Text>
-          </BlurView>
-        ) : (
-          <View style={styles.durationBadge}>
-            <Text style={styles.durationText}>{video.duration}</Text>
-          </View>
-        )}
+        <View style={styles.durationBadge}>
+          <Text style={styles.durationText}>{video.duration}</Text>
+        </View>
       </View>
 
       <View style={styles.videoInfo}>
@@ -127,7 +120,7 @@ export default function ShowsScreen() {
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 1000,
-      backgroundColor: Platform.OS === 'web' ? 'rgba(0, 0, 0, 0.16)' : 'rgba(0, 0, 0, 0.16)',
+      backgroundColor: 'rgba(0, 0, 0, 0.16)',
       overflow: 'hidden',
     },
     durationText: {
