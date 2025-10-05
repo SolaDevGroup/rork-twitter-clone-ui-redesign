@@ -347,6 +347,23 @@ export default function HomeScreen() {
       fontSize: 12,
       fontWeight: '500' as const,
     },
+    endOfFeedContainer: {
+      paddingVertical: 48,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    endOfFeedLabel: {
+      fontSize: 11,
+      fontWeight: '600' as const,
+      letterSpacing: 1.5,
+      marginBottom: 8,
+    },
+    endOfFeedTitle: {
+      fontSize: 24,
+      fontWeight: '600' as const,
+      textAlign: 'center' as const,
+    },
     momentInputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -586,6 +603,13 @@ export default function HomeScreen() {
     />
   );
 
+  const ListFooter = () => (
+    <View style={styles.endOfFeedContainer}>
+      <Text style={[styles.endOfFeedLabel, { color: colors.textSecondary }]}>EXPLORE MORE POSTS IN</Text>
+      <Text style={[styles.endOfFeedTitle, { color: colors.text }]}>Current cell&apos;s Grouping&apos;s h - City</Text>
+    </View>
+  );
+
   const renderTrendingTopic = ({ item }: { item: TrendingTopic }) => (
     <TouchableOpacity
       style={[styles.trendingItem, { backgroundColor: colors.surface }]}
@@ -807,6 +831,7 @@ export default function HomeScreen() {
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={ListHeader}
+        ListFooterComponent={ListFooter}
         onRefresh={onRefresh}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
