@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, User, Heart } from 'lucide-react-native';
+import { Home, Heart } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 export default function BottomNavBar({ state, descriptors, navigation }: any) {
@@ -17,8 +17,6 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
         return <Home size={size} color={color} />;
       case '(matching)':
         return <Heart size={size} color={color} fill={isFocused ? color : 'none'} />;
-      case '(profile)':
-        return <User size={size} color={color} />;
       default:
         return null;
     }
