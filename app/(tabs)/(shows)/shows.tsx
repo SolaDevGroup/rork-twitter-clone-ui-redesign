@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Platform,
 } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { videos } from '@/mocks/data';
@@ -42,16 +44,22 @@ export default function ShowsScreen() {
           style={styles.thumbnail}
           resizeMode="cover"
         />
-        <View style={[styles.durationBadge, { backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
-          <Text style={styles.durationText}>{video.duration}</Text>
-        </View>
+        <Image
+          source={{ uri: video.channel.avatar }}
+          style={styles.channelAvatarOverlay}
+        />
+        {Platform.OS !== 'web' ? (
+          <BlurView intensity={20} style={styles.durationBadge}>
+            <Text style={styles.durationText}>{video.duration}</Text>
+          </BlurView>
+        ) : (
+          <View style={styles.durationBadge}>
+            <Text style={styles.durationText}>{video.duration}</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.videoInfo}>
-        <Image
-          source={{ uri: video.channel.avatar }}
-          style={styles.channelAvatar}
-        />
         <View style={styles.videoDetails}>
           <Text
             style={[styles.videoTitle, { color: colors.text }]}
@@ -130,7 +138,9 @@ export default function ShowsScreen() {
       right: 8,
       paddingHorizontal: 6,
       paddingVertical: 2,
-      borderRadius: 4,
+      borderRadius: 1000,
+      backgroundColor: Platform.OS === 'web' ? 'rgba(0, 0, 0, 0.16)' : 'rgba(0, 0, 0, 0.16)',
+      overflow: 'hidden',
     },
     durationText: {
       color: '#FFFFFF',
@@ -146,6 +156,16 @@ export default function ShowsScreen() {
       width: 36,
       height: 36,
       borderRadius: 18,
+    },
+    channelAvatarOverlay: {
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      borderWidth: 2,
+      borderColor: '#FFFFFF',
     },
     videoDetails: {
       flex: 1,
