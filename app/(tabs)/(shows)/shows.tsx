@@ -120,6 +120,7 @@ export default function ShowsScreen() {
     },
     videoCard: {
       marginBottom: 24,
+      maxWidth: 240,
     },
     thumbnailContainer: {
       width: 240,
@@ -175,6 +176,7 @@ export default function ShowsScreen() {
       fontWeight: '500' as const,
       lineHeight: 20,
       marginBottom: 4,
+      maxWidth: 240,
     },
     channelRow: {
       flexDirection: 'row',
