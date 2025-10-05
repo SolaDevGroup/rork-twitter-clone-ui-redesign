@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Heart } from 'lucide-react-native';
+import { Home, Heart, ImageIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'expo-router';
 export default function BottomNavBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { colors, primary, isDark } = useTheme();
   const { user } = useAuth();
+  const router = useRouter();
 
   const getIcon = (routeName: string, isFocused: boolean) => {
     const color = isFocused ? primary : colors.textSecondary;
@@ -47,13 +49,14 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
       right: 0,
       paddingBottom: insets.bottom + 8,
       paddingTop: 12,
+      paddingHorizontal: 16,
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
     },
     blurContainer: {
       borderRadius: 100,
       overflow: 'hidden',
-      alignSelf: 'center',
     },
     tabBarContent: {
       flexDirection: 'row',
@@ -63,7 +66,6 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
       borderRadius: 100,
       paddingVertical: 4,
       paddingHorizontal: 4,
-      alignSelf: 'center',
     },
     tabButton: {
       width: 48,
@@ -72,8 +74,49 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
       justifyContent: 'center',
       alignItems: 'center',
     },
-
+    createButton: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: colors.textSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });
+
+  const renderTabBar = () => (
+    <View style={styles.tabBarContent}>
+      {state.routes.filter((route: any) => ['(home)', '(matching)', '(profile)'].includes(route.name)).map((route: any, index: number) => {
+        const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            onPress={onPress}
+            style={styles.tabButton}
+          >
+            {getIcon(route.name, isFocused)}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -83,71 +126,20 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
           tint={isDark ? 'dark' : 'light'}
           style={styles.blurContainer}
         >
-          <View style={styles.tabBarContent}>
-            {state.routes.filter((route: any) => ['(home)', '(matching)', '(profile)'].includes(route.name)).map((route: any, index: number) => {
-              const { options } = descriptors[route.key];
-              const isFocused = state.index === index;
-
-              const onPress = () => {
-                const event = navigation.emit({
-                  type: 'tabPress',
-                  target: route.key,
-                  canPreventDefault: true,
-                });
-
-                if (!isFocused && !event.defaultPrevented) {
-                  navigation.navigate(route.name);
-                }
-              };
-
-              return (
-                <TouchableOpacity
-                  key={route.key}
-                  accessibilityRole="button"
-                  accessibilityState={isFocused ? { selected: true } : {}}
-                  accessibilityLabel={options.tabBarAccessibilityLabel}
-                  onPress={onPress}
-                  style={styles.tabButton}
-                >
-                  {getIcon(route.name, isFocused)}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+          {renderTabBar()}
         </BlurView>
       ) : (
-        <View style={styles.tabBarContent}>
-          {state.routes.filter((route: any) => ['(home)', '(matching)', '(profile)'].includes(route.name)).map((route: any, index: number) => {
-            const { options } = descriptors[route.key];
-            const isFocused = state.index === index;
-
-            const onPress = () => {
-              const event = navigation.emit({
-                type: 'tabPress',
-                target: route.key,
-                canPreventDefault: true,
-              });
-
-              if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name);
-              }
-            };
-
-            return (
-              <TouchableOpacity
-                key={route.key}
-                accessibilityRole="button"
-                accessibilityState={isFocused ? { selected: true } : {}}
-                accessibilityLabel={options.tabBarAccessibilityLabel}
-                onPress={onPress}
-                style={styles.tabButton}
-              >
-                {getIcon(route.name, isFocused)}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        renderTabBar()
       )}
+      
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => router.push('/create-post')}
+        accessibilityRole="button"
+        accessibilityLabel="Create a post"
+      >
+        <ImageIcon size={24} color={colors.background} />
+      </TouchableOpacity>
     </View>
   );
 }
