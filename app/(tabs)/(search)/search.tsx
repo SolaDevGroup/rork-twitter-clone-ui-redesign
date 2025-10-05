@@ -99,9 +99,9 @@ export default function Search() {
               params: { query: item.name }
             })}
           >
+            <Text style={styles.trendTweets}>{item.tweets}</Text>
             <Text style={styles.trendCategory}>{item.category}</Text>
             <Text style={styles.trendName}>{item.name}</Text>
-            <Text style={styles.trendTweets}>{item.tweets}</Text>
           </TouchableOpacity>
         )}
       />
