@@ -134,4 +134,9 @@ export interface Short {
   isLiked?: boolean;
   hashtags?: string[];
   soundName?: string;
+  topicDisplay?: string;
+  parentGroupName?: string;
+  postTitle?: string;
+  savedCollections?: number;
+  createdAt?: string;
 }

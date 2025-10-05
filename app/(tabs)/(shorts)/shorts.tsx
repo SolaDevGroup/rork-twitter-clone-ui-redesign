@@ -19,7 +19,6 @@ import {
   MessageCircle, 
   Share2, 
   Bookmark, 
-  Music,
   Search,
   Bell,
   MoreHorizontal,
@@ -103,51 +102,69 @@ export default function ShortsScreen() {
       right: 0,
       padding: 16,
       paddingBottom: 100,
+      gap: 8,
+    },
+    topicBadge: {
+      alignSelf: 'flex-start',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+    },
+    topicBadgeText: {
+      fontSize: 12,
+      fontWeight: '700' as const,
+      color: 'white',
+      letterSpacing: 1,
+    },
+    postTitle: {
+      fontSize: 28,
+      fontWeight: '700' as const,
+      color: 'white',
+      lineHeight: 34,
     },
     userInfo: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 12,
+      gap: 8,
     },
     avatar: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      marginRight: 12,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
     },
     username: {
-      fontSize: 16,
-      fontWeight: '600' as const,
-      color: 'white',
-      flex: 1,
-    },
-    followButton: {
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-      borderRadius: 6,
-      borderWidth: 1,
-      borderColor: 'white',
-    },
-    followButtonText: {
       fontSize: 14,
       fontWeight: '600' as const,
       color: 'white',
+    },
+    statsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16,
+      flexWrap: 'wrap',
+    },
+    statItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    statText: {
+      fontSize: 13,
+      fontWeight: '600' as const,
+      color: 'white',
+    },
+    metaText: {
+      fontSize: 12,
+      color: 'rgba(255, 255, 255, 0.7)',
+      lineHeight: 16,
     },
     caption: {
       fontSize: 14,
-      color: 'white',
+      color: 'rgba(255, 255, 255, 0.9)',
       lineHeight: 20,
-      marginBottom: 8,
     },
-    soundInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-    },
-    soundText: {
-      fontSize: 13,
-      color: 'white',
-    },
+
     actionsContainer: {
       position: 'absolute' as const,
       right: 16,
@@ -270,21 +287,50 @@ export default function ShortsScreen() {
         </TouchableOpacity>
 
         <View style={styles.contentContainer}>
+          {item.topicDisplay && (
+            <View style={styles.topicBadge}>
+              <Text style={styles.topicBadgeText}>{item.topicDisplay}</Text>
+            </View>
+          )}
+
+          {item.postTitle && (
+            <Text style={styles.postTitle}>{item.postTitle}</Text>
+          )}
+
+          <Text style={styles.caption} numberOfLines={3}>{item.caption}</Text>
+
           <View style={styles.userInfo}>
             <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
             <Text style={styles.username}>@{item.user.username}</Text>
-            <TouchableOpacity style={styles.followButton}>
-              <Text style={styles.followButtonText}>Follow</Text>
-            </TouchableOpacity>
           </View>
 
-          <Text style={styles.caption}>{item.caption}</Text>
-
-          {item.soundName && (
-            <View style={styles.soundInfo}>
-              <Music size={14} color="white" />
-              <Text style={styles.soundText}>{item.soundName}</Text>
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Heart size={16} color="white" fill={item.isLiked ? 'white' : 'none'} />
+              <Text style={styles.statText}>{formatNumber(item.likes)}</Text>
             </View>
+            <View style={styles.statItem}>
+              <MessageCircle size={16} color="white" />
+              <Text style={styles.statText}>{formatNumber(item.comments)}</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Share2 size={16} color="white" />
+              <Text style={styles.statText}>{formatNumber(item.shares)}</Text>
+            </View>
+            {item.savedCollections !== undefined && (
+              <View style={styles.statItem}>
+                <Bookmark size={16} color="white" />
+                <Text style={styles.statText}>Saved Collections {item.savedCollections}</Text>
+              </View>
+            )}
+          </View>
+
+          {item.parentGroupName && (
+            <Text style={styles.metaText}>{item.parentGroupName}&apos;s Feed Post&apos;s t - {item.topicDisplay}</Text>
+          )}
+
+          {item.createdAt && (
+            <Text style={styles.metaText}>Parent group&apos;s Feed Post&apos;s Creation Date formatted as {item.createdAt}</Text>
           )}
         </View>
 
