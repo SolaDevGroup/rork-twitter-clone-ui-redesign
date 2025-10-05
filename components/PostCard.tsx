@@ -375,11 +375,31 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
         }),
       });
 
-      const data = await response.json();
-      setTranslatedText(data.completion);
-      setShowTranslation(true);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      console.log('Translation response:', text);
+      
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        console.error('Response text:', text);
+        throw new Error('Invalid JSON response from translation API');
+      }
+
+      if (data.completion) {
+        setTranslatedText(data.completion);
+        setShowTranslation(true);
+      } else {
+        throw new Error('No completion in response');
+      }
     } catch (error) {
       console.error('Translation error:', error);
+      setTranslatedText('Translation failed. Please try again.');
     } finally {
       setIsTranslating(false);
     }
