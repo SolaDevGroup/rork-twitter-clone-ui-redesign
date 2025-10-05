@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   replyInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     color: '#0F1419',
     maxHeight: 100,
   },

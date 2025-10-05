@@ -541,7 +541,7 @@ export default function ChatScreen() {
       borderRadius: 12,
       paddingHorizontal: spacing.lg,
       paddingVertical: spacing.md,
-      fontSize: fontSizes.base,
+      fontSize: 16,
       fontFamily: fonts.regular,
       color: colors.text,
       maxHeight: 100,

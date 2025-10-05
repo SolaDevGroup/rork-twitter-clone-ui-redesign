@@ -118,7 +118,7 @@ export default function CreatePost() {
     },
     textInput: {
       flex: 1,
-      fontSize: 18,
+      fontSize: 16,
       color: colors.text,
       paddingTop: 4,
       minHeight: 100,
@@ -157,12 +157,10 @@ export default function CreatePost() {
     pollInput: {
       flex: 1,
       backgroundColor: colors.inputBackground,
-      borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: 12,
       paddingHorizontal: 12,
       paddingVertical: 10,
-      fontSize: 15,
+      fontSize: 16,
       color: colors.text,
     },
     pollCharCount: {
@@ -203,7 +201,7 @@ export default function CreatePost() {
     locationInput: {
       flex: 1,
       marginLeft: 8,
-      fontSize: 15,
+      fontSize: 16,
       color: colors.text,
     },
     replySettings: {

@@ -66,12 +66,10 @@ export default function Login() {
     },
     input: {
       backgroundColor: colors.inputBackground,
-      borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: 12,
       paddingHorizontal: 12,
       paddingVertical: 16,
-      fontSize: fontSizes.md,
+      fontSize: 16,
       color: colors.text,
     },
     eyeIcon: {
@@ -122,8 +120,6 @@ export default function Login() {
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.inputBackground,
-      borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: 24,
       paddingVertical: 12,
       marginBottom: 12,

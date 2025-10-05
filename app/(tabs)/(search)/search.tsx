@@ -36,7 +36,7 @@ export default function Search() {
     searchInput: {
       flex: 1,
       marginLeft: 8,
-      fontSize: fontSizes.md,
+      fontSize: 16,
       color: colors.text,
     },
     sectionTitle: {
