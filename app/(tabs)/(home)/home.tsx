@@ -49,10 +49,22 @@ export default function HomeScreen() {
       fontSize: 20,
       fontWeight: '600' as const,
     },
+    headerTextActive: {
+      opacity: 1,
+    },
+    headerTextInactive: {
+      opacity: 0.64,
+    },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 6,
+    },
+    iconButton: {
+      width: 40,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     storiesSection: {
       paddingVertical: 16,
@@ -423,6 +435,7 @@ export default function HomeScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [showTrendingModal, setShowTrendingModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'feed' | 'shorts'>('feed');
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -802,22 +815,37 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
-          <Text style={[styles.headerText, { color: colors.text }]}>Feed</Text>
-          <Text style={[styles.headerText, { color: colors.text }]}>Shorts</Text>
+          <TouchableOpacity onPress={() => setActiveTab('feed')}>
+            <Text style={[
+              styles.headerText,
+              { color: colors.text },
+              activeTab === 'feed' ? styles.headerTextActive : styles.headerTextInactive
+            ]}>Feed</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab('shorts')}>
+            <Text style={[
+              styles.headerText,
+              { color: colors.text },
+              activeTab === 'shorts' ? styles.headerTextActive : styles.headerTextInactive
+            ]}>Shorts</Text>
+          </TouchableOpacity>
         </View>
         
         <View style={styles.headerActions}>
           <TouchableOpacity
+            style={styles.iconButton}
             onPress={() => router.push('/(tabs)/(search)/search')}
           >
             <Search size={24} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.iconButton}
             onPress={() => router.push('/(tabs)/(notifications)/notifications')}
           >
             <Bell size={24} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.iconButton}
             onPress={() => router.push('/(tabs)/(messages)/messages')}
           >
             <MessageCircle size={24} color={colors.text} />
