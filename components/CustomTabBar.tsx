@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Search, Mail, User } from 'lucide-react-native';
+import { Home, Search, Mail, User, Heart } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
@@ -26,6 +26,23 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
       default:
         return null;
     }
+  };
+
+  const renderMatchingTab = () => {
+    return (
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Matching"
+        onPress={() => {
+          console.log('Matching tab pressed');
+        }}
+        style={styles.matchingButton}
+      >
+        <View style={[styles.matchingButtonInner, { backgroundColor: primary }]}>
+          <Heart size={28} color="#FFFFFF" fill="#FFFFFF" />
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   const styles = StyleSheet.create({
@@ -60,6 +77,26 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
       justifyContent: 'center',
       alignItems: 'center',
     },
+    matchingButton: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 8,
+    },
+    matchingButtonInner: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 8,
+    },
   });
 
   return (
@@ -71,9 +108,40 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
           style={styles.blurContainer}
         >
           <View style={styles.tabBarContent}>
-            {state.routes.map((route, index) => {
+            {state.routes.slice(0, 2).map((route, index) => {
               const { options } = descriptors[route.key];
               const isFocused = state.index === index;
+
+              const onPress = () => {
+                const event = navigation.emit({
+                  type: 'tabPress',
+                  target: route.key,
+                  canPreventDefault: true,
+                });
+
+                if (!isFocused && !event.defaultPrevented) {
+                  navigation.navigate(route.name);
+                }
+              };
+
+              return (
+                <TouchableOpacity
+                  key={route.key}
+                  accessibilityRole="button"
+                  accessibilityState={isFocused ? { selected: true } : {}}
+                  accessibilityLabel={options.tabBarAccessibilityLabel}
+                  onPress={onPress}
+                  style={styles.tabButton}
+                >
+                  {getIcon(route.name, isFocused)}
+                </TouchableOpacity>
+              );
+            })}
+            {renderMatchingTab()}
+            {state.routes.slice(2).map((route, index) => {
+              const actualIndex = index + 2;
+              const { options } = descriptors[route.key];
+              const isFocused = state.index === actualIndex;
 
               const onPress = () => {
                 const event = navigation.emit({
@@ -104,9 +172,40 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
         </BlurView>
       ) : (
         <View style={styles.tabBarContent}>
-          {state.routes.map((route, index) => {
+          {state.routes.slice(0, 2).map((route, index) => {
             const { options } = descriptors[route.key];
             const isFocused = state.index === index;
+
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            };
+
+            return (
+              <TouchableOpacity
+                key={route.key}
+                accessibilityRole="button"
+                accessibilityState={isFocused ? { selected: true } : {}}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                onPress={onPress}
+                style={styles.tabButton}
+              >
+                {getIcon(route.name, isFocused)}
+              </TouchableOpacity>
+            );
+          })}
+          {renderMatchingTab()}
+          {state.routes.slice(2).map((route, index) => {
+            const actualIndex = index + 2;
+            const { options } = descriptors[route.key];
+            const isFocused = state.index === actualIndex;
 
             const onPress = () => {
               const event = navigation.emit({
