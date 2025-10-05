@@ -7,11 +7,12 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { videos } from '@/mocks/data';
+import { videos, currentUser } from '@/mocks/data';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import {
   ArrowLeft,
@@ -20,6 +21,8 @@ import {
   ThumbsDown,
   Share2,
   CheckCircle,
+  Flag,
+  Send,
 } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
@@ -33,6 +36,15 @@ export default function VideoPlayerScreen() {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
+  const [commentText, setCommentText] = useState<string>('');
+  const [videoComments, setVideoComments] = useState<{
+    id: string;
+    user: { name: string; avatar: string };
+    content: string;
+    timestamp: string;
+    likes: number;
+    isLiked: boolean;
+  }[]>([]);
 
   const video = videos.find((v) => v.id === id);
 
@@ -213,6 +225,84 @@ export default function VideoPlayerScreen() {
       fontSize: 12,
       color: colors.textSecondary,
     },
+    commentsSection: {
+      padding: 16,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    commentInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      marginBottom: 24,
+    },
+    commentAvatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+    },
+    commentInputWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.inputBackground,
+      borderRadius: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+    },
+    commentInput: {
+      flex: 1,
+      fontSize: 14,
+      color: colors.text,
+      maxHeight: 100,
+    },
+    sendButton: {
+      marginLeft: 8,
+    },
+    commentItem: {
+      flexDirection: 'row',
+      marginBottom: 20,
+      gap: 12,
+    },
+    commentContent: {
+      flex: 1,
+    },
+    commentHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+      gap: 8,
+    },
+    commentUserName: {
+      fontSize: 14,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    commentTimestamp: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    commentText: {
+      fontSize: 14,
+      color: colors.text,
+      lineHeight: 20,
+      marginBottom: 8,
+    },
+    commentActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16,
+    },
+    commentActionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    commentActionText: {
+      fontSize: 12,
+      fontWeight: '600' as const,
+      color: colors.textSecondary,
+    },
     errorContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -271,6 +361,40 @@ export default function VideoPlayerScreen() {
   const handleDislike = () => {
     setIsDisliked(!isDisliked);
     if (isLiked) setIsLiked(false);
+  };
+
+  const handleShare = () => {
+    console.log('Share video:', video.id);
+  };
+
+  const handleReport = () => {
+    console.log('Report video:', video.id);
+  };
+
+  const handleAddComment = () => {
+    if (commentText.trim()) {
+      const newComment = {
+        id: Date.now().toString(),
+        user: {
+          name: currentUser.name,
+          avatar: currentUser.avatar,
+        },
+        content: commentText,
+        timestamp: 'Just now',
+        likes: 0,
+        isLiked: false,
+      };
+      setVideoComments([newComment, ...videoComments]);
+      setCommentText('');
+    }
+  };
+
+  const handleCommentLike = (commentId: string) => {
+    setVideoComments(videoComments.map(comment => 
+      comment.id === commentId 
+        ? { ...comment, isLiked: !comment.isLiked, likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1 }
+        : comment
+    ));
   };
 
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
@@ -348,10 +472,21 @@ export default function VideoPlayerScreen() {
                 color={isDisliked ? primary : colors.text}
                 fill={isDisliked ? primary : 'none'}
               />
+              <Text style={styles.actionButtonText}>Dislike</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={handleShare}
+            >
               <Share2 size={20} color={colors.text} />
               <Text style={styles.actionButtonText}>Share</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={handleReport}
+            >
+              <Flag size={20} color={colors.text} />
+              <Text style={styles.actionButtonText}>Report</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -378,6 +513,71 @@ export default function VideoPlayerScreen() {
             <Text style={styles.description}>{video.description}</Text>
           </View>
         )}
+
+        <View style={styles.commentsSection}>
+          <Text style={styles.sectionTitle}>Comments</Text>
+          
+          <View style={styles.commentInputContainer}>
+            <Image
+              source={{ uri: currentUser.avatar }}
+              style={styles.commentAvatar}
+            />
+            <View style={styles.commentInputWrapper}>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Add a comment..."
+                placeholderTextColor={colors.textSecondary}
+                value={commentText}
+                onChangeText={setCommentText}
+                multiline
+              />
+              {commentText.trim() && (
+                <TouchableOpacity 
+                  style={styles.sendButton}
+                  onPress={handleAddComment}
+                >
+                  <Send size={20} color={primary} />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          {videoComments.map((comment) => (
+            <View key={comment.id} style={styles.commentItem}>
+              <Image
+                source={{ uri: comment.user.avatar }}
+                style={styles.commentAvatar}
+              />
+              <View style={styles.commentContent}>
+                <View style={styles.commentHeader}>
+                  <Text style={styles.commentUserName}>{comment.user.name}</Text>
+                  <Text style={styles.commentTimestamp}>{comment.timestamp}</Text>
+                </View>
+                <Text style={styles.commentText}>{comment.content}</Text>
+                <View style={styles.commentActions}>
+                  <TouchableOpacity 
+                    style={styles.commentActionButton}
+                    onPress={() => handleCommentLike(comment.id)}
+                  >
+                    <ThumbsUp
+                      size={14}
+                      color={comment.isLiked ? primary : colors.textSecondary}
+                      fill={comment.isLiked ? primary : 'none'}
+                    />
+                    {comment.likes > 0 && (
+                      <Text style={[styles.commentActionText, comment.isLiked && { color: primary }]}>
+                        {comment.likes}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.commentActionButton}>
+                    <Text style={styles.commentActionText}>Reply</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
 
         <View style={styles.relatedSection}>
           <Text style={styles.sectionTitle}>Related Videos</Text>
