@@ -225,6 +225,7 @@ export default function Matching() {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      paddingBottom: 140,
     },
     card: {
       position: 'absolute',
@@ -358,12 +359,14 @@ export default function Matching() {
       fontWeight: '500' as const,
     },
     buttonsContainer: {
+      position: 'absolute',
+      bottom: 100,
+      left: 0,
+      right: 0,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: 20,
-      paddingBottom: 32,
       gap: 16,
     },
     actionButton: {
