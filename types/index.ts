@@ -155,3 +155,22 @@ export interface MatchProfile {
   school?: string;
   isVerified?: boolean;
 }
+
+export interface Video {
+  id: string;
+  title: string;
+  thumbnail: string;
+  duration: string;
+  views: string;
+  uploadedAt: string;
+  channel: {
+    name: string;
+    avatar: string;
+    isVerified?: boolean;
+  };
+  videoUrl: string;
+  description?: string;
+  likes?: number;
+  dislikes?: number;
+  category?: string;
+}

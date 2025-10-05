@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Heart, Plus } from 'lucide-react-native';
+import { Home, Heart, Plus, Tv } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,6 +28,8 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
         return <Home size={size} color={color} />;
       case '(matching)':
         return <Heart size={size} color={color} fill={isFocused ? color : 'none'} />;
+      case '(shows)':
+        return <Tv size={size} color={color} />;
       case '(profile)':
         return (
           <Image
@@ -93,7 +95,7 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
 
   const renderTabBar = () => (
     <View style={styles.tabBarContent}>
-      {state.routes.filter((route: any) => ['(home)', '(matching)', '(profile)'].includes(route.name)).map((route: any, index: number) => {
+      {state.routes.filter((route: any) => ['(home)', '(matching)', '(shows)', '(profile)'].includes(route.name)).map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
