@@ -64,17 +64,17 @@ export default function VideoPlayerScreen() {
   
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () => !isFullscreen && !isMinimized,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dy) > 5 && !isMinimized;
+        return Math.abs(gestureState.dy) > 5 && !isMinimized && !isFullscreen;
       },
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy > 0 && !isMinimized) {
+        if (gestureState.dy > 0 && !isMinimized && !isFullscreen) {
           translateY.setValue(gestureState.dy);
         }
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy > DRAG_THRESHOLD) {
+        if (gestureState.dy > DRAG_THRESHOLD && !isFullscreen) {
           minimizeVideo();
         } else {
           Animated.spring(translateY, {
@@ -118,36 +118,51 @@ export default function VideoPlayerScreen() {
 
   useEffect(() => {
     const currentVideoRef = videoRef.current;
+    let subscription: { remove: () => void } | null = null;
     
     const setupOrientation = async () => {
       if (Platform.OS === 'web') return;
       
-      await ScreenOrientation.unlockAsync();
-      
-      const subscription = ScreenOrientation.addOrientationChangeListener((event) => {
-        const orientation = event.orientationInfo.orientation;
+      try {
+        await ScreenOrientation.unlockAsync();
+        console.log('Screen orientation unlocked');
         
-        if (orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT || 
-            orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT) {
-          setIsFullscreen(true);
-          setIsMinimized(false);
-        } else {
-          setIsFullscreen(false);
-        }
-      });
-      
-      return subscription;
+        const currentOrientation = await ScreenOrientation.getOrientationAsync();
+        console.log('Current orientation:', currentOrientation);
+        
+        subscription = ScreenOrientation.addOrientationChangeListener((event) => {
+          const orientation = event.orientationInfo.orientation;
+          console.log('Orientation changed to:', orientation);
+          
+          if (orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT || 
+              orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT) {
+            console.log('Setting fullscreen mode');
+            setIsFullscreen(true);
+            setIsMinimized(false);
+          } else if (orientation === ScreenOrientation.Orientation.PORTRAIT_UP || 
+                     orientation === ScreenOrientation.Orientation.PORTRAIT_DOWN) {
+            console.log('Exiting fullscreen mode');
+            setIsFullscreen(false);
+          }
+        });
+      } catch (error) {
+        console.error('Error setting up orientation:', error);
+      }
     };
     
-    const orientationSubscription = setupOrientation();
+    setupOrientation();
     
     return () => {
       if (currentVideoRef) {
         currentVideoRef.unloadAsync();
       }
-      orientationSubscription.then(sub => sub?.remove());
+      if (subscription) {
+        subscription.remove();
+      }
       if (Platform.OS !== 'web') {
-        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(err => 
+          console.error('Error locking orientation:', err)
+        );
       }
     };
   }, []);
@@ -182,8 +197,8 @@ export default function VideoPlayerScreen() {
       position: 'relative',
     },
     videoContainerFullscreen: {
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
+      width: SCREEN_HEIGHT,
+      height: SCREEN_WIDTH,
       aspectRatio: undefined,
     },
     videoContainerMinimized: {
