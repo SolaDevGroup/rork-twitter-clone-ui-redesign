@@ -62,7 +62,7 @@ export default function ShowsScreen() {
           </Text>
           <View style={styles.channelRow}>
             <Text style={[styles.channelName, { color: colors.textSecondary }]}>
-              {video.channel.name}
+              {video.channel.name}{' '}
             </Text>
             {video.channel.isVerified && (
               <CheckCircle size={14} color={colors.textSecondary} fill={colors.textSecondary} />
