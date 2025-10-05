@@ -1,8 +1,8 @@
 export const colors = {
-  // Single accent color - gold
-  primary: '#D4AF37',
-  primaryDark: '#B8941F',
-  primaryLight: '#E5C158',
+  // Single accent color
+  primary: '#78706B',
+  primaryDark: '#5A534F',
+  primaryLight: '#8F8782',
   
   // Dark mode colors
   dark: {
@@ -37,7 +37,7 @@ export const colors = {
   mediumGray: '#8B8B8B',
   lightGray: '#B3B3B3',
   border: 'rgba(255, 255, 255, 0.12)',
-  verified: '#D4AF37',
+  verified: '#78706B',
   background: '#000000',
   modalBackground: 'rgba(0, 0, 0, 0.5)',
 };
