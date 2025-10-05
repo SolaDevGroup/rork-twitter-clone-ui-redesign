@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Search as SearchIcon } from 'lucide-react-native';
 import { trendingTopics } from '@/mocks/data';
 import { router } from 'expo-router';
@@ -48,10 +48,22 @@ export default function Search() {
       paddingVertical: 12,
     },
     trendItem: {
+      flexDirection: 'row' as const,
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
+      gap: 12,
+    },
+    trendImage: {
+      width: 80,
+      height: 45,
+      borderRadius: 12,
+      backgroundColor: colors.inputBackground,
+    },
+    trendContent: {
+      flex: 1,
+      justifyContent: 'center' as const,
     },
     trendCategory: {
       fontSize: fontSizes.sm,
@@ -91,7 +103,7 @@ export default function Search() {
         ListHeaderComponent={
           <Text style={styles.sectionTitle}>Trending for you</Text>
         }
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <TouchableOpacity 
             style={styles.trendItem}
             onPress={() => router.push({
@@ -99,9 +111,15 @@ export default function Search() {
               params: { query: item.name }
             })}
           >
-            <Text style={styles.trendTweets}>{item.tweets}</Text>
-            <Text style={styles.trendCategory}>{item.category}</Text>
-            <Text style={styles.trendName}>{item.name}</Text>
+            <Image 
+              source={{ uri: `https://images.unsplash.com/photo-${['1517694712202-14dd9538aa97', '1498050108023-c5249f4df085', '1541432901042-2d8bd64b4a9b', '1514888286974-6c03e2ca1dba', '1506905925346-21bda4d32df4'][index % 5]}?w=160&h=90&fit=crop` }}
+              style={styles.trendImage}
+            />
+            <View style={styles.trendContent}>
+              <Text style={styles.trendTweets}>{item.tweets}</Text>
+              <Text style={styles.trendCategory}>{item.category}</Text>
+              <Text style={styles.trendName}>{item.name}</Text>
+            </View>
           </TouchableOpacity>
         )}
       />
