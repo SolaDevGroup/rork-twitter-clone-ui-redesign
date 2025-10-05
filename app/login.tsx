@@ -182,7 +182,7 @@ export default function Login() {
         >
           <View style={styles.header}>
             <IconButton 
-              icon="x"
+              icon="close"
               size={40}
               onPress={() => router.back()}
               backgroundType="solid"
