@@ -363,7 +363,7 @@ export default function Matching() {
       alignItems: 'center',
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: 20,
-      paddingBottom: 8,
+      paddingBottom: 32,
       gap: 16,
     },
     actionButton: {
