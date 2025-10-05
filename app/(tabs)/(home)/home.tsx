@@ -17,7 +17,7 @@ import { PostCard } from '@/components/PostCard';
 import { posts as mockPosts, trendingTopics, currentUser } from '@/mocks/data';
 import { Post, TrendingTopic } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash } from 'lucide-react-native';
+import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash, Bell } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
@@ -453,6 +453,12 @@ export default function HomeScreen() {
         <Text style={[styles.headerTitle, { color: colors.text }]}>Home</Text>
         
         <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => router.push('/(tabs)/(notifications)/notifications')}
+          >
+            <Bell size={24} color={colors.text} />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => setShowTrendingModal(true)}

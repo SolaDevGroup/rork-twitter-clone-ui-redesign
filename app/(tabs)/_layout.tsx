@@ -12,7 +12,6 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="(home)" />
       <Tabs.Screen name="(search)" />
-      <Tabs.Screen name="(notifications)" />
       <Tabs.Screen name="(messages)" />
       <Tabs.Screen name="(profile)" />
     </Tabs>

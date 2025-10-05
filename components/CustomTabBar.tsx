@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Search, Bell, Mail, User } from 'lucide-react-native';
+import { Home, Search, Mail, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
@@ -19,8 +19,6 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
         return <Home size={size} color={color} />;
       case '(search)':
         return <Search size={size} color={color} />;
-      case '(notifications)':
-        return <Bell size={size} color={color} />;
       case '(messages)':
         return <Mail size={size} color={color} />;
       case '(profile)':
