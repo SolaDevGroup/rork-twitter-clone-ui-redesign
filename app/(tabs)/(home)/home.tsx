@@ -17,7 +17,7 @@ import { PostCard } from '@/components/PostCard';
 import { posts as mockPosts, trendingTopics, currentUser, stories as mockStories } from '@/mocks/data';
 import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Plus, Settings, Camera, Sparkles, TrendingUp, Users, Hash, Bell } from 'lucide-react-native';
+import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
@@ -40,16 +40,19 @@ export default function HomeScreen() {
       paddingVertical: 12,
       borderBottomWidth: 1,
     },
-    headerTitle: {
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16,
+    },
+    headerText: {
       fontSize: 20,
       fontWeight: '600' as const,
     },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-    },
-    headerButton: {
-      marginLeft: 16,
+      gap: 6,
     },
     storiesSection: {
       paddingVertical: 16,
@@ -500,30 +503,26 @@ export default function HomeScreen() {
     <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
-        <TouchableOpacity onPress={() => router.push('/settings')}>
-          <Settings size={24} color={colors.text} />
-        </TouchableOpacity>
-        
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Home</Text>
+        <View style={styles.headerLeft}>
+          <Text style={[styles.headerText, { color: colors.text }]}>Feed</Text>
+          <Text style={[styles.headerText, { color: colors.text }]}>Shorts</Text>
+        </View>
         
         <View style={styles.headerActions}>
           <TouchableOpacity
-            style={styles.headerButton}
+            onPress={() => router.push('/(tabs)/(search)/search')}
+          >
+            <Search size={24} color={colors.text} />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => router.push('/(tabs)/(notifications)/notifications')}
           >
             <Bell size={24} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => setShowTrendingModal(true)}
+            onPress={() => router.push('/(tabs)/(messages)/messages')}
           >
-            <Hash size={24} color={colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => router.push('/camera-preview')}
-          >
-            <Camera size={24} color={colors.text} />
+            <MessageCircle size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
       </View>
