@@ -5,13 +5,13 @@ import { PostCard } from '@/components/PostCard';
 import { currentUser, posts } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Profile() {
   const { logout } = useAuth();
-  const { colors, primary } = useTheme();
+  const { colors, primary, error } = useTheme();
   const [activeTab, setActiveTab] = useState<'posts' | 'retweets' | 'mentions'>('posts');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'engagement'>('recent');
   const [showImagesOnly, setShowImagesOnly] = useState(false);
@@ -62,6 +62,223 @@ export default function Profile() {
   const handleSettings = () => {
     router.push('/settings');
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      position: 'relative',
+    },
+    coverImage: {
+      width: '100%',
+      height: 150,
+    },
+    profileHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      paddingHorizontal: spacing.lg,
+      marginTop: -30,
+    },
+    headerButtons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    iconButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    avatar: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      borderWidth: 4,
+      borderColor: colors.background,
+    },
+    editButton: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: borderRadius.xl,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      backgroundColor: colors.surface,
+    },
+    editButtonText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    profileInfo: {
+      padding: spacing.lg,
+    },
+    nameContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    name: {
+      fontSize: fontSizes.xl,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      marginRight: spacing.xs,
+    },
+    verified: {
+      color: primary,
+      fontSize: fontSizes.lg,
+    },
+    username: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    bio: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      marginTop: spacing.lg,
+    },
+    details: {
+      flexDirection: 'row',
+      marginTop: spacing.lg,
+      gap: spacing.lg,
+    },
+    detailItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
+    detailText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    stats: {
+      flexDirection: 'row',
+      marginTop: spacing.lg,
+      gap: spacing.xl,
+    },
+    statItem: {
+      flexDirection: 'row',
+      gap: spacing.xs,
+    },
+    statNumber: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    statLabel: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    tabsContainer: {
+      flexDirection: 'row',
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    tab: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+      borderBottomWidth: 2,
+      borderBottomColor: 'transparent',
+    },
+    activeTab: {
+      borderBottomColor: primary,
+    },
+    tabText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+    activeTabText: {
+      color: colors.text,
+    },
+    tabCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+    filterContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    sortButtons: {
+      flexDirection: 'row',
+      gap: spacing.md,
+    },
+    sortButton: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: borderRadius.xl,
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    activeSortButton: {
+      backgroundColor: primary,
+      borderColor: primary,
+    },
+    sortButtonText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+    activeSortButtonText: {
+      color: '#FFFFFF',
+    },
+    imageFilter: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: borderRadius.xl,
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    activeImageFilter: {
+      backgroundColor: primary,
+      borderColor: primary,
+    },
+    imageFilterText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+    activeImageFilterText: {
+      color: '#FFFFFF',
+    },
+    postsSection: {
+      flex: 1,
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: spacing.lg,
+      marginVertical: spacing.xl,
+      gap: spacing.md,
+    },
+    logoutText: {
+      fontSize: fontSizes.md,
+      fontFamily: fonts.semiBold,
+      color: error,
+    },
+  });
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -176,220 +393,10 @@ export default function Profile() {
         </View>
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <LogOut size={20} color={colors.error} />
+          <LogOut size={20} color={error} />
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  header: {
-    position: 'relative',
-  },
-  coverImage: {
-    width: '100%',
-    height: 150,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingHorizontal: spacing.lg,
-    marginTop: -30,
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  iconButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: colors.white,
-  },
-  editButton: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: borderRadius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  editButtonText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-  },
-  profileInfo: {
-    padding: spacing.lg,
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  name: {
-    fontSize: fontSizes.xl,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-    marginRight: spacing.xs,
-  },
-  verified: {
-    color: colors.verified,
-    fontSize: fontSizes.lg,
-  },
-  username: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginTop: 2,
-  },
-  bio: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.black,
-    marginTop: spacing.lg,
-  },
-  details: {
-    flexDirection: 'row',
-    marginTop: spacing.lg,
-    gap: spacing.lg,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  detailText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  stats: {
-    flexDirection: 'row',
-    marginTop: spacing.lg,
-    gap: spacing.xl,
-  },
-  statItem: {
-    flexDirection: 'row',
-    gap: spacing.xs,
-  },
-  statNumber: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-  },
-  statLabel: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  activeTab: {
-    borderBottomColor: colors.primary,
-  },
-  tabText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.medium,
-    color: colors.darkGray,
-  },
-  activeTabText: {
-    color: colors.black,
-  },
-  tabCount: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    marginTop: spacing.xs,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  sortButtons: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  sortButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.xl,
-    backgroundColor: colors.lightGray,
-  },
-  activeSortButton: {
-    backgroundColor: colors.primary,
-  },
-  sortButtonText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.medium,
-    color: colors.darkGray,
-  },
-  activeSortButtonText: {
-    color: colors.white,
-  },
-  imageFilter: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.xl,
-    backgroundColor: colors.lightGray,
-  },
-  activeImageFilter: {
-    backgroundColor: colors.primary,
-  },
-  imageFilterText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.medium,
-    color: colors.darkGray,
-  },
-  activeImageFilterText: {
-    color: colors.white,
-  },
-  postsSection: {
-    flex: 1,
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.lg,
-    marginVertical: spacing.xl,
-    gap: spacing.md,
-  },
-  logoutText: {
-    fontSize: fontSizes.md,
-    fontFamily: fonts.semiBold,
-    color: colors.error,
-  },
-});

@@ -4,7 +4,7 @@ import { Send, Plus, Mic, Image as ImageIcon, Video, Smile, BarChart3, Copy, Hea
 import { useLocalSearchParams } from 'expo-router';
 import { messages } from '@/mocks/data';
 import { ChatMessage } from '@/types';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
@@ -35,6 +35,7 @@ const mockChatMessages: ChatMessage[] = [
 
 export default function ChatScreen() {
   const { chatId } = useLocalSearchParams();
+  const { colors, primary, error } = useTheme();
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState(mockChatMessages);
   const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
@@ -240,18 +241,7 @@ export default function ChatScreen() {
         });
 
         const recording = new Audio.Recording();
-        await recording.prepareToRecordAsync({
-          android: {
-            extension: '.m4a',
-            outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
-            audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
-          },
-          ios: {
-            extension: '.wav',
-            outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_LINEARPCM,
-            audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
-          },
-        });
+        await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
         
         await recording.startAsync();
         recordingRef.current = recording;
@@ -316,14 +306,14 @@ export default function ChatScreen() {
           
           {item.type === 'video' && (
             <View style={styles.videoContainer}>
-              <Video size={24} color={item.isSent ? colors.white : colors.black} />
+              <Video size={24} color={item.isSent ? '#FFFFFF' : colors.text} />
               <Text style={[styles.messageText, item.isSent && styles.sentText]}>Video</Text>
             </View>
           )}
           
           {item.type === 'audio' && (
             <View style={styles.audioContainer}>
-              <Mic size={20} color={item.isSent ? colors.white : colors.black} />
+              <Mic size={20} color={item.isSent ? '#FFFFFF' : colors.text} />
               <Text style={[styles.messageText, item.isSent && styles.sentText]}>Voice message</Text>
             </View>
           )}
@@ -354,7 +344,7 @@ export default function ChatScreen() {
               {item.timestamp}{item.isEdited ? ' (edited)' : ''}
             </Text>
             {item.isLiked && (
-              <Heart size={12} color={colors.red} fill={colors.red} />
+              <Heart size={12} color={error} fill={error} />
             )}
           </View>
         </View>
@@ -362,6 +352,219 @@ export default function ChatScreen() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    avatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: spacing.lg,
+    },
+    userName: {
+      fontSize: fontSizes.md,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    username: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    notice: {
+      textAlign: 'center',
+      color: colors.textSecondary,
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      paddingVertical: spacing.lg,
+    },
+    messagesList: {
+      padding: spacing.lg,
+    },
+    messageContainer: {
+      marginBottom: spacing.lg,
+      alignItems: 'flex-start',
+    },
+    sentContainer: {
+      alignItems: 'flex-end',
+    },
+    messageBubble: {
+      maxWidth: '80%',
+      padding: spacing.lg,
+      borderRadius: borderRadius.xl,
+    },
+    sentBubble: {
+      backgroundColor: primary,
+    },
+    receivedBubble: {
+      backgroundColor: colors.inputBackground,
+    },
+    messageText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.text,
+    },
+    sentText: {
+      color: '#FFFFFF',
+    },
+    messageFooter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: spacing.xs,
+    },
+    messageTime: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+    },
+    sentTime: {
+      color: 'rgba(255, 255, 255, 0.8)',
+    },
+    replyContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+      paddingLeft: spacing.md,
+    },
+    replyLine: {
+      width: 3,
+      height: '100%',
+      backgroundColor: colors.textSecondary,
+      marginRight: spacing.md,
+    },
+    replyText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      fontStyle: 'italic',
+    },
+    messageImage: {
+      width: 200,
+      height: 150,
+      borderRadius: borderRadius.md,
+      marginBottom: spacing.md,
+    },
+    videoContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    audioContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    pollContainer: {
+      width: '100%',
+    },
+    pollOption: {
+      padding: spacing.md,
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: borderRadius.md,
+      marginTop: spacing.md,
+    },
+    pollOptionText: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.text,
+    },
+    replyBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: spacing.lg,
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    replyInfo: {
+      flex: 1,
+    },
+    replyLabel: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.medium,
+      color: primary,
+    },
+    replyPreview: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    attachmentMenu: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: spacing.lg,
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    attachmentButton: {
+      alignItems: 'center',
+      padding: spacing.md,
+    },
+    attachmentText: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.regular,
+      color: primary,
+      marginTop: spacing.xs,
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      padding: spacing.lg,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    attachButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: spacing.md,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      maxHeight: 100,
+      marginRight: spacing.md,
+    },
+    sendButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    micButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+  
   return (
     <KeyboardAvoidingView 
       style={styles.container}
@@ -403,7 +606,7 @@ export default function ChatScreen() {
               setMessage('');
             }}
           >
-            <X size={20} color={colors.darkGray} />
+            <X size={20} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
       )}
@@ -414,28 +617,28 @@ export default function ChatScreen() {
             style={styles.attachmentButton}
             onPress={() => handleAttachment('image')}
           >
-            <ImageIcon size={24} color={colors.primary} />
+            <ImageIcon size={24} color={primary} />
             <Text style={styles.attachmentText}>Photo</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.attachmentButton}
             onPress={() => handleAttachment('video')}
           >
-            <Video size={24} color={colors.primary} />
+            <Video size={24} color={primary} />
             <Text style={styles.attachmentText}>Video</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.attachmentButton}
             onPress={() => handleAttachment('poll')}
           >
-            <BarChart3 size={24} color={colors.primary} />
+            <BarChart3 size={24} color={primary} />
             <Text style={styles.attachmentText}>Poll</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.attachmentButton}
             onPress={() => handleAttachment('gif')}
           >
-            <Smile size={24} color={colors.primary} />
+            <Smile size={24} color={primary} />
             <Text style={styles.attachmentText}>GIF</Text>
           </TouchableOpacity>
         </View>
@@ -446,13 +649,13 @@ export default function ChatScreen() {
           style={styles.attachButton}
           onPress={() => setShowAttachments(!showAttachments)}
         >
-          <Plus size={24} color={colors.primary} />
+          <Plus size={24} color={primary} />
         </TouchableOpacity>
         
         <TextInput
           style={styles.input}
           placeholder={editingMessage ? 'Edit message...' : 'Start a message...'}
-          placeholderTextColor={colors.darkGray}
+          placeholderTextColor={colors.textSecondary}
           value={message}
           onChangeText={setMessage}
           multiline
@@ -460,7 +663,7 @@ export default function ChatScreen() {
         
         {message.trim() ? (
           <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Send size={20} color={colors.primary} />
+            <Send size={20} color={primary} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity 
@@ -468,222 +671,10 @@ export default function ChatScreen() {
             onPressIn={startRecording}
             onPressOut={stopRecording}
           >
-            <Mic size={20} color={isRecording ? colors.red : colors.primary} />
+            <Mic size={20} color={isRecording ? error : primary} />
           </TouchableOpacity>
         )}
       </View>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: spacing.lg,
-  },
-  userName: {
-    fontSize: fontSizes.md,
-    fontFamily: fonts.semiBold,
-    color: colors.black,
-  },
-  username: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  notice: {
-    textAlign: 'center',
-    color: colors.darkGray,
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    paddingVertical: spacing.lg,
-  },
-  messagesList: {
-    padding: spacing.lg,
-  },
-  messageContainer: {
-    marginBottom: spacing.lg,
-    alignItems: 'flex-start',
-  },
-  sentContainer: {
-    alignItems: 'flex-end',
-  },
-  messageBubble: {
-    maxWidth: '80%',
-    padding: spacing.lg,
-    borderRadius: borderRadius.xl,
-  },
-  sentBubble: {
-    backgroundColor: colors.primary,
-  },
-  receivedBubble: {
-    backgroundColor: colors.lightGray,
-  },
-  messageText: {
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    color: colors.black,
-  },
-  sentText: {
-    color: colors.white,
-  },
-  messageFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: spacing.xs,
-  },
-  messageTime: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-  },
-  sentTime: {
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  replyContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    paddingLeft: spacing.md,
-  },
-  replyLine: {
-    width: 3,
-    height: '100%',
-    backgroundColor: colors.mediumGray,
-    marginRight: spacing.md,
-  },
-  replyText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.mediumGray,
-    fontStyle: 'italic',
-  },
-  messageImage: {
-    width: 200,
-    height: 150,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.md,
-  },
-  videoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  audioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  pollContainer: {
-    width: '100%',
-  },
-  pollOption: {
-    padding: spacing.md,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: borderRadius.md,
-    marginTop: spacing.md,
-  },
-  pollOptionText: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.black,
-  },
-  replyBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    backgroundColor: colors.extraLightGray,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  replyInfo: {
-    flex: 1,
-  },
-  replyLabel: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.medium,
-    color: colors.primary,
-  },
-  replyPreview: {
-    fontSize: fontSizes.sm,
-    fontFamily: fonts.regular,
-    color: colors.darkGray,
-    marginTop: 2,
-  },
-  attachmentMenu: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: spacing.lg,
-    backgroundColor: colors.extraLightGray,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  attachmentButton: {
-    alignItems: 'center',
-    padding: spacing.md,
-  },
-  attachmentText: {
-    fontSize: fontSizes.xs,
-    fontFamily: fonts.regular,
-    color: colors.primary,
-    marginTop: spacing.xs,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    padding: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  attachButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.md,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: colors.lightGray,
-    borderRadius: borderRadius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    fontSize: fontSizes.base,
-    fontFamily: fonts.regular,
-    maxHeight: 100,
-    marginRight: spacing.md,
-  },
-  sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  micButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

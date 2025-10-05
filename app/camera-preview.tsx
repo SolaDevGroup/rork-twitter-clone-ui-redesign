@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Icon } from '@/components/Icon';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 
 export default function CameraPreview() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { colors, primary } = useTheme();
   const imageUri = params.imageUri as string;
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -63,11 +64,110 @@ export default function CameraPreview() {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#000000',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.lg,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    },
+    closeButton: {
+      padding: spacing.md,
+    },
+    headerTitle: {
+      fontSize: fontSizes.lg,
+      fontFamily: fonts.semiBold,
+      color: '#FFFFFF',
+    },
+    placeholder: {
+      width: 40,
+    },
+    imageContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    controls: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingHorizontal: spacing.xxxl,
+      paddingVertical: spacing.xl,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    },
+    retakeButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.lg,
+      borderRadius: borderRadius.xl,
+      borderWidth: 1,
+      borderColor: '#FFFFFF',
+    },
+    retakeText: {
+      color: '#FFFFFF',
+      fontSize: fontSizes.md,
+      fontFamily: fonts.medium,
+      marginLeft: spacing.md,
+    },
+    confirmButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.lg,
+      borderRadius: borderRadius.xl,
+    },
+    confirmButtonDisabled: {
+      opacity: 0.5,
+    },
+    confirmText: {
+      color: '#000000',
+      fontSize: fontSizes.md,
+      fontFamily: fonts.semiBold,
+      marginLeft: spacing.md,
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.xxxl,
+    },
+    errorText: {
+      color: '#FFFFFF',
+      fontSize: fontSizes.lg,
+      fontFamily: fonts.regular,
+      marginTop: spacing.lg,
+      marginBottom: spacing.xl,
+    },
+    backButton: {
+      backgroundColor: primary,
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.lg,
+      borderRadius: borderRadius.xl,
+    },
+    backButtonText: {
+      color: '#FFFFFF',
+      fontSize: fontSizes.md,
+      fontFamily: fonts.semiBold,
+    },
+  });
+
   if (!imageUri) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Icon name="error-outline" size={48} color={colors.mediumGray} />
+          <Icon name="error-outline" size={48} color={colors.textSecondary} />
           <Text style={styles.errorText}>No image to preview</Text>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Text style={styles.backButtonText}>Go Back</Text>
@@ -81,7 +181,7 @@ export default function CameraPreview() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-          <Icon name="close" size={24} color={colors.white} />
+          <Icon name="close" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Preview</Text>
         <View style={styles.placeholder} />
@@ -97,7 +197,7 @@ export default function CameraPreview() {
           onPress={handleRetake}
           disabled={isProcessing}
         >
-          <Icon name="refresh" size={24} color={colors.white} />
+          <Icon name="refresh" size={24} color="#FFFFFF" />
           <Text style={styles.retakeText}>Retake</Text>
         </TouchableOpacity>
 
@@ -106,7 +206,7 @@ export default function CameraPreview() {
           onPress={handleConfirm}
           disabled={isProcessing}
         >
-          <Icon name="check" size={24} color={colors.black} />
+          <Icon name="check" size={24} color="#000000" />
           <Text style={styles.confirmText}>
             {isProcessing ? 'Processing...' : 'Use Photo'}
           </Text>
@@ -115,102 +215,3 @@ export default function CameraPreview() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.black,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  closeButton: {
-    padding: spacing.md,
-  },
-  headerTitle: {
-    fontSize: fontSizes.lg,
-    fontFamily: fonts.semiBold,
-    color: colors.white,
-  },
-  placeholder: {
-    width: 40,
-  },
-  imageContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: spacing.xxxl,
-    paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  retakeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
-    borderRadius: borderRadius.xl,
-    borderWidth: 1,
-    borderColor: colors.white,
-  },
-  retakeText: {
-    color: colors.white,
-    fontSize: fontSizes.md,
-    fontFamily: fonts.medium,
-    marginLeft: spacing.md,
-  },
-  confirmButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
-    borderRadius: borderRadius.xl,
-  },
-  confirmButtonDisabled: {
-    opacity: 0.5,
-  },
-  confirmText: {
-    color: colors.black,
-    fontSize: fontSizes.md,
-    fontFamily: fonts.semiBold,
-    marginLeft: spacing.md,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.xxxl,
-  },
-  errorText: {
-    color: colors.white,
-    fontSize: fontSizes.lg,
-    fontFamily: fonts.regular,
-    marginTop: spacing.lg,
-    marginBottom: spacing.xl,
-  },
-  backButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
-    borderRadius: borderRadius.xl,
-  },
-  backButtonText: {
-    color: colors.white,
-    fontSize: fontSizes.md,
-    fontFamily: fonts.semiBold,
-  },
-});
