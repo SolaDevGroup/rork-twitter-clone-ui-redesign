@@ -119,6 +119,16 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       color: primary,
       fontFamily: fonts.medium,
     },
+    hashtagButton: {
+      backgroundColor: `${primary}0A`,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: 1000,
+      marginRight: 4,
+    },
+    hashtagButtonPressed: {
+      backgroundColor: `${primary}1A`,
+    },
     postImageContainer: {
       width: '100%',
       aspectRatio: 1,
@@ -394,15 +404,20 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
                 );
               } else if (word.startsWith('#')) {
                 return (
-                  <Text
-                    key={`hashtag-${index}-${word}`}
-                    style={styles.hashtag}
-                    onPress={() => {
-                      router.push(`/search-results?query=${word.substring(1)}`);
-                    }}
-                  >
-                    {word.substring(1)}{' '}
-                  </Text>
+                  <React.Fragment key={`hashtag-${index}-${word}`}>
+                    <TouchableOpacity
+                      style={styles.hashtagButton}
+                      onPress={() => {
+                        router.push(`/search-results?query=${encodeURIComponent(word.substring(1))}`);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.hashtag}>
+                        #{word.substring(1)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Text> </Text>
+                  </React.Fragment>
                 );
               }
               return word + ' ';
