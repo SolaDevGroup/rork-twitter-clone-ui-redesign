@@ -81,7 +81,7 @@ export default function HomeScreen() {
       width: 64,
       height: 64,
       borderRadius: 32,
-      padding: 3,
+      padding: 1,
       position: 'relative' as const,
     },
     storyRing: {
@@ -95,7 +95,7 @@ export default function HomeScreen() {
     storyImageWrapper: {
       width: '100%' as const,
       height: '100%' as const,
-      borderRadius: 29,
+      borderRadius: 31,
       overflow: 'hidden' as const,
       position: 'relative' as const,
     },
@@ -668,18 +668,6 @@ export default function HomeScreen() {
 
   const ListHeader = () => (
     <View>
-      {/* Stories Section */}
-      <View style={styles.storiesSection}>
-        <FlatList
-          data={stories}
-          renderItem={renderStory}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.storiesContainer}
-        />
-      </View>
-
       {/* Feed Filters */}
       <View style={styles.filtersContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -710,19 +698,15 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <View style={styles.momentsAvatars}>
-          <TouchableOpacity 
-            style={[styles.addMomentButton, { borderColor: colors.border }]}
-            onPress={() => router.push('/camera-preview')}
-          >
-            <Plus size={24} color={colors.textSecondary} />
-            <Text style={[{ fontSize: 11, marginTop: 4, color: colors.textSecondary }]}>Add</Text>
-          </TouchableOpacity>
-          {stories.slice(0, 2).map((story) => (
-            <TouchableOpacity key={story.id} onPress={() => handleStoryPress(story)}>
-              <Image source={{ uri: story.user.avatar }} style={styles.momentAvatar} />
-            </TouchableOpacity>
-          ))}
+        <View style={styles.storiesSection}>
+          <FlatList
+            data={stories}
+            renderItem={renderStory}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.storiesContainer}
+          />
         </View>
 
         <TouchableOpacity 
