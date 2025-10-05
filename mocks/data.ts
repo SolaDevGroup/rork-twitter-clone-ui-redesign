@@ -1,4 +1,4 @@
-import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short } from '@/types';
+import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short, MatchProfile } from '@/types';
 
 export const currentUser: User = {
   id: '1',
@@ -476,5 +476,106 @@ export const shorts: Short[] = [
     postTitle: 'Logo Design Masterclass',
     savedCollections: 567,
     createdAt: '05/09/2025 at 18:20pm',
+  },
+];
+
+export const matchProfiles: MatchProfile[] = [
+  {
+    id: '1',
+    name: 'Sarah',
+    age: 28,
+    bio: 'Adventure seeker and coffee enthusiast. Love hiking, photography, and trying new restaurants.',
+    location: 'New York, NY',
+    distance: 2,
+    images: [
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800',
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800',
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800',
+    ],
+    interests: ['Travel', 'Photography', 'Coffee', 'Hiking'],
+    occupation: 'Product Designer',
+    company: 'Tech Startup',
+    isVerified: true,
+  },
+  {
+    id: '2',
+    name: 'Emma',
+    age: 26,
+    bio: 'Yoga instructor by day, foodie by night. Looking for someone to explore the city with.',
+    location: 'Brooklyn, NY',
+    distance: 5,
+    images: [
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800',
+      'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=800',
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800',
+    ],
+    interests: ['Yoga', 'Food', 'Wellness', 'Music'],
+    occupation: 'Yoga Instructor',
+    school: 'NYU',
+  },
+  {
+    id: '3',
+    name: 'Jessica',
+    age: 29,
+    bio: 'Marketing professional who loves art galleries, wine tasting, and spontaneous road trips.',
+    location: 'Manhattan, NY',
+    distance: 3,
+    images: [
+      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=800',
+      'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=800',
+      'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=800',
+    ],
+    interests: ['Art', 'Wine', 'Travel', 'Marketing'],
+    occupation: 'Marketing Manager',
+    company: 'Creative Agency',
+    isVerified: true,
+  },
+  {
+    id: '4',
+    name: 'Olivia',
+    age: 27,
+    bio: 'Software engineer who codes by day and paints by night. Dog mom to a golden retriever.',
+    location: 'Queens, NY',
+    distance: 7,
+    images: [
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
+      'https://images.unsplash.com/photo-1521119989659-a83eee488004?w=800',
+      'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=800',
+    ],
+    interests: ['Coding', 'Art', 'Dogs', 'Tech'],
+    occupation: 'Software Engineer',
+    company: 'Google',
+  },
+  {
+    id: '5',
+    name: 'Sophia',
+    age: 25,
+    bio: 'Fashion blogger and vintage collector. Always up for brunch and exploring new neighborhoods.',
+    location: 'SoHo, NY',
+    distance: 4,
+    images: [
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800',
+      'https://images.unsplash.com/photo-1496440737103-cd596325d314?w=800',
+      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',
+    ],
+    interests: ['Fashion', 'Vintage', 'Brunch', 'Photography'],
+    occupation: 'Fashion Blogger',
+    isVerified: true,
+  },
+  {
+    id: '6',
+    name: 'Mia',
+    age: 30,
+    bio: 'Entrepreneur building the next big thing. Love fitness, healthy living, and meaningful conversations.',
+    location: 'Williamsburg, NY',
+    distance: 6,
+    images: [
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800',
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800',
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800',
+    ],
+    interests: ['Fitness', 'Business', 'Health', 'Startups'],
+    occupation: 'Entrepreneur',
+    company: 'Own Startup',
   },
 ];

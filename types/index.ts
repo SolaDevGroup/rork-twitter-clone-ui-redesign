@@ -140,3 +140,18 @@ export interface Short {
   savedCollections?: number;
   createdAt?: string;
 }
+
+export interface MatchProfile {
+  id: string;
+  name: string;
+  age: number;
+  bio: string;
+  location: string;
+  distance: number;
+  images: string[];
+  interests: string[];
+  occupation?: string;
+  company?: string;
+  school?: string;
+  isVerified?: boolean;
+}
