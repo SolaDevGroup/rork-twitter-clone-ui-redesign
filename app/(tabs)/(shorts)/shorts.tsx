@@ -402,6 +402,9 @@ export default function ShortsScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.headerText}>Feed</Text>
+          </TouchableOpacity>
           <Text style={styles.headerText}>Shorts</Text>
         </View>
 
@@ -417,12 +420,6 @@ export default function ShortsScreen() {
             onPress={() => router.push('/(tabs)/(notifications)/notifications')}
           >
             <Bell size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => router.push('/(tabs)/(messages)/messages')}
-          >
-            <MessageCircle size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
