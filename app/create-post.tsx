@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Icon } from '@/components/Icon';
+import { IconButton } from '@/components/IconButton';
 import { fontSizes } from '@/constants/fonts';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -255,14 +256,7 @@ export default function CreatePost() {
       paddingHorizontal: 20,
       paddingTop: 20,
     },
-    cameraButton: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      borderRadius: 25,
-      width: 50,
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+
     cameraFooter: {
       alignItems: 'center',
       paddingBottom: 40,
@@ -299,14 +293,7 @@ export default function CreatePost() {
       paddingHorizontal: 20,
       paddingTop: 20,
     },
-    previewButton: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      borderRadius: 20,
-      width: 40,
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+
     previewFooter: {
       flexDirection: 'row',
       justifyContent: 'space-around',
@@ -472,15 +459,20 @@ export default function CreatePost() {
             >
               <SafeAreaView style={styles.cameraControls}>
                 <View style={styles.cameraHeader}>
-                  <TouchableOpacity onPress={closeCamera} style={styles.cameraButton}>
-                    <Icon name="close" size={28} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  <IconButton 
+                    icon="close"
+                    size={48}
+                    onPress={closeCamera}
+                    backgroundType="blur"
+                    testID="close-camera-button"
+                  />
+                  <IconButton 
+                    icon="flip-camera-ios"
+                    size={48}
                     onPress={() => setCameraType(cameraType === 'back' ? 'front' : 'back')}
-                    style={styles.cameraButton}
-                  >
-                    <Icon name="flip-camera-ios" size={28} color="#FFFFFF" />
-                  </TouchableOpacity>
+                    backgroundType="blur"
+                    testID="flip-camera-button"
+                  />
                 </View>
                 <View style={styles.cameraFooter}>
                   <TouchableOpacity onPress={takePicture} style={styles.captureButton}>
@@ -495,9 +487,13 @@ export default function CreatePost() {
             <Image source={{ uri: capturedImage! }} style={styles.previewImage} />
             <SafeAreaView style={styles.previewControls}>
               <View style={styles.previewHeader}>
-                <TouchableOpacity onPress={closeCamera} style={styles.previewButton}>
-                  <Icon name="close" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
+                <IconButton 
+                  icon="close"
+                  size={40}
+                  onPress={closeCamera}
+                  backgroundType="blur"
+                  testID="close-preview-button"
+                />
               </View>
               <View style={styles.previewFooter}>
                 <TouchableOpacity onPress={retakePicture} style={styles.previewAction}>

@@ -123,6 +123,30 @@ const styles = StyleSheet.create({
 - **Hover**: 82% opacity
 - **Active**: 100% opacity
 
+### Icon Button Component (Reusable)
+For icon-only buttons that appear multiple times (back buttons, close buttons, etc.):
+
+**On Solid Color Background:**
+- Background: 4% white/black (theme-dependent)
+- Border radius: 1000px (fully rounded)
+- States:
+  - Static: 64% icon opacity
+  - Hovered: 82% icon opacity, 4% background opacity
+  - Clicked/Active: 100% icon opacity, 8% background opacity
+
+**On Image/Non-Solid Background:**
+- Background: Blur effect (16px intensity) with 16% opacity
+- Border radius: 1000px (fully rounded)
+- States:
+  - Static: 64% icon opacity
+  - Hovered: 82% icon opacity
+  - Clicked/Active: 100% icon opacity
+
+**Implementation Rule:**
+- If an icon button pattern repeats more than once, create a reusable component
+- Component should accept: icon name, size, onPress, and background type (solid/blur)
+- Always use consistent sizing: 40x40px or 48x48px containers with icon half the size
+
 ### Icon Rules
 - **Size**: Always half the container height
 - **Positioning**: Left icons for back/cancel, right icons for forward/confirm

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Icon } from '@/components/Icon';
+import { IconButton } from '@/components/IconButton';
 import { fontSizes } from '@/constants/fonts';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,9 +45,7 @@ export default function Login() {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
     },
-    closeButton: {
-      padding: 8,
-    },
+
     placeholder: {
       width: 40,
     },
@@ -182,12 +181,13 @@ export default function Login() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <TouchableOpacity 
-              style={styles.closeButton}
+            <IconButton 
+              icon="x"
+              size={40}
               onPress={() => router.back()}
-            >
-              <Icon name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
+              backgroundType="solid"
+              testID="close-button"
+            />
             <Icon name="flutter-dash" size={32} color={primary} />
             <View style={styles.placeholder} />
           </View>

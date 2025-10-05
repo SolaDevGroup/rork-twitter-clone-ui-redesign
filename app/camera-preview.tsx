@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Icon } from '@/components/Icon';
+import { IconButton } from '@/components/IconButton';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 
@@ -77,9 +78,7 @@ export default function CameraPreview() {
       paddingVertical: spacing.lg,
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
-    closeButton: {
-      padding: spacing.md,
-    },
+
     headerTitle: {
       fontSize: fontSizes.lg,
       fontFamily: fonts.semiBold,
@@ -180,9 +179,13 @@ export default function CameraPreview() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-          <Icon name="close" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
+        <IconButton 
+          icon="close"
+          size={40}
+          onPress={handleClose}
+          backgroundType="blur"
+          testID="close-button"
+        />
         <Text style={styles.headerTitle}>Preview</Text>
         <View style={styles.placeholder} />
       </View>
