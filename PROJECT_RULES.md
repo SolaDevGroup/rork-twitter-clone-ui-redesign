@@ -11,8 +11,22 @@ This document contains strict rules and best practices for this React Native Exp
 - **Text Secondary**: 64% opacity for secondary text
 - **Success**: #37B874 (green)
 - **Error**: #EE1045 (light) / #EE1045 (dark)
-- **Always use a blur effect (16px) on backgrounds that have opacity**
 - **When a button has no background, when hovered, apply a background 4% white or black, depending on the theme color, and 8% opacity when clicked**
+
+### 🚨 CRITICAL: Background Blur Rule
+**ALWAYS apply a blur effect when using opacity on backgrounds:**
+- **Blur Intensity**: 16px (use `blurRadius` on iOS/Android, `backdrop-filter: blur(16px)` on web)
+- **When to Apply**: Any background with opacity (rgba colors, transparent overlays, glass morphism effects)
+- **Examples**:
+  - Action buttons over images: `backgroundColor: 'rgba(255, 255, 255, 0.2)'` + blur effect
+  - Headers over content: `backgroundColor: 'rgba(18, 18, 18, 0.8)'` + blur effect
+  - Modal overlays: `backgroundColor: 'rgba(0, 0, 0, 0.5)'` + blur effect
+  - Icon buttons on images: `backgroundColor: 'rgba(255, 255, 255, 0.16)'` + blur effect
+
+**Implementation**:
+- Use `BlurView` from `expo-blur` for iOS/Android
+- Use CSS `backdrop-filter: blur(16px)` for web with Platform.select
+- Never use opacity backgrounds without blur - it looks unpolished
 
 ### Color Usage Rules
 - Always use theme colors from `useTheme()` hook
