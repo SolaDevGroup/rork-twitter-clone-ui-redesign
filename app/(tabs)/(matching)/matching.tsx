@@ -229,7 +229,7 @@ export default function Matching() {
     card: {
       position: 'absolute',
       width: SCREEN_WIDTH - 32,
-      height: SCREEN_HEIGHT * 0.65,
+      height: SCREEN_HEIGHT * 0.58,
       borderRadius: 12,
       overflow: 'hidden',
       backgroundColor: colors.surface,
