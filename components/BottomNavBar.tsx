@@ -40,16 +40,17 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
     blurContainer: {
       borderRadius: 100,
       overflow: 'hidden',
+      alignSelf: 'center',
     },
     tabBarContent: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
       gap: 8,
       backgroundColor: Platform.OS === 'web' ? colors.inputBackground : 'transparent',
       borderRadius: 100,
       paddingVertical: 4,
       paddingHorizontal: 4,
+      alignSelf: 'center',
     },
     tabButton: {
       width: 48,
