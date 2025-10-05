@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { X } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { posts, comments as mockComments, currentUser } from '@/mocks/data';
 import { PostCard } from '@/components/PostCard';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function CommentsModal() {
   const { postId } = useLocalSearchParams();
   const [comment, setComment] = useState('');
   const post = posts.find(p => p.id === postId);
   const postComments = mockComments.filter(c => c.postId === postId);
+  const { colors: themeColors } = useTheme();
 
   const handleReply = () => {
     if (comment.trim()) {
@@ -23,14 +24,14 @@ export default function CommentsModal() {
 
   return (
     <KeyboardAvoidingView 
-      style={styles.container}
+      style={[styles.container, { backgroundColor: themeColors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: themeColors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.closeButton}>Close</Text>
+          <Text style={[styles.closeButton, { color: '#D4AF37' }]}>Close</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Comments</Text>
+        <Text style={[styles.headerTitle, { color: themeColors.text }]}>Comments</Text>
         <View style={{ width: 50 }} />
       </View>
 
@@ -38,27 +39,27 @@ export default function CommentsModal() {
         <PostCard post={post} />
         
         {postComments.map(comment => (
-          <View key={comment.id} style={styles.commentItem}>
+          <View key={comment.id} style={[styles.commentItem, { borderBottomColor: themeColors.border }]}>
             <Image source={{ uri: comment.user.avatar }} style={styles.commentAvatar} />
             <View style={styles.commentContent}>
               <View style={styles.commentHeader}>
-                <Text style={styles.commentName}>{comment.user.name}</Text>
-                <Text style={styles.commentUsername}>@{comment.user.username}</Text>
-                <Text style={styles.dot}>·</Text>
-                <Text style={styles.commentTime}>{comment.timestamp}</Text>
+                <Text style={[styles.commentName, { color: themeColors.text }]}>{comment.user.name}</Text>
+                <Text style={[styles.commentUsername, { color: themeColors.textSecondary }]}>@{comment.user.username}</Text>
+                <Text style={[styles.dot, { color: themeColors.textSecondary }]}>·</Text>
+                <Text style={[styles.commentTime, { color: themeColors.textSecondary }]}>{comment.timestamp}</Text>
               </View>
-              <Text style={styles.commentText}>{comment.content}</Text>
+              <Text style={[styles.commentText, { color: themeColors.text }]}>{comment.content}</Text>
             </View>
           </View>
         ))}
       </ScrollView>
 
-      <View style={styles.replyContainer}>
+      <View style={[styles.replyContainer, { borderTopColor: themeColors.border }]}>
         <Image source={{ uri: currentUser.avatar }} style={styles.replyAvatar} />
         <TextInput
-          style={styles.replyInput}
+          style={[styles.replyInput, { color: themeColors.text }]}
           placeholder="Write a comment..."
-          placeholderTextColor="#687684"
+          placeholderTextColor={themeColors.textSecondary}
           value={comment}
           onChangeText={setComment}
           multiline
@@ -74,7 +75,6 @@ export default function CommentsModal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -83,16 +83,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
   },
   closeButton: {
     fontSize: 16,
-    color: '#1DA1F2',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#0F1419',
   },
   content: {
     flex: 1,
@@ -101,7 +98,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: SCREEN_HORIZONTAL_PADDING,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F4',
   },
   commentAvatar: {
     width: 40,
@@ -120,25 +116,20 @@ const styles = StyleSheet.create({
   commentName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#0F1419',
     marginRight: 4,
   },
   commentUsername: {
     fontSize: 15,
-    color: '#687684',
     marginRight: 4,
   },
   dot: {
-    color: '#687684',
     marginRight: 4,
   },
   commentTime: {
     fontSize: 15,
-    color: '#687684',
   },
   commentText: {
     fontSize: 15,
-    color: '#0F1419',
     lineHeight: 20,
   },
   replyContainer: {
@@ -146,7 +137,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     padding: SCREEN_HORIZONTAL_PADDING,
     borderTopWidth: 1,
-    borderTopColor: '#F0F3F4',
   },
   replyAvatar: {
     width: 36,
@@ -157,14 +147,13 @@ const styles = StyleSheet.create({
   replyInput: {
     flex: 1,
     fontSize: 16,
-    color: '#0F1419',
     maxHeight: 100,
   },
   replyButton: {
-    backgroundColor: '#1DA1F2',
+    backgroundColor: '#D4AF37',
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 18,
+    borderRadius: 1000,
     marginLeft: 12,
   },
   replyButtonText: {
