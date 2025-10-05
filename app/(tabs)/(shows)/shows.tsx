@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
   Platform,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -14,8 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { videos } from '@/mocks/data';
 import { Video } from '@/types';
-import { Search, CheckCircle } from 'lucide-react-native';
+import { CheckCircle } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import AnimatedSearchBar from '@/components/AnimatedSearchBar';
 
 const TOPICS = ['All', 'Music', 'Gaming', 'Sports', 'News', 'Education', 'Entertainment', 'Technology', 'Fashion', 'Food'];
 
@@ -100,20 +100,7 @@ export default function ShowsScreen() {
       color: colors.text,
       marginBottom: 12,
     },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.inputBackground,
-      borderRadius: 12,
-      paddingHorizontal: 12,
-      height: 44,
-    },
-    searchInput: {
-      flex: 1,
-      marginLeft: 8,
-      fontSize: 16,
-      color: colors.text,
-    },
+
     content: {
       paddingHorizontal: 16,
       paddingBottom: 100,
@@ -225,16 +212,11 @@ export default function ShowsScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Shows</Text>
-        <View style={styles.searchContainer}>
-          <Search size={20} color={colors.textSecondary} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search videos"
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
+        <AnimatedSearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          topics={['Search videos', 'Search music', 'Search gaming', 'Search sports', 'Search news', 'Search education']}
+        />
       </View>
 
       <View style={styles.topicsContainer}>

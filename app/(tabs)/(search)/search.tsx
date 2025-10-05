@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Search as SearchIcon } from 'lucide-react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import AnimatedSearchBar from '@/components/AnimatedSearchBar';
 import { trendingTopics } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,20 +26,7 @@ export default function Search() {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.inputBackground,
-      borderRadius: 12,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingVertical: 12,
-    },
-    searchInput: {
-      flex: 1,
-      marginLeft: 8,
-      fontSize: 16,
-      color: colors.text,
-    },
+
     sectionTitle: {
       fontSize: fontSizes.xl,
       fontWeight: '700' as const,
@@ -85,16 +72,11 @@ export default function Search() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <View style={styles.searchContainer}>
-          <SearchIcon size={20} color={colors.textSecondary} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search Twitter"
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
+        <AnimatedSearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          topics={['Search Twitter', 'Search people', 'Search topics', 'Search hashtags', 'Search posts']}
+        />
       </View>
 
       <FlatList
