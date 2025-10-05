@@ -27,7 +27,8 @@
           "location",
           "audio"
         ]
-      }
+      },
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
@@ -90,6 +91,12 @@
         "expo-audio",
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
         }
       ]
     ],

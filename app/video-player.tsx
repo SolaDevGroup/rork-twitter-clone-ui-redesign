@@ -8,12 +8,16 @@ import {
   Image,
   Dimensions,
   TextInput,
+  PanResponder,
+  Animated,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { videos, currentUser } from '@/mocks/data';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import {
   ArrowLeft,
   Play,
@@ -23,9 +27,13 @@ import {
   CheckCircle,
   Flag,
   Send,
+  X,
 } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const MINIMIZED_HEIGHT = 100;
+const MINIMIZED_WIDTH = 160;
+const DRAG_THRESHOLD = 50;
 
 export default function VideoPlayerScreen() {
   const { colors, primary } = useTheme();
@@ -45,14 +53,101 @@ export default function VideoPlayerScreen() {
     likes: number;
     isLiked: boolean;
   }[]>([]);
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  
+  const translateY = useRef(new Animated.Value(0)).current;
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const video = videos.find((v) => v.id === id);
+  
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dy) > 5 && !isMinimized;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0 && !isMinimized) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > DRAG_THRESHOLD) {
+          minimizeVideo();
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+  
+  const minimizeVideo = () => {
+    setIsMinimized(true);
+    Animated.timing(translateY, {
+      toValue: SCREEN_HEIGHT - MINIMIZED_HEIGHT - 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+  
+  const maximizeVideo = () => {
+    setIsMinimized(false);
+    Animated.spring(translateY, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    }
+  };
+  
+  const closeMinimizedVideo = () => {
+    Animated.timing(translateY, {
+      toValue: SCREEN_HEIGHT,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      router.back();
+    });
+  };
 
   useEffect(() => {
     const currentVideoRef = videoRef.current;
+    
+    const setupOrientation = async () => {
+      if (Platform.OS === 'web') return;
+      
+      await ScreenOrientation.unlockAsync();
+      
+      const subscription = ScreenOrientation.addOrientationChangeListener((event) => {
+        const orientation = event.orientationInfo.orientation;
+        
+        if (orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT || 
+            orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT) {
+          setIsFullscreen(true);
+          setIsMinimized(false);
+        } else {
+          setIsFullscreen(false);
+        }
+      });
+      
+      return subscription;
+    };
+    
+    const orientationSubscription = setupOrientation();
+    
     return () => {
       if (currentVideoRef) {
         currentVideoRef.unloadAsync();
+      }
+      orientationSubscription.then(sub => sub?.remove());
+      if (Platform.OS !== 'web') {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
       }
     };
   }, []);
@@ -81,10 +176,30 @@ export default function VideoPlayerScreen() {
       alignItems: 'center',
     },
     videoContainer: {
-      width: width,
+      width: SCREEN_WIDTH,
       aspectRatio: 16 / 9,
       backgroundColor: '#000000',
       position: 'relative',
+    },
+    videoContainerFullscreen: {
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
+      aspectRatio: undefined,
+    },
+    videoContainerMinimized: {
+      position: 'absolute',
+      bottom: 80,
+      right: 16,
+      width: MINIMIZED_WIDTH,
+      height: MINIMIZED_HEIGHT,
+      borderRadius: 12,
+      overflow: 'hidden',
+      elevation: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      zIndex: 1000,
     },
     video: {
       width: '100%',
@@ -303,6 +418,26 @@ export default function VideoPlayerScreen() {
       fontWeight: '600' as const,
       color: colors.textSecondary,
     },
+    minimizedControls: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      flexDirection: 'row',
+      gap: 4,
+      zIndex: 10,
+    },
+    minimizedButton: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    fullscreenContainer: {
+      flex: 1,
+      backgroundColor: '#000000',
+    },
     errorContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -405,8 +540,83 @@ export default function VideoPlayerScreen() {
 
   const relatedVideos = videos.filter((v) => v.id !== id).slice(0, 5);
 
+  if (isFullscreen && Platform.OS !== 'web') {
+    return (
+      <View style={styles.fullscreenContainer}>
+        <View style={[styles.videoContainer, styles.videoContainerFullscreen]}>
+          <Video
+            ref={videoRef}
+            source={{ uri: video.videoUrl }}
+            style={styles.video}
+            resizeMode={ResizeMode.CONTAIN}
+            shouldPlay
+            isLooping
+            onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+          />
+          <TouchableOpacity
+            style={styles.playPauseOverlay}
+            onPress={handlePlayPause}
+            activeOpacity={1}
+          >
+            {!isPlaying && (
+              <View style={styles.playPauseButton}>
+                <Play size={32} color="#FFFFFF" fill="#FFFFFF" />
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+  
+  if (isMinimized) {
+    return (
+      <Animated.View
+        style={[
+          styles.videoContainerMinimized,
+          { transform: [{ translateY: 0 }] },
+        ]}
+      >
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={maximizeVideo}
+          activeOpacity={0.9}
+        >
+          <Video
+            ref={videoRef}
+            source={{ uri: video.videoUrl }}
+            style={styles.video}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay
+            isLooping
+            onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+          />
+        </TouchableOpacity>
+        <View style={styles.minimizedControls}>
+          <TouchableOpacity
+            style={styles.minimizedButton}
+            onPress={handlePlayPause}
+          >
+            <Play size={16} color="#FFFFFF" fill={isPlaying ? '#FFFFFF' : 'none'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.minimizedButton}
+            onPress={closeMinimizedVideo}
+          >
+            <X size={16} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[
+        styles.container,
+        { transform: [{ translateY }] },
+      ]}
+    >
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButtonHeader}
@@ -416,7 +626,7 @@ export default function VideoPlayerScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.videoContainer}>
+      <View style={styles.videoContainer} {...panResponder.panHandlers}>
         <Video
           ref={videoRef}
           source={{ uri: video.videoUrl }}
@@ -440,9 +650,15 @@ export default function VideoPlayerScreen() {
       </View>
 
       <ScrollView
+        ref={scrollViewRef}
         style={styles.content}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
       >
         <View style={styles.videoInfoSection}>
           <Text style={styles.videoTitle}>{video.title}</Text>
@@ -606,6 +822,6 @@ export default function VideoPlayerScreen() {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 }
