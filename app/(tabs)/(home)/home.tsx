@@ -17,7 +17,7 @@ import { PostCard } from '@/components/PostCard';
 import { posts as mockPosts, trendingTopics, currentUser, stories as mockStories } from '@/mocks/data';
 import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle } from 'lucide-react-native';
+import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle, ArrowUp, MessageSquare, Repeat, Bookmark, Hash } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
@@ -230,6 +230,173 @@ export default function HomeScreen() {
     },
     modalCloseText: {
       fontSize: 16,
+      fontWeight: '600' as const,
+    },
+    momentsSection: {
+      paddingVertical: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+    },
+    momentsHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    momentsTitle: {
+      fontSize: 14,
+      fontWeight: '700' as const,
+      letterSpacing: 1,
+    },
+    momentsSubtitle: {
+      fontSize: 11,
+      marginTop: 2,
+    },
+    momentsAvatars: {
+      flexDirection: 'row',
+      gap: 12,
+      marginBottom: 16,
+    },
+    addMomentButton: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      borderWidth: 2,
+      borderStyle: 'dashed' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    momentAvatar: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+    },
+    momentCard: {
+      borderRadius: 16,
+      overflow: 'hidden' as const,
+      height: 400,
+      position: 'relative' as const,
+    },
+    momentCardImage: {
+      width: '100%' as const,
+      height: '100%' as const,
+    },
+    momentCardOverlay: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      padding: 16,
+      justifyContent: 'space-between',
+    },
+    momentCardGradient: {
+      position: 'absolute' as const,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: '60%' as const,
+    },
+    momentTopicBadge: {
+      alignSelf: 'flex-start' as const,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 20,
+      backdropFilter: 'blur(10px)',
+    },
+    momentTopicText: {
+      fontSize: 11,
+      fontWeight: '600' as const,
+      letterSpacing: 0.5,
+      textTransform: 'uppercase' as const,
+    },
+    momentCardContent: {
+      gap: 8,
+    },
+    momentCardTitle: {
+      fontSize: 24,
+      fontWeight: '700' as const,
+      lineHeight: 28,
+    },
+    momentCardCaption: {
+      fontSize: 13,
+      lineHeight: 18,
+    },
+    momentCardUser: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      marginTop: 8,
+    },
+    momentCardUsername: {
+      fontSize: 13,
+      fontWeight: '500' as const,
+    },
+    momentCardStats: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16,
+      marginTop: 8,
+    },
+    momentCardStat: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    momentCardStatText: {
+      fontSize: 12,
+      fontWeight: '500' as const,
+    },
+    momentInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      marginTop: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderRadius: 24,
+    },
+    momentInputAvatar: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+    },
+    momentInputText: {
+      flex: 1,
+      fontSize: 14,
+    },
+    momentInputIcon: {
+      padding: 4,
+    },
+    trendingSection: {
+      paddingVertical: 16,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+    },
+    trendingSectionTitle: {
+      fontSize: 14,
+      fontWeight: '700' as const,
+      letterSpacing: 1,
+      marginBottom: 16,
+    },
+    trendingTopicItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+    },
+    trendingTopicIcon: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    trendingTopicContent: {
+      flex: 1,
+    },
+    trendingTopicName: {
+      fontSize: 15,
       fontWeight: '600' as const,
     },
   });
@@ -495,6 +662,113 @@ export default function HomeScreen() {
             icon={<TrendingUp size={16} color={activeFilter === 'trending' ? 'white' : colors.text} />}
           />
         </ScrollView>
+      </View>
+
+      {/* MOMENTS Section */}
+      <View style={styles.momentsSection}>
+        <View style={styles.momentsHeader}>
+          <View>
+            <Text style={[styles.momentsTitle, { color: colors.text }]}>MOMENTS</Text>
+            <Text style={[styles.momentsSubtitle, { color: colors.textSecondary }]}>Search for Storys filtered unique elements count</Text>
+          </View>
+        </View>
+
+        <View style={styles.momentsAvatars}>
+          <TouchableOpacity 
+            style={[styles.addMomentButton, { borderColor: colors.border }]}
+            onPress={() => router.push('/camera-preview')}
+          >
+            <Plus size={24} color={colors.textSecondary} />
+            <Text style={[{ fontSize: 11, marginTop: 4, color: colors.textSecondary }]}>Add</Text>
+          </TouchableOpacity>
+          {stories.slice(0, 2).map((story) => (
+            <TouchableOpacity key={story.id} onPress={() => handleStoryPress(story)}>
+              <Image source={{ uri: story.user.avatar }} style={styles.momentAvatar} />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <TouchableOpacity 
+          style={styles.momentCard}
+          activeOpacity={0.9}
+          onPress={() => console.log('View moment')}
+        >
+          <Image 
+            source={{ uri: posts[0]?.image || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4' }} 
+            style={styles.momentCardImage}
+          />
+          <View style={styles.momentCardGradient}>
+            <View style={{ flex: 1, backgroundColor: 'transparent' }} />
+            <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} />
+          </View>
+          <View style={styles.momentCardOverlay}>
+            <View style={styles.momentTopicBadge}>
+              <Text style={[styles.momentTopicText, { color: 'white' }]}>TOPIC&apos;S DISPLAY</Text>
+            </View>
+            
+            <View style={styles.momentCardContent}>
+              <Text style={[styles.momentCardTitle, { color: 'white' }]}>Parent group&apos;s Feed Post&apos;s p - post-title</Text>
+              <Text style={[styles.momentCardCaption, { color: 'rgba(255, 255, 255, 0.9)' }]} numberOfLines={2}>
+                Parent group&apos;s Feed Post&apos;s p - caption number of characters &gt; 240 formatted as text
+              </Text>
+              <View style={styles.momentCardUser}>
+                <Text style={[styles.momentCardUsername, { color: 'rgba(255, 255, 255, 0.8)' }]}>@{posts[0]?.user.username || 'username'}</Text>
+              </View>
+              <View style={styles.momentCardStats}>
+                <View style={styles.momentCardStat}>
+                  <ArrowUp size={14} color="rgba(255, 255, 255, 0.8)" />
+                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.likes || 0}</Text>
+                </View>
+                <View style={styles.momentCardStat}>
+                  <MessageSquare size={14} color="rgba(255, 255, 255, 0.8)" />
+                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.comments || 0}</Text>
+                </View>
+                <View style={styles.momentCardStat}>
+                  <Repeat size={14} color="rgba(255, 255, 255, 0.8)" />
+                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.reposts || 0}</Text>
+                </View>
+                <View style={styles.momentCardStat}>
+                  <Bookmark size={14} color="rgba(255, 255, 255, 0.8)" />
+                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>Saved Collections count</Text>
+                </View>
+              </View>
+              <Text style={[{ fontSize: 11, color: 'rgba(255, 255, 255, 0.6)', marginTop: 4 }]}>Parent group&apos;s Feed Post&apos;s t - Topic&apos;s Display uppercase</Text>
+              <Text style={[{ fontSize: 10, color: 'rgba(255, 255, 255, 0.5)' }]}>Parent group&apos;s Feed Post&apos;s Creation Date formatted as 05/10/2025 at 14:00pm</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        <View style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}>
+          <Image source={{ uri: currentUser.avatar }} style={styles.momentInputAvatar} />
+          <Text style={[styles.momentInputText, { color: colors.textSecondary }]}>Tell everyone what&apos;s new...</Text>
+          <TouchableOpacity style={styles.momentInputIcon}>
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3342/3342137.png' }} style={{ width: 20, height: 20, tintColor: colors.textSecondary }} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* TRENDING TOPICS Section */}
+      <View style={styles.trendingSection}>
+        <Text style={[styles.trendingSectionTitle, { color: colors.text }]}>TRENDING TOPICS</Text>
+        
+        {trendingTopics.slice(0, 3).map((topic, index) => (
+          <TouchableOpacity
+            key={topic.id}
+            style={[styles.trendingTopicItem, { borderBottomColor: colors.border }]}
+            onPress={() => router.push(`/search-results?query=${topic.name.replace('#', '')}`)}
+          >
+            <View style={[styles.trendingTopicIcon, { backgroundColor: colors.surface }]}>
+              {index === 0 ? (
+                <Hash size={16} color={primary} />
+              ) : (
+                <TrendingUp size={16} color={primary} />
+              )}
+            </View>
+            <View style={styles.trendingTopicContent}>
+              <Text style={[styles.trendingTopicName, { color: colors.text }]}>{topic.name}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
