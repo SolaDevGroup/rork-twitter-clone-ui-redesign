@@ -806,7 +806,7 @@ export default function HomeScreen() {
               activeTab === 'feed' ? styles.headerTextActive : styles.headerTextInactive
             ]}>Feed</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveTab('shorts')}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/(shorts)/shorts')}>
             <Text style={[
               styles.headerText,
               { color: colors.text },

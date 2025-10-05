@@ -120,3 +120,18 @@ export interface StoryPost {
   dominantColor?: string;
   isViewed: boolean;
 }
+
+export interface Short {
+  id: string;
+  user: User;
+  videoUrl: string;
+  thumbnail: string;
+  caption: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  views: string;
+  isLiked?: boolean;
+  hashtags?: string[];
+  soundName?: string;
+}
