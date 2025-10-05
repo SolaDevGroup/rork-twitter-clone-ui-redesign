@@ -435,7 +435,7 @@ export default function HomeScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [showTrendingModal, setShowTrendingModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<'feed' | 'shorts'>('feed');
+
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -799,20 +799,11 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => setActiveTab('feed')}>
-            <Text style={[
-              styles.headerText,
-              { color: colors.text },
-              activeTab === 'feed' ? styles.headerTextActive : styles.headerTextInactive
-            ]}>Feed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/(shorts)/shorts')}>
-            <Text style={[
-              styles.headerText,
-              { color: colors.text },
-              activeTab === 'shorts' ? styles.headerTextActive : styles.headerTextInactive
-            ]}>Shorts</Text>
-          </TouchableOpacity>
+          <Text style={[
+            styles.headerText,
+            { color: colors.text },
+            styles.headerTextActive
+          ]}>Feed</Text>
         </View>
         
         <View style={styles.headerActions}>
