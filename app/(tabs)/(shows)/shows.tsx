@@ -15,14 +15,19 @@ import { Video } from '@/types';
 import { Search, CheckCircle } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
+const TOPICS = ['All', 'Music', 'Gaming', 'Sports', 'News', 'Education', 'Entertainment', 'Technology', 'Fashion', 'Food'];
+
 export default function ShowsScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedTopic, setSelectedTopic] = useState<string>('All');
 
-  const filteredVideos = videos.filter((video) =>
-    video.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredVideos = videos.filter((video) => {
+    const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTopic = selectedTopic === 'All' || video.category === selectedTopic;
+    return matchesSearch && matchesTopic;
+  });
 
   const renderVideoCard = (video: Video) => (
     <TouchableOpacity
@@ -164,6 +169,34 @@ export default function ShowsScreen() {
     videoMeta: {
       fontSize: 13,
     },
+    topicsContainer: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.background,
+    },
+    topicsScrollView: {
+      flexDirection: 'row',
+    },
+    topicButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 8,
+      marginRight: 8,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    topicButtonActive: {
+      backgroundColor: colors.text,
+    },
+    topicText: {
+      fontSize: 13,
+      fontWeight: '500' as const,
+      color: colors.text,
+    },
+    topicTextActive: {
+      color: colors.background,
+    },
   });
 
   return (
@@ -180,6 +213,35 @@ export default function ShowsScreen() {
             onChangeText={setSearchQuery}
           />
         </View>
+      </View>
+
+      <View style={styles.topicsContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.topicsScrollView}
+        >
+          {TOPICS.map((topic) => (
+            <TouchableOpacity
+              key={topic}
+              style={[
+                styles.topicButton,
+                selectedTopic === topic && styles.topicButtonActive,
+              ]}
+              onPress={() => setSelectedTopic(topic)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.topicText,
+                  selectedTopic === topic && styles.topicTextActive,
+                ]}
+              >
+                {topic}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <ScrollView

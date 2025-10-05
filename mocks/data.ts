@@ -495,7 +495,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: 'Learn how to build a complete full-stack mobile application using React Native and Expo. We\'ll cover authentication, API integration, and deployment.',
     likes: 8500,
-    category: 'Education',
+    category: 'Technology',
   },
   {
     id: '2',
@@ -512,7 +512,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     description: 'Master TypeScript with these advanced tips and tricks specifically for React developers.',
     likes: 6200,
-    category: 'Education',
+    category: 'Technology',
   },
   {
     id: '3',
@@ -529,7 +529,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     description: 'Essential UI/UX design principles every mobile app developer should know.',
     likes: 12300,
-    category: 'Design',
+    category: 'Fashion',
   },
   {
     id: '4',
@@ -546,7 +546,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     description: 'Learn advanced techniques to optimize your React Native app performance.',
     likes: 9800,
-    category: 'Education',
+    category: 'Technology',
   },
   {
     id: '5',
@@ -562,7 +562,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     description: 'Create smooth and beautiful animations in your React Native applications.',
     likes: 4500,
-    category: 'Tutorial',
+    category: 'Entertainment',
   },
   {
     id: '6',
@@ -579,7 +579,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: 'Everything you need to know about state management in React applications.',
     likes: 15600,
-    category: 'Education',
+    category: 'Technology',
   },
   {
     id: '7',
@@ -595,7 +595,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     description: 'Build a complete real-time chat application from scratch.',
     likes: 7800,
-    category: 'Tutorial',
+    category: 'Technology',
   },
   {
     id: '8',
@@ -612,7 +612,7 @@ export const videos: Video[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     description: 'Master modern CSS techniques including Grid, Flexbox, and custom properties.',
     likes: 10200,
-    category: 'Design',
+    category: 'Technology',
   },
 ];
 
