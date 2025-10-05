@@ -114,8 +114,8 @@ export default function ShowsScreen() {
       marginBottom: 24,
     },
     thumbnailContainer: {
-      width: '100%',
-      aspectRatio: 16 / 9,
+      width: 240,
+      height: 135,
       borderRadius: 12,
       overflow: 'hidden',
       backgroundColor: colors.surface,
@@ -151,9 +151,9 @@ export default function ShowsScreen() {
       flex: 1,
     },
     videoTitle: {
-      fontSize: 16,
-      fontWeight: '600' as const,
-      lineHeight: 22,
+      fontSize: 14,
+      fontWeight: '500' as const,
+      lineHeight: 20,
       marginBottom: 4,
     },
     channelRow: {
