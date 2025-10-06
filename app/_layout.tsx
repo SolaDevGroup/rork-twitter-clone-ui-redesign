@@ -68,7 +68,7 @@ function RootLayoutNav() {
       <Stack.Screen name="search-results" options={{ headerShown: false }} />
       <Stack.Screen name="settings" options={{ headerShown: false }} />
       <Stack.Screen name="camera-preview" options={{ presentation: 'modal', headerShown: false }} />
-      <Stack.Screen name="camera-capture" options={{ presentation: 'modal', headerShown: false }} />
+      <Stack.Screen name="camera-capture" options={{ headerShown: false, animation: 'slide_from_left' }} />
       <Stack.Screen name="video-player" options={{ headerShown: false }} />
       <Stack.Screen name="video-listing" options={{ headerShown: true }} />
       <Stack.Screen name="upload-video" options={{ presentation: 'modal', headerShown: false }} />

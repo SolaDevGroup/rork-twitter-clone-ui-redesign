@@ -449,30 +449,37 @@ export default function HomeScreen() {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+        return gestureState.dx > 20 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 2;
       },
       onPanResponderGrant: () => {
         setIsSwipingToCamera(true);
       },
       onPanResponderMove: (_, gestureState) => {
         if (gestureState.dx > 0) {
-          swipeX.setValue(gestureState.dx);
+          swipeX.setValue(Math.min(gestureState.dx, SCREEN_WIDTH));
         }
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx > SCREEN_WIDTH * 0.3) {
+        const threshold = SCREEN_WIDTH * 0.4;
+        const velocity = gestureState.vx;
+        
+        if (gestureState.dx > threshold || velocity > 0.5) {
           Animated.timing(swipeX, {
             toValue: SCREEN_WIDTH,
-            duration: 200,
+            duration: 150,
             useNativeDriver: true,
           }).start(() => {
             router.push('/camera-capture');
-            swipeX.setValue(0);
-            setIsSwipingToCamera(false);
+            setTimeout(() => {
+              swipeX.setValue(0);
+              setIsSwipingToCamera(false);
+            }, 100);
           });
         } else {
           Animated.spring(swipeX, {
             toValue: 0,
+            tension: 100,
+            friction: 10,
             useNativeDriver: true,
           }).start(() => {
             setIsSwipingToCamera(false);
