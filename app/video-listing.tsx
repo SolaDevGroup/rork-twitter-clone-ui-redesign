@@ -158,13 +158,13 @@ export default function VideoListingScreen() {
       paddingHorizontal: 16,
     },
     topicChip: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
       marginRight: 8,
     },
     topicText: {
-      fontSize: 14,
+      fontSize: 13,
     },
     content: {
       paddingBottom: 100,
