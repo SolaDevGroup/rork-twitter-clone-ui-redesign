@@ -744,7 +744,7 @@ export default function VideoPlayerScreen() {
 
         <View style={styles.channelSection}>
           <Image
-            source={{ uri: video.channel.avatar }}
+            source={{ uri: video.channel.avatar || '' }}
             style={styles.channelAvatar}
           />
           <View style={styles.channelInfo}>
@@ -770,7 +770,7 @@ export default function VideoPlayerScreen() {
           
           <View style={styles.commentInputContainer}>
             <Image
-              source={{ uri: currentUser.avatar }}
+              source={{ uri: currentUser.avatar || '' }}
               style={styles.commentAvatar}
             />
             <View style={styles.commentInputWrapper}>
@@ -796,7 +796,7 @@ export default function VideoPlayerScreen() {
           {videoComments.map((comment) => (
             <View key={comment.id} style={styles.commentItem}>
               <Image
-                source={{ uri: comment.user.avatar }}
+                source={{ uri: comment.user.avatar || '' }}
                 style={styles.commentAvatar}
               />
               <View style={styles.commentContent}>
@@ -839,7 +839,7 @@ export default function VideoPlayerScreen() {
               onPress={() => router.push(`/video-player?id=${relatedVideo.id}`)}
             >
               <Image
-                source={{ uri: relatedVideo.thumbnail }}
+                source={{ uri: relatedVideo.thumbnail || '' }}
                 style={styles.relatedThumbnail}
               />
               <View style={styles.relatedVideoInfo}>

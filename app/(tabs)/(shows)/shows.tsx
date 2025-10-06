@@ -154,7 +154,7 @@ export default function ShowsScreen() {
           </View>
         )}
         <Image
-          source={{ uri: video.thumbnail }}
+          source={{ uri: video.thumbnail || '' }}
           style={thumbnailStyle}
           resizeMode="cover"
         />
@@ -169,7 +169,7 @@ export default function ShowsScreen() {
       activeOpacity={0.8}
     >
       <Image
-        source={{ uri: creator.avatar }}
+        source={{ uri: creator.avatar || '' }}
         style={styles.creatorAvatar}
         resizeMode="cover"
       />
@@ -278,7 +278,7 @@ export default function ShowsScreen() {
               renderItem={({ item }) => (
                 <View style={styles.creatorCard}>
                   <Image
-                    source={{ uri: item.thumbnail }}
+                    source={{ uri: item.thumbnail || '' }}
                     style={styles.creatorAvatar}
                     resizeMode="cover"
                   />

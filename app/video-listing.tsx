@@ -57,14 +57,14 @@ export default function VideoListingScreen() {
       activeOpacity={0.8}
     >
       <Image
-        source={{ uri: video.thumbnail }}
+        source={{ uri: video.thumbnail || '' }}
         style={styles.thumbnail}
         resizeMode="cover"
       />
       <View style={styles.videoInfo}>
         <View style={styles.channelRow}>
           <Image
-            source={{ uri: video.channel.avatar }}
+            source={{ uri: video.channel.avatar || '' }}
             style={styles.channelAvatar}
             resizeMode="cover"
           />
