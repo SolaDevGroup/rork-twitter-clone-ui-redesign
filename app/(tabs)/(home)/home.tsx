@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,9 @@ import {
   TextInput,
   Modal,
   ScrollView,
+  PanResponder,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -23,11 +26,15 @@ import { Icon } from '@/components/Icon';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 export default function HomeScreen() {
   const { colors, primary, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   
   const [stories] = useState<Story[]>(mockStories);
+  const swipeX = useRef(new Animated.Value(0)).current;
+  const [isSwipingToCamera, setIsSwipingToCamera] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -439,6 +446,42 @@ export default function HomeScreen() {
   const [showTrendingModal, setShowTrendingModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'feed' | 'shorts'>('feed');
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderGrant: () => {
+        setIsSwipingToCamera(true);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dx > 0) {
+          swipeX.setValue(gestureState.dx);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx > SCREEN_WIDTH * 0.3) {
+          Animated.timing(swipeX, {
+            toValue: SCREEN_WIDTH,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            router.push('/camera-capture');
+            swipeX.setValue(0);
+            setIsSwipingToCamera(false);
+          });
+        } else {
+          Animated.spring(swipeX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start(() => {
+            setIsSwipingToCamera(false);
+          });
+        }
+      },
+    })
+  ).current;
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await new Promise((resolve) => {
@@ -807,7 +850,25 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]} {...panResponder.panHandlers}>
+      {isSwipingToCamera && (
+        <Animated.View
+          style={{
+            position: 'absolute' as const,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: '#000',
+            opacity: swipeX.interpolate({
+              inputRange: [0, SCREEN_WIDTH],
+              outputRange: [0, 1],
+            }),
+            zIndex: 1,
+          }}
+          pointerEvents="none"
+        />
+      )}
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
