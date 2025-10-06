@@ -43,9 +43,9 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       paddingHorizontal: spacing.lg,
     },
     avatar: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
+      width: 32,
+      height: 32,
+      borderRadius: 100,
       marginRight: spacing.lg,
     },
     headerContent: {
@@ -139,7 +139,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     postImage: {
       width: '100%',
       height: '100%',
-      borderRadius: 28,
+      borderRadius: 12,
     },
     actions: {
       flexDirection: 'row',
