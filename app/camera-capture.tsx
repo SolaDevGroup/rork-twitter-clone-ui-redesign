@@ -164,6 +164,16 @@ export default function CameraCaptureScreen() {
     return <View style={styles.container} />;
   }
 
+  const handleRequestPermission = async () => {
+    try {
+      const result = await requestPermission();
+      console.log('Permission result:', result);
+    } catch (error) {
+      console.error('Error requesting permission:', error);
+      Alert.alert('Error', 'Failed to request camera permission');
+    }
+  };
+
   if (!permission.granted) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
@@ -171,7 +181,7 @@ export default function CameraCaptureScreen() {
           Camera permission is required to capture photos and videos
         </Text>
         <TouchableOpacity
-          onPress={requestPermission}
+          onPress={handleRequestPermission}
           style={{
             backgroundColor: primary,
             paddingHorizontal: 24,
