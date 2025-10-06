@@ -243,6 +243,10 @@ export default function VideoPlayerScreen() {
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      marginHorizontal: 16,
+      marginTop: 16,
     },
     videoTitle: {
       fontSize: 18,
@@ -280,6 +284,10 @@ export default function VideoPlayerScreen() {
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      marginHorizontal: 16,
+      marginTop: 16,
     },
     channelAvatar: {
       width: 48,
@@ -309,6 +317,10 @@ export default function VideoPlayerScreen() {
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      marginHorizontal: 16,
+      marginTop: 16,
     },
     sectionTitle: {
       fontSize: 16,
@@ -323,6 +335,10 @@ export default function VideoPlayerScreen() {
     },
     relatedSection: {
       padding: 16,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      marginHorizontal: 16,
+      marginTop: 16,
     },
     relatedVideoCard: {
       flexDirection: 'row',
@@ -359,6 +375,10 @@ export default function VideoPlayerScreen() {
       padding: 16,
       borderTopWidth: 1,
       borderTopColor: colors.border,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      marginHorizontal: 16,
+      marginTop: 16,
     },
     commentInputContainer: {
       flexDirection: 'row',
