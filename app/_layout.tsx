@@ -64,7 +64,7 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="comments" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="edit-profile" options={{ presentation: 'modal', headerShown: false }} />
-      <Stack.Screen name="create-post" options={{ presentation: 'modal', headerShown: false }} />
+      <Stack.Screen name="create-post" options={{ headerShown: false }} />
       <Stack.Screen name="search-results" options={{ headerShown: false }} />
       <Stack.Screen name="settings" options={{ headerShown: false }} />
       <Stack.Screen name="camera-preview" options={{ presentation: 'modal', headerShown: false }} />
