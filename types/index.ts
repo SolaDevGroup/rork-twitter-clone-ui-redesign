@@ -175,3 +175,20 @@ export interface Video {
   dislikes?: number;
   category?: string;
 }
+
+export interface LiveStream {
+  id: string;
+  user: User;
+  title: string;
+  thumbnail: string;
+  viewerCount: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  isLiked?: boolean;
+  category: string;
+  startedAt: string;
+  streamUrl: string;
+  description?: string;
+  hashtags?: string[];
+}

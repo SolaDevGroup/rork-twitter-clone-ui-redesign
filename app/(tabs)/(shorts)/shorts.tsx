@@ -417,10 +417,13 @@ export default function ShortsScreen() {
             <Text style={styles.headerText}>Feed</Text>
           </TouchableOpacity>
           <Text style={styles.headerText}>Shorts</Text>
-          <View style={styles.liveTab}>
+          <TouchableOpacity
+            style={styles.liveTab}
+            onPress={() => router.push('/(tabs)/(shorts)/live')}
+          >
             <Text style={styles.headerText}>Live</Text>
             <View style={styles.liveDot} />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.headerActions}>

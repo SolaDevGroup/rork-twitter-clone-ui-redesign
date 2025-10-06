@@ -9,6 +9,7 @@ export default function ShortsLayout() {
       }}
     >
       <Stack.Screen name="shorts" />
+      <Stack.Screen name="live" />
     </Stack>
   );
 }
