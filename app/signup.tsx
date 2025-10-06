@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from '@/components/Icon';
 import { IconButton } from '@/components/IconButton';
 import { fontSizes } from '@/constants/fonts';
@@ -19,13 +20,16 @@ import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 
-export default function Login() {
+export default function SignUp() {
   const router = useRouter();
   const { login } = useAuth();
   const { colors, primary } = useTheme();
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -45,7 +49,6 @@ export default function Login() {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
     },
-
     placeholder: {
       width: 40,
     },
@@ -81,25 +84,36 @@ export default function Login() {
       right: 12,
       top: 18,
     },
-    forgotPassword: {
-      marginBottom: 20,
+    datePickerButton: {
+      backgroundColor: colors.inputBackground,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
-    forgotPasswordText: {
-      color: primary,
-      fontSize: fontSizes.sm,
+    datePickerText: {
+      fontSize: 16,
+      color: colors.text,
     },
-    loginButton: {
+    datePickerPlaceholder: {
+      fontSize: 16,
+      color: colors.textSecondary,
+    },
+    signUpButton: {
       backgroundColor: primary,
       borderRadius: 24,
       paddingVertical: 12,
       alignItems: 'center',
+      marginTop: 20,
       marginBottom: 20,
     },
-    loginButtonDisabled: {
+    signUpButtonDisabled: {
       backgroundColor: colors.textSecondary,
       opacity: 0.5,
     },
-    loginButtonText: {
+    signUpButtonText: {
       color: '#FFFFFF',
       fontSize: fontSizes.md,
       fontWeight: '600' as const,
@@ -144,30 +158,60 @@ export default function Login() {
       color: colors.textSecondary,
       fontSize: fontSizes.sm,
     },
-    signUpText: {
+    loginText: {
       color: primary,
       fontSize: fontSizes.sm,
       fontWeight: '600' as const,
     },
+    termsText: {
+      color: colors.textSecondary,
+      fontSize: fontSizes.xs,
+      textAlign: 'center',
+      marginBottom: 20,
+      lineHeight: 18,
+    },
+    termsLink: {
+      color: primary,
+    },
   });
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-    
-    login();
-    
-    router.replace('/(tabs)/(search)/search');
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
   };
 
-  const handleForgotPassword = () => {
-    Alert.alert('Password Reset', 'A password reset link has been sent to your email');
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setBirthDate(selectedDate);
+    }
+  };
+
+  const isFormValid = () => {
+    return email && username && password && birthDate;
   };
 
   const handleSignUp = () => {
-    router.push('/signup');
+    if (!isFormValid()) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    const age = new Date().getFullYear() - birthDate!.getFullYear();
+    if (age < 13) {
+      Alert.alert('Age Requirement', 'You must be at least 13 years old to sign up');
+      return;
+    }
+
+    login();
+    router.replace('/(tabs)/(search)/search');
+  };
+
+  const handleLogin = () => {
+    router.back();
   };
 
   return (
@@ -194,19 +238,32 @@ export default function Login() {
 
           <View style={styles.content}>
             <View style={styles.titleWrapper}>
-              <Text style={styles.title}>Log in to X</Text>
+              <Text style={styles.title}>Create your account</Text>
             </View>
 
             <View style={styles.inputsWrapper}>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Phone, email, or username"
+                  placeholder="Email"
                   placeholderTextColor={colors.textSecondary}
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
                   keyboardType="email-address"
+                  testID="email-input"
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Username"
+                  placeholderTextColor={colors.textSecondary}
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                  testID="username-input"
                 />
               </View>
 
@@ -219,6 +276,7 @@ export default function Login() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
+                  testID="password-input"
                 />
                 <TouchableOpacity
                   style={styles.eyeIcon}
@@ -231,21 +289,34 @@ export default function Login() {
                   />
                 </TouchableOpacity>
               </View>
+
+              <View style={styles.inputContainer}>
+                <TouchableOpacity
+                  style={styles.datePickerButton}
+                  onPress={() => setShowDatePicker(true)}
+                  testID="date-picker-button"
+                >
+                  <Text style={birthDate ? styles.datePickerText : styles.datePickerPlaceholder}>
+                    {birthDate ? formatDate(birthDate) : 'Date of birth'}
+                  </Text>
+                  <Icon name="calendar-today" size={20} color={colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <TouchableOpacity 
-              style={styles.forgotPassword}
-              onPress={handleForgotPassword}
-            >
-              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-            </TouchableOpacity>
+            <Text style={styles.termsText}>
+              By signing up, you agree to our{' '}
+              <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
+              <Text style={styles.termsLink}>Privacy Policy</Text>
+            </Text>
 
             <TouchableOpacity 
-              style={[styles.loginButton, (!email || !password) && styles.loginButtonDisabled]}
-              onPress={handleLogin}
-              disabled={!email || !password}
+              style={[styles.signUpButton, !isFormValid() && styles.signUpButtonDisabled]}
+              onPress={handleSignUp}
+              disabled={!isFormValid()}
+              testID="signup-button"
             >
-              <Text style={styles.loginButtonText}>Log in</Text>
+              <Text style={styles.signUpButtonText}>Sign up</Text>
             </TouchableOpacity>
 
             <View style={styles.dividerContainer}>
@@ -266,14 +337,25 @@ export default function Login() {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>{"Don't have an account? "}</Text>
-            <TouchableOpacity onPress={handleSignUp}>
-              <Text style={styles.signUpText}>Sign up</Text>
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <TouchableOpacity onPress={handleLogin}>
+              <Text style={styles.loginText}>Log in</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={birthDate || new Date(2000, 0, 1)}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleDateChange}
+          maximumDate={new Date()}
+          minimumDate={new Date(1900, 0, 1)}
+          testID="date-picker"
+        />
+      )}
     </SafeAreaView>
   );
 }
-
