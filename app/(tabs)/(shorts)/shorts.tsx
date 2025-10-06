@@ -188,6 +188,17 @@ export default function ShortsScreen() {
       fontWeight: '600' as const,
       color: 'white',
     },
+    liveTab: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    liveDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#EF4444',
+    },
     playPauseButton: {
       position: 'absolute' as const,
       top: '50%' as const,
@@ -406,6 +417,10 @@ export default function ShortsScreen() {
             <Text style={styles.headerText}>Feed</Text>
           </TouchableOpacity>
           <Text style={styles.headerText}>Shorts</Text>
+          <View style={styles.liveTab}>
+            <Text style={styles.headerText}>Live</Text>
+            <View style={styles.liveDot} />
+          </View>
         </View>
 
         <View style={styles.headerActions}>
