@@ -86,11 +86,11 @@ export default function UploadVideoScreen() {
     header: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: 16,
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
+      gap: 12,
     },
     headerTitle: {
       fontSize: 18,
@@ -202,7 +202,6 @@ export default function UploadVideoScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Upload Video</Text>
         <TouchableOpacity
           style={styles.closeButton}
           onPress={() => router.back()}
@@ -210,6 +209,7 @@ export default function UploadVideoScreen() {
         >
           <X size={20} color={colors.text} />
         </TouchableOpacity>
+        <Text style={styles.headerTitle}>Upload Video</Text>
       </View>
 
       <ScrollView
