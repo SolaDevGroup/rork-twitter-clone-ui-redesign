@@ -164,39 +164,6 @@ export default function CameraCaptureScreen() {
     return <View style={styles.container} />;
   }
 
-  const handleRequestPermission = async () => {
-    try {
-      const result = await requestPermission();
-      console.log('Permission result:', result);
-    } catch (error) {
-      console.error('Error requesting permission:', error);
-      Alert.alert('Error', 'Failed to request camera permission');
-    }
-  };
-
-  if (!permission.granted) {
-    return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
-        <Text style={{ color: 'white', fontSize: 16, textAlign: 'center', marginBottom: 20 }}>
-          Camera permission is required to capture photos and videos
-        </Text>
-        <TouchableOpacity
-          onPress={handleRequestPermission}
-          style={{
-            backgroundColor: primary,
-            paddingHorizontal: 24,
-            paddingVertical: 12,
-            borderRadius: 25,
-          }}
-        >
-          <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' as const }}>
-            Grant Permission
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   const takePicture = async () => {
     if (cameraRef.current && !isRecording) {
       try {

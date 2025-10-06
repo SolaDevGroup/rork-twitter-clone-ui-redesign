@@ -359,13 +359,6 @@ export default function CreatePost() {
         setSelectedImage(result.assets[0].uri);
       }
     } else {
-      if (!permission?.granted) {
-        const { granted } = await requestPermission();
-        if (!granted) {
-          Alert.alert('Permission needed', 'Camera permission is required to take photos');
-          return;
-        }
-      }
       setShowCamera(true);
     }
   };
