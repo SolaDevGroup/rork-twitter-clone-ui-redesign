@@ -264,7 +264,7 @@ export default function HomeScreen() {
     },
     momentsTitle: {
       fontSize: 14,
-      fontWeight: '700' as const,
+      fontWeight: '600' as const,
       letterSpacing: 1,
     },
     momentsSubtitle: {
