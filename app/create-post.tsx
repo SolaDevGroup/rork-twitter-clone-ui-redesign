@@ -314,6 +314,25 @@ export default function CreatePost() {
       fontSize: 16,
       fontWeight: '600',
     },
+    infoBanner: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+      borderRadius: 12,
+      padding: 12,
+      marginTop: 12,
+      marginBottom: 8,
+    },
+    infoIcon: {
+      marginRight: 12,
+      marginTop: 2,
+    },
+    infoText: {
+      flex: 1,
+      fontSize: 13,
+      lineHeight: 18,
+      color: colors.textSecondary,
+    },
   });
 
   const pickImage = async () => {
@@ -536,6 +555,15 @@ export default function CreatePost() {
             <Text style={styles.audienceText}>{audience}</Text>
             <Icon name="keyboard-arrow-down" size={16} color={primary} />
           </TouchableOpacity>
+
+          <View style={styles.infoBanner}>
+            <View style={styles.infoIcon}>
+              <Icon name="info" size={20} color={colors.textSecondary} />
+            </View>
+            <Text style={styles.infoText}>
+              Please remember to be respectful in your exchanges, as well as respectfully debating or disagreeing. Enjoy the platform!
+            </Text>
+          </View>
 
           <View style={styles.inputContainer}>
             <Image source={{ uri: user?.avatar }} style={styles.avatar} />
