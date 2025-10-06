@@ -82,7 +82,7 @@ export default function Messages() {
     >
       <View style={[styles.avatarContainer, item.isOnline && { backgroundColor: success }]}>
         <Image 
-          source={{ uri: item.user.avatar }} 
+          source={{ uri: item.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} 
           style={styles.avatar}
         />
       </View>
@@ -455,7 +455,7 @@ export default function Messages() {
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
             <TouchableOpacity style={styles.profileButton}>
-              <Image source={{ uri: currentUser.avatar }} style={styles.profileAvatar} />
+              <Image source={{ uri: currentUser.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.profileAvatar} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Inbox</Text>
           </View>

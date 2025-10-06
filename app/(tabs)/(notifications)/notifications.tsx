@@ -28,7 +28,7 @@ export default function Notifications() {
       <View style={styles.iconContainer}>{renderIcon(item.type)}</View>
       <View style={styles.notificationContent}>
         <View style={styles.userInfo}>
-          <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+          <Image source={{ uri: item.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
           <View style={styles.textContent}>
             <Text style={styles.userName}>
               {item.user.name}{' '}
@@ -45,7 +45,7 @@ export default function Notifications() {
                 <Text style={styles.postContent} numberOfLines={2}>
                   {item.post.content}
                 </Text>
-                {item.post.image && (
+                {item.post?.image && (
                   <Image source={{ uri: item.post.image }} style={styles.postImage} />
                 )}
               </>

@@ -409,7 +409,7 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push(`/(tabs)/(profile)/${post.user.id}`)}>
-          <Image source={{ uri: post.user.avatar }} style={styles.avatar} />
+          <Image source={{ uri: post.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
         </TouchableOpacity>
         <View style={styles.headerContent}>
           <View style={styles.userInfo}>

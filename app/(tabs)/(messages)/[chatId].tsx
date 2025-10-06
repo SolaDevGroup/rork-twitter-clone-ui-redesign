@@ -552,7 +552,7 @@ export default function ChatScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.header}>
-        <Image source={{ uri: user?.avatar }} style={styles.avatar} />
+        <Image source={{ uri: user?.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
         <View>
           <Text style={styles.userName}>{user?.name}</Text>
           <Text style={styles.username}>@{user?.username}</Text>

@@ -272,11 +272,11 @@ export default function UserProfileScreen() {
       <ScrollView>
         <View style={styles.header}>
           <Image 
-            source={{ uri: user.coverImage || 'https://images.unsplash.com/photo-1557683316-973673baf926?w=800' }} 
+            source={{ uri: user.coverImage ?? 'https://images.unsplash.com/photo-1557683316-973673baf926?w=800' }} 
             style={styles.coverImage} 
           />
           <View style={styles.profileHeader}>
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
+            <Image source={{ uri: user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
             <View style={styles.headerButtons}>
               <TouchableOpacity style={styles.iconButton}>
                 <MoreHorizontal size={20} color={colors.text} />

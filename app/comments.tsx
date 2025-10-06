@@ -40,7 +40,7 @@ export default function CommentsModal() {
         
         {postComments.map(comment => (
           <View key={comment.id} style={[styles.commentItem, { borderBottomColor: themeColors.border }]}>
-            <Image source={{ uri: comment.user.avatar }} style={styles.commentAvatar} />
+            <Image source={{ uri: comment.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.commentAvatar} />
             <View style={styles.commentContent}>
               <View style={styles.commentHeader}>
                 <Text style={[styles.commentName, { color: themeColors.text }]}>{comment.user.name}</Text>
@@ -55,7 +55,7 @@ export default function CommentsModal() {
       </ScrollView>
 
       <View style={[styles.replyContainer, { borderTopColor: themeColors.border }]}>
-        <Image source={{ uri: currentUser.avatar }} style={styles.replyAvatar} />
+        <Image source={{ uri: currentUser.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.replyAvatar} />
         <TextInput
           style={[styles.replyInput, { color: themeColors.text }]}
           placeholder="Write a comment..."

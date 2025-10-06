@@ -333,7 +333,7 @@ export default function LiveScreen() {
     return (
       <View style={styles.liveContainer} {...panResponder.panHandlers}>
         <View style={styles.videoPlaceholder}>
-          <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
+          {item.thumbnail && <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />}
         </View>
 
         <View style={styles.gradient}>
@@ -351,7 +351,7 @@ export default function LiveScreen() {
             </TouchableOpacity>
 
             <View style={styles.userInfo}>
-              <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+              <Image source={{ uri: item.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
               <Text style={styles.username}>@{item.user.username}</Text>
               <View style={styles.liveBadge}>
                 <Text style={styles.liveBadgeText}>LIVE</Text>
