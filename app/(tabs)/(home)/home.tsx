@@ -19,6 +19,7 @@ import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle, ArrowUp, MessageSquare, Repeat, Bookmark, Hash } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { Icon } from '@/components/Icon';
 
 type FeedFilter = 'for-you' | 'following' | 'trending';
 
@@ -397,6 +398,11 @@ export default function HomeScreen() {
     momentInputIcon: {
       padding: 4,
     },
+    momentInputActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
     trendingSection: {
       paddingVertical: 16,
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
@@ -755,13 +761,25 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
 
-        <View style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}>
+        <TouchableOpacity 
+          style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}
+          onPress={handleCreatePost}
+          activeOpacity={0.7}
+        >
           <Image source={{ uri: currentUser.avatar }} style={styles.momentInputAvatar} />
           <Text style={[styles.momentInputText, { color: colors.textSecondary }]}>Tell everyone what&apos;s new...</Text>
-          <TouchableOpacity style={styles.momentInputIcon}>
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3342/3342137.png' }} style={{ width: 20, height: 20, tintColor: colors.textSecondary }} />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.momentInputActions}>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Camera'); }}>
+              <Icon name="photo-camera" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Poll'); }}>
+              <Icon name="poll" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Audio'); }}>
+              <Icon name="mic" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
       </View>
 
       {/* TRENDING TOPICS Section */}
