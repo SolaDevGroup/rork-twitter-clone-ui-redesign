@@ -169,6 +169,7 @@ export interface Video {
     isVerified?: boolean;
   };
   videoUrl: string;
+  youtubeId?: string;
   description?: string;
   likes?: number;
   dislikes?: number;
