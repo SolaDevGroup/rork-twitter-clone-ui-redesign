@@ -195,7 +195,7 @@ export default function ShowsScreen() {
               <Text style={[styles.categoryTitleLarge, { color: colors.text }]}>
                 {category.name}
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push(`/video-listing?category=${category.name}`)}>
                 <Text style={[styles.seeMore, { color: colors.textSecondary }]}>SEE MORE</Text>
               </TouchableOpacity>
             </View>
@@ -217,7 +217,7 @@ export default function ShowsScreen() {
                   {category.name}
                 </Text>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push(`/video-listing?category=${category.name}`)}>
                 <Text style={[styles.seeMore, { color: colors.textSecondary }]}>SEE MORE</Text>
               </TouchableOpacity>
             </View>
@@ -236,7 +236,7 @@ export default function ShowsScreen() {
               <Text style={[styles.categoryTitleLarge, { color: colors.text }]}>
                 {category.name}
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push(`/video-listing?category=${category.name}`)}>
                 <Text style={[styles.seeMore, { color: colors.textSecondary }]}>SEE MORE</Text>
               </TouchableOpacity>
             </View>

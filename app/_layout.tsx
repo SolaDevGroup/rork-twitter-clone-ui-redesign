@@ -69,6 +69,7 @@ function RootLayoutNav() {
       <Stack.Screen name="settings" options={{ headerShown: false }} />
       <Stack.Screen name="camera-preview" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="video-player" options={{ headerShown: false }} />
+      <Stack.Screen name="video-listing" options={{ headerShown: true }} />
     </Stack>
   );
 }
