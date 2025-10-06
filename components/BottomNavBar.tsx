@@ -5,12 +5,13 @@ import { Home, Heart, Plus, Tv } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 export default function BottomNavBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { colors, primary, isDark } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const currentRoute = state.routes[state.index];
   const shouldHideTabBar = currentRoute.name === '(shorts)';
@@ -143,9 +144,15 @@ export default function BottomNavBar({ state, descriptors, navigation }: any) {
       
       <TouchableOpacity
         style={styles.createButton}
-        onPress={() => router.push('/create-post')}
+        onPress={() => {
+          if (pathname.includes('/shows')) {
+            router.push('/upload-video');
+          } else {
+            router.push('/create-post');
+          }
+        }}
         accessibilityRole="button"
-        accessibilityLabel="Create a post"
+        accessibilityLabel={pathname.includes('/shows') ? 'Upload video' : 'Create a post'}
       >
         <Plus size={28} color={colors.background} />
       </TouchableOpacity>

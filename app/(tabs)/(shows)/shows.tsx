@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { videos, creators } from '@/mocks/data';
 import { Video } from '@/types';
-import { Plus, Tag } from 'lucide-react-native';
+import { Tag } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import AnimatedSearchBar from '@/components/AnimatedSearchBar';
 
@@ -359,15 +359,7 @@ export default function ShowsScreen() {
       color: colors.text,
       marginBottom: 12,
     },
-    uploadButton: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: colors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: 12,
-    },
+
     content: {
       paddingBottom: 100,
     },
@@ -506,13 +498,6 @@ export default function ShowsScreen() {
             topics={['Search videos', 'Search shows', 'Search channels', 'Search creators']}
           />
         </View>
-        <TouchableOpacity
-          style={styles.uploadButton}
-          onPress={() => router.push('/upload-video')}
-          activeOpacity={0.7}
-        >
-          <Plus size={24} color={colors.text} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView
