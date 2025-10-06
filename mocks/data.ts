@@ -634,6 +634,51 @@ export const videos: Video[] = [
   },
 ];
 
+export const creators = [
+  {
+    id: '1',
+    name: 'Tech Academy',
+    avatar: 'https://ui-avatars.com/api/?name=Tech+Academy&background=78706B&color=fff&size=200',
+    isVerified: true,
+    subscribers: '1.2M',
+  },
+  {
+    id: '2',
+    name: 'Code Masters',
+    avatar: 'https://ui-avatars.com/api/?name=Code+Masters&background=0891b2&color=fff&size=200',
+    isVerified: true,
+    subscribers: '890K',
+  },
+  {
+    id: '3',
+    name: 'Design Studio',
+    avatar: 'https://ui-avatars.com/api/?name=Design+Studio&background=f59e0b&color=fff&size=200',
+    isVerified: true,
+    subscribers: '2.3M',
+  },
+  {
+    id: '4',
+    name: 'Mobile Dev Pro',
+    avatar: 'https://ui-avatars.com/api/?name=Mobile+Dev&background=6366f1&color=fff&size=200',
+    isVerified: true,
+    subscribers: '1.5M',
+  },
+  {
+    id: '5',
+    name: 'Animation Hub',
+    avatar: 'https://ui-avatars.com/api/?name=Animation+Hub&background=8b5cf6&color=fff&size=200',
+    isVerified: false,
+    subscribers: '567K',
+  },
+  {
+    id: '6',
+    name: 'React Experts',
+    avatar: 'https://ui-avatars.com/api/?name=React+Experts&background=ec4899&color=fff&size=200',
+    isVerified: true,
+    subscribers: '1.8M',
+  },
+];
+
 export const matchProfiles: MatchProfile[] = [
   {
     id: '1',
