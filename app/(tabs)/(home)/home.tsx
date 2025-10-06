@@ -279,16 +279,16 @@ export default function HomeScreen() {
     addMomentButton: {
       width: 64,
       height: 64,
-      borderRadius: 32,
-      borderWidth: 2,
+      borderRadius: 100,
+      borderWidth: 3,
       borderStyle: 'dashed' as const,
       alignItems: 'center',
       justifyContent: 'center',
     },
     momentAvatar: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
+      width: 56,
+      height: 56,
+      borderRadius: 100,
     },
     momentCard: {
       borderRadius: 16,
@@ -434,7 +434,7 @@ export default function HomeScreen() {
       borderRadius: 1000,
     },
     trendingTopicName: {
-      fontSize: 13,
+      fontSize: 14,
       fontWeight: '500' as const,
     },
   });
