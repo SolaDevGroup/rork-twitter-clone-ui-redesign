@@ -204,33 +204,51 @@ export const messages: Message[] = [
 export const trendingTopics: TrendingTopic[] = [
   {
     id: '1',
-    category: 'Trending in Technology',
-    name: '#ReactNative',
+    category: 'Trending',
+    name: '#AboutCryptoTrade',
     tweets: '12.5K tweets',
   },
   {
     id: '2',
-    category: 'Trending in Technology',
-    name: '#TypeScript',
+    category: 'Trending',
+    name: 'Test',
     tweets: '8.2K tweets',
   },
   {
     id: '3',
-    category: 'Trending in Technology',
-    name: '#WebDevelopment',
+    category: 'Trending',
+    name: 'Italia',
     tweets: '5.7K tweets',
   },
   {
     id: '4',
     category: 'Trending',
-    name: 'AI',
+    name: 'Rome',
     tweets: '45.3K tweets',
   },
   {
     id: '5',
-    category: 'Trending in Technology',
-    name: '#TechNews',
+    category: 'Trending',
+    name: 'Architecture',
     tweets: '3.1K tweets',
+  },
+  {
+    id: '6',
+    category: 'Trending',
+    name: 'ArtificialIntelligence',
+    tweets: '15.8K tweets',
+  },
+  {
+    id: '7',
+    category: 'Trending',
+    name: 'Astronomy',
+    tweets: '9.4K tweets',
+  },
+  {
+    id: '8',
+    category: 'Trending',
+    name: 'Basketball',
+    tweets: '22.1K tweets',
   },
 ];
 

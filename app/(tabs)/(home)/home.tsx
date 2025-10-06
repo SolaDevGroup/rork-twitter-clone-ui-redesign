@@ -407,26 +407,22 @@ export default function HomeScreen() {
       letterSpacing: 1,
       marginBottom: 16,
     },
-    trendingTopicItem: {
+    trendingTopicsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    trendingTopicPill: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 12,
-      paddingVertical: 12,
-      borderBottomWidth: 1,
-    },
-    trendingTopicIcon: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    trendingTopicContent: {
-      flex: 1,
+      gap: 6,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 1000,
     },
     trendingTopicName: {
-      fontSize: 15,
-      fontWeight: '600' as const,
+      fontSize: 13,
+      fontWeight: '500' as const,
     },
   });
   const [posts, setPosts] = useState<Post[]>(mockPosts);
@@ -770,26 +766,24 @@ export default function HomeScreen() {
 
       {/* TRENDING TOPICS Section */}
       <View style={styles.trendingSection}>
-        <Text style={[styles.trendingSectionTitle, { color: colors.text }]}>TRENDING TOPICS</Text>
+        <Text style={[styles.trendingSectionTitle, { color: colors.textSecondary }]}>TRENDING TOPICS</Text>
         
-        {trendingTopics.slice(0, 3).map((topic, index) => (
-          <TouchableOpacity
-            key={topic.id}
-            style={[styles.trendingTopicItem, { borderBottomColor: colors.border }]}
-            onPress={() => router.push(`/search-results?query=${topic.name.replace('#', '')}`)}
-          >
-            <View style={[styles.trendingTopicIcon, { backgroundColor: colors.surface }]}>
-              {index === 0 ? (
-                <Hash size={16} color={primary} />
+        <View style={styles.trendingTopicsGrid}>
+          {trendingTopics.map((topic) => (
+            <TouchableOpacity
+              key={topic.id}
+              style={[styles.trendingTopicPill, { backgroundColor: 'rgba(255, 255, 255, 0.08)' }]}
+              onPress={() => router.push(`/search-results?query=${topic.name.replace('#', '')}`)}
+            >
+              {topic.name.startsWith('#') ? (
+                <Hash size={14} color={colors.textSecondary} />
               ) : (
-                <TrendingUp size={16} color={primary} />
+                <TrendingUp size={14} color={colors.textSecondary} />
               )}
-            </View>
-            <View style={styles.trendingTopicContent}>
               <Text style={[styles.trendingTopicName, { color: colors.text }]}>{topic.name}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
     </View>
   );
