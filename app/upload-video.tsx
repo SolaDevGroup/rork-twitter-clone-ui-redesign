@@ -3,16 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRouter } from 'expo-router';
 import { X, Upload, Youtube } from 'lucide-react-native';
+import { Button } from '@/components/Button';
+import { TextInput } from '@/components/TextInput';
 
 export default function UploadVideoScreen() {
   const { colors } = useTheme();
@@ -111,48 +111,11 @@ export default function UploadVideoScreen() {
     section: {
       marginBottom: 24,
     },
-    label: {
+    categoryLabel: {
       fontSize: 14,
       fontWeight: '600' as const,
       color: colors.text,
       marginBottom: 8,
-    },
-    input: {
-      backgroundColor: colors.inputBackground,
-      borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      fontSize: 16,
-      color: colors.text,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    textArea: {
-      height: 100,
-      textAlignVertical: 'top',
-    },
-    youtubeInputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.inputBackground,
-      borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    youtubeIcon: {
-      marginRight: 8,
-    },
-    youtubeInput: {
-      flex: 1,
-      fontSize: 16,
-      color: colors.text,
-    },
-    hint: {
-      fontSize: 12,
-      color: colors.textSecondary,
-      marginTop: 6,
     },
     categoriesContainer: {
       flexDirection: 'row',
@@ -179,24 +142,6 @@ export default function UploadVideoScreen() {
     categoryTextActive: {
       color: colors.background,
     },
-    uploadButton: {
-      backgroundColor: colors.text,
-      borderRadius: 12,
-      paddingVertical: 16,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 8,
-    },
-    uploadButtonDisabled: {
-      opacity: 0.5,
-    },
-    uploadButtonText: {
-      fontSize: 16,
-      fontWeight: '600' as const,
-      color: colors.background,
-      marginLeft: 8,
-    },
   });
 
   return (
@@ -218,50 +163,41 @@ export default function UploadVideoScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.section}>
-          <Text style={styles.label}>YouTube URL *</Text>
-          <View style={styles.youtubeInputContainer}>
-            <Youtube size={20} color={colors.textSecondary} style={styles.youtubeIcon} />
-            <TextInput
-              style={styles.youtubeInput}
-              placeholder="https://youtube.com/watch?v=..."
-              placeholderTextColor={colors.textSecondary}
-              value={youtubeUrl}
-              onChangeText={setYoutubeUrl}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
-          <Text style={styles.hint}>
-            Paste a YouTube video URL or video ID
-          </Text>
+          <TextInput
+            label="YouTube URL *"
+            icon={Youtube}
+            placeholder="https://youtube.com/watch?v=..."
+            value={youtubeUrl}
+            onChangeText={setYoutubeUrl}
+            autoCapitalize="none"
+            autoCorrect={false}
+            hint="Paste a YouTube video URL or video ID"
+          />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Title *</Text>
           <TextInput
-            style={styles.input}
+            label="Title *"
             placeholder="Enter video title"
-            placeholderTextColor={colors.textSecondary}
             value={title}
             onChangeText={setTitle}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Description</Text>
           <TextInput
-            style={[styles.input, styles.textArea]}
+            label="Description"
             placeholder="Enter video description"
-            placeholderTextColor={colors.textSecondary}
             value={description}
             onChangeText={setDescription}
             multiline
             numberOfLines={4}
+            style={{ height: 100, textAlignVertical: 'top' }}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Category</Text>
+          <Text style={styles.categoryLabel}>Category</Text>
           <View style={styles.categoriesContainer}>
             {CATEGORIES.map((cat) => (
               <TouchableOpacity
@@ -286,24 +222,14 @@ export default function UploadVideoScreen() {
           </View>
         </View>
 
-        <TouchableOpacity
-          style={[
-            styles.uploadButton,
-            (isLoading || !youtubeUrl.trim() || !title.trim()) && styles.uploadButtonDisabled,
-          ]}
+        <Button
+          title="Upload Video"
+          icon={Upload}
           onPress={handleUpload}
-          disabled={isLoading || !youtubeUrl.trim() || !title.trim()}
-          activeOpacity={0.7}
-        >
-          {isLoading ? (
-            <ActivityIndicator color={colors.background} />
-          ) : (
-            <>
-              <Upload size={20} color={colors.background} />
-              <Text style={styles.uploadButtonText}>Upload Video</Text>
-            </>
-          )}
-        </TouchableOpacity>
+          disabled={!youtubeUrl.trim() || !title.trim()}
+          loading={isLoading}
+          size="large"
+        />
       </ScrollView>
     </SafeAreaView>
   );
