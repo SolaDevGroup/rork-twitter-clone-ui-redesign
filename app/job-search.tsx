@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -13,6 +13,11 @@ export default function JobSearch() {
   const [location, setLocation] = useState('');
   const insets = useSafeAreaInsets();
   const { colors, primary } = useTheme();
+
+  const handleSearch = () => {
+    Keyboard.dismiss();
+    router.push('/job-listing');
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -137,6 +142,8 @@ export default function JobSearch() {
               value={jobTitle}
               onChangeText={setJobTitle}
               autoFocus
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
             />
           </View>
 
@@ -148,6 +155,8 @@ export default function JobSearch() {
               placeholderTextColor={colors.textSecondary}
               value={location}
               onChangeText={setLocation}
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
             />
           </View>
         </View>
@@ -163,9 +172,7 @@ export default function JobSearch() {
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.jobItem}
-            onPress={() => {
-              console.log('Job selected:', item.title);
-            }}
+            onPress={handleSearch}
           >
             <View style={styles.jobContent}>
               <Text style={styles.jobTitle}>{item.title}</Text>

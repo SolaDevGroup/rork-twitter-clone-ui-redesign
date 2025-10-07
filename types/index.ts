@@ -203,3 +203,16 @@ export interface JobRecommendation {
   postedAt: string;
   logo?: string;
 }
+
+export interface Job {
+  id: string;
+  title: string;
+  company: string;
+  companyHandle?: string;
+  location: string;
+  salary?: string;
+  type?: 'Full-time' | 'Part-time' | 'Contract' | 'Remote';
+  postedAt?: string;
+  logo?: string;
+  isVerified?: boolean;
+}

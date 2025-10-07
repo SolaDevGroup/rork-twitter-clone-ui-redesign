@@ -1,4 +1,4 @@
-import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short, MatchProfile, Video, LiveStream, JobRecommendation } from '@/types';
+import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short, MatchProfile, Video, LiveStream, JobRecommendation, Job } from '@/types';
 
 export const currentUser: User = {
   id: '1',
@@ -884,6 +884,108 @@ export const jobRecommendations: JobRecommendation[] = [
     salary: '$105k - $155k',
     postedAt: '6 days ago',
     logo: 'https://ui-avatars.com/api/?name=Netflix&background=E50914&color=fff&size=200',
+  },
+];
+
+export const jobListings: Job[] = [
+  {
+    id: '1',
+    title: 'Software Engineer II, Customs',
+    company: 'Flexport',
+    location: 'Amsterdam, Netherlands',
+    logo: 'https://ui-avatars.com/api/?name=Flexport&background=0C4A6E&color=fff&size=200',
+  },
+  {
+    id: '2',
+    title: 'Staff Java Software Engineer',
+    company: 'Bloomreach',
+    location: 'Slovakia / Czechia / Netherlands',
+    logo: 'https://ui-avatars.com/api/?name=B&background=FFD700&color=000&size=200',
+  },
+  {
+    id: '3',
+    title: 'Software Engineer (Delft, NL)',
+    company: 'Bentley Systems',
+    location: 'Delft, NL',
+    logo: 'https://ui-avatars.com/api/?name=B&background=000000&color=fff&size=200',
+  },
+  {
+    id: '4',
+    title: 'Senior Software Engineer, Payments',
+    company: 'Adyen',
+    companyHandle: '@adyen',
+    location: 'Amsterdam',
+    logo: 'https://ui-avatars.com/api/?name=adyen&background=0ABF53&color=fff&size=200',
+  },
+  {
+    id: '5',
+    title: 'Senior Software Engineer (Ruby)',
+    company: 'Bird',
+    location: 'Amsterdam, Netherlands',
+    logo: 'https://ui-avatars.com/api/?name=Bird&background=0EA5E9&color=fff&size=200',
+  },
+  {
+    id: '6',
+    title: 'Senior Software Engineer Governance',
+    company: 'Mendix',
+    location: 'Rotterdam',
+    logo: 'https://ui-avatars.com/api/?name=mx&background=0284C7&color=fff&size=200',
+  },
+  {
+    id: '7',
+    title: 'Software Engineer - Consulting',
+    company: 'Netcompany',
+    location: 'Amsterdam',
+    logo: 'https://ui-avatars.com/api/?name=N&background=1E3A8A&color=fff&size=200',
+  },
+  {
+    id: '8',
+    title: 'EU Citizens Only: IT security, Modeling and AI Jobs',
+    company: 'Terror Alarm',
+    companyHandle: '@Terror_Alarm',
+    location: 'Denmark, Italy, Spain, Ukraine, All EU countries',
+    salary: '€10 - €100 per hour',
+    isVerified: true,
+    logo: 'https://ui-avatars.com/api/?name=TA&background=DC2626&color=fff&size=200',
+  },
+  {
+    id: '9',
+    title: 'Minor Safety and Exploitative Content Specialist - Bilingual',
+    company: 'Discord',
+    location: 'Netherlands',
+    logo: 'https://ui-avatars.com/api/?name=Discord&background=5865F2&color=fff&size=200',
+  },
+  {
+    id: '10',
+    title: 'Account Manager - JAPAC',
+    company: 'SOCIALDATABASE',
+    companyHandle: '@socialdatabase',
+    location: 'Amsterdam',
+    isVerified: true,
+    logo: 'https://ui-avatars.com/api/?name=%23&background=000000&color=fff&size=200',
+  },
+  {
+    id: '11',
+    title: 'Back-end developer',
+    company: 'SOCIALDATABASE',
+    companyHandle: '@socialdatabase',
+    location: 'Amsterdam',
+    isVerified: true,
+    logo: 'https://ui-avatars.com/api/?name=%23&background=000000&color=fff&size=200',
+  },
+  {
+    id: '12',
+    title: 'Amsterdam - (Senior) Consultant Tax Compliance (Amsterdam, NL, 1083 HP)',
+    company: 'EY',
+    location: 'Amsterdam, NL, 1083 HP',
+    logo: 'https://ui-avatars.com/api/?name=EY&background=FFE600&color=000&size=200',
+  },
+  {
+    id: '13',
+    title: '(Senior) Consultant International',
+    company: 'PwC',
+    location: 'Amsterdam',
+    logo: 'https://ui-avatars.com/api/?name=PwC&background=D04A02&color=fff&size=200',
   },
 ];
 
