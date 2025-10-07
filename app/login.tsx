@@ -104,36 +104,7 @@ export default function Login() {
       fontSize: fontSizes.md,
       fontWeight: '600' as const,
     },
-    dividerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 20,
-    },
-    divider: {
-      flex: 1,
-      height: 1,
-      backgroundColor: colors.border,
-    },
-    dividerText: {
-      marginHorizontal: 16,
-      color: colors.textSecondary,
-      fontSize: fontSizes.sm,
-    },
-    socialButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.inputBackground,
-      borderRadius: 24,
-      paddingVertical: 12,
-      marginBottom: 12,
-    },
-    socialButtonText: {
-      marginLeft: 8,
-      fontSize: fontSizes.md,
-      fontWeight: '500' as const,
-      color: colors.text,
-    },
+
     footer: {
       flexDirection: 'row',
       justifyContent: 'center',
@@ -248,21 +219,7 @@ export default function Login() {
               <Text style={styles.loginButtonText}>Log in</Text>
             </TouchableOpacity>
 
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>or</Text>
-              <View style={styles.divider} />
-            </View>
 
-            <TouchableOpacity style={styles.socialButton}>
-              <Icon name="g-mobiledata" size={24} color={colors.text} />
-              <Text style={styles.socialButtonText}>Continue with Google</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.socialButton}>
-              <Icon name="apple" size={24} color={colors.text} />
-              <Text style={styles.socialButtonText}>Continue with Apple</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.footer}>
