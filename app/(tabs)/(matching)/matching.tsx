@@ -194,40 +194,45 @@ export default function Matching() {
           </>
         )}
 
-        <BlurView intensity={16} style={styles.cardInfo}>
-          <View style={styles.infoHeader}>
-            <View style={styles.nameRow}>
-              <Text style={[styles.name, { color: colorConstants.white }]}>{profile.name}</Text>
-              <Text style={[styles.age, { color: colorConstants.white }]}>{profile.age}</Text>
-            </View>
-            <View style={styles.locationRow}>
-              <MapPin size={14} color={colorConstants.white} />
-              <Text style={[styles.location, { color: colorConstants.white }]}>
-                {profile.distance} km away
-              </Text>
-            </View>
-          </View>
-
-          <Text style={[styles.bio, { color: colorConstants.white }]} numberOfLines={2}>
-            {profile.bio}
-          </Text>
-
-          {profile.occupation && (
-            <Text style={[styles.occupation, { color: colorConstants.white }]}>
-              {profile.occupation}
-              {profile.company && ` at ${profile.company}`}
-              {profile.school && ` • ${profile.school}`}
-            </Text>
-          )}
-
-          <View style={styles.interests}>
-            {profile.interests.slice(0, 3).map((interest, idx) => (
-              <View key={idx} style={[styles.interestTag, { borderColor: colorConstants.white }]}>
-                <Text style={[styles.interestText, { color: colorConstants.white }]}>{interest}</Text>
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => router.push(`/(tabs)/(profile)/${profile.id}`)}
+        >
+          <BlurView intensity={16} style={styles.cardInfo}>
+            <View style={styles.infoHeader}>
+              <View style={styles.nameRow}>
+                <Text style={[styles.name, { color: colorConstants.white }]}>{profile.name}</Text>
+                <Text style={[styles.age, { color: colorConstants.white }]}>{profile.age}</Text>
               </View>
-            ))}
-          </View>
-        </BlurView>
+              <View style={styles.locationRow}>
+                <MapPin size={14} color={colorConstants.white} />
+                <Text style={[styles.location, { color: colorConstants.white }]}>
+                  {profile.distance} km away
+                </Text>
+              </View>
+            </View>
+
+            <Text style={[styles.bio, { color: colorConstants.white }]} numberOfLines={2}>
+              {profile.bio}
+            </Text>
+
+            {profile.occupation && (
+              <Text style={[styles.occupation, { color: colorConstants.white }]}>
+                {profile.occupation}
+                {profile.company && ` at ${profile.company}`}
+                {profile.school && ` • ${profile.school}`}
+              </Text>
+            )}
+
+            <View style={styles.interests}>
+              {profile.interests.slice(0, 3).map((interest, idx) => (
+                <View key={idx} style={[styles.interestTag, { borderColor: colorConstants.white }]}>
+                  <Text style={[styles.interestText, { color: colorConstants.white }]}>{interest}</Text>
+                </View>
+              ))}
+            </View>
+          </BlurView>
+        </TouchableOpacity>
       </Animated.View>
     );
   };

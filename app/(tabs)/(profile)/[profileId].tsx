@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { MapPin, Calendar, MoreHorizontal } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { MapPin, Calendar, MoreHorizontal, Heart, X, Info } from 'lucide-react-native';
 import { PostCard } from '@/components/PostCard';
-import { users, posts } from '@/mocks/data';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { users, posts, matchProfiles } from '@/mocks/data';
+import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { colors as colorConstants } from '@/constants/colors';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function UserProfileScreen() {
   const { profileId } = useLocalSearchParams();
@@ -14,13 +17,292 @@ export default function UserProfileScreen() {
   const [activeTab, setActiveTab] = useState<'posts' | 'retweets' | 'mentions'>('posts');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'engagement'>('recent');
   const [showImagesOnly, setShowImagesOnly] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   
   const user = users.find(u => u.id === profileId);
+  const matchProfile = matchProfiles.find(p => p.id === profileId);
 
-  if (!user) {
+  if (!user && !matchProfile) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: colors.text }}>User not found</Text>
+        <Text style={{ color: colors.text }}>Profile not found</Text>
+      </View>
+    );
+  }
+
+  if (matchProfile) {
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        backgroundColor: colors.background,
+      },
+      imageContainer: {
+        width: SCREEN_WIDTH,
+        height: SCREEN_WIDTH * 1.3,
+        position: 'relative',
+      },
+      profileImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+      },
+      imageIndicators: {
+        position: 'absolute',
+        top: 12,
+        left: 12,
+        right: 12,
+        flexDirection: 'row',
+        gap: 4,
+        zIndex: 10,
+      },
+      indicator: {
+        flex: 1,
+        height: 3,
+        borderRadius: 2,
+      },
+      imageTouchLeft: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: '50%',
+        zIndex: 5,
+      },
+      imageTouchRight: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: '50%',
+        zIndex: 5,
+      },
+      profileInfo: {
+        padding: SCREEN_HORIZONTAL_PADDING,
+      },
+      nameRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 4,
+      },
+      name: {
+        fontSize: 28,
+        fontFamily: fonts.semiBold,
+        color: colors.text,
+      },
+      age: {
+        fontSize: 28,
+        fontFamily: fonts.regular,
+        color: colors.text,
+      },
+      locationRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        marginBottom: 16,
+      },
+      location: {
+        fontSize: 16,
+        fontFamily: fonts.regular,
+        color: colors.textSecondary,
+      },
+      bio: {
+        fontSize: 16,
+        fontFamily: fonts.regular,
+        color: colors.text,
+        lineHeight: 24,
+        marginBottom: 16,
+      },
+      occupation: {
+        fontSize: 16,
+        fontFamily: fonts.medium,
+        color: colors.text,
+        marginBottom: 16,
+      },
+      sectionTitle: {
+        fontSize: 18,
+        fontFamily: fonts.semiBold,
+        color: colors.text,
+        marginBottom: 12,
+      },
+      interests: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+        marginBottom: 24,
+      },
+      interestTag: {
+        backgroundColor: colors.surface,
+        borderRadius: 1000,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: colors.border,
+      },
+      interestText: {
+        fontSize: 14,
+        fontFamily: fonts.medium,
+        color: colors.text,
+      },
+      actionButtons: {
+        flexDirection: 'row',
+        gap: 12,
+        paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+        paddingBottom: 24,
+      },
+      actionButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 14,
+        borderRadius: 1000,
+        borderWidth: 2,
+      },
+      likeButton: {
+        backgroundColor: colorConstants.primary,
+        borderColor: colorConstants.primary,
+      },
+      passButton: {
+        backgroundColor: 'transparent',
+        borderColor: colors.border,
+      },
+      buttonText: {
+        fontSize: 16,
+        fontFamily: fonts.semiBold,
+      },
+      likeButtonText: {
+        color: colorConstants.white,
+      },
+      passButtonText: {
+        color: colors.text,
+      },
+      reportButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 12,
+        marginHorizontal: SCREEN_HORIZONTAL_PADDING,
+        marginBottom: 24,
+      },
+      reportText: {
+        fontSize: 14,
+        fontFamily: fonts.medium,
+        color: colors.textSecondary,
+      },
+    });
+
+    return (
+      <View style={styles.container}>
+        <Stack.Screen 
+          options={{ 
+            title: matchProfile.name,
+            headerBackTitle: 'Back',
+          }} 
+        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.imageContainer}>
+            <Image 
+              source={{ uri: matchProfile.images[currentImageIndex] }} 
+              style={styles.profileImage} 
+            />
+            
+            <View style={styles.imageIndicators}>
+              {matchProfile.images.map((_, idx) => (
+                <View
+                  key={idx}
+                  style={[
+                    styles.indicator,
+                    {
+                      backgroundColor:
+                        idx === currentImageIndex ? colorConstants.white : 'rgba(255, 255, 255, 0.3)',
+                    },
+                  ]}
+                />
+              ))}
+            </View>
+
+            <TouchableOpacity
+              style={styles.imageTouchLeft}
+              onPress={() => {
+                if (currentImageIndex > 0) {
+                  setCurrentImageIndex(currentImageIndex - 1);
+                }
+              }}
+              activeOpacity={1}
+            />
+            <TouchableOpacity
+              style={styles.imageTouchRight}
+              onPress={() => {
+                if (currentImageIndex < matchProfile.images.length - 1) {
+                  setCurrentImageIndex(currentImageIndex + 1);
+                }
+              }}
+              activeOpacity={1}
+            />
+          </View>
+
+          <View style={styles.profileInfo}>
+            <View style={styles.nameRow}>
+              <Text style={styles.name}>{matchProfile.name}</Text>
+              <Text style={styles.age}>{matchProfile.age}</Text>
+            </View>
+
+            <View style={styles.locationRow}>
+              <MapPin size={16} color={colors.textSecondary} />
+              <Text style={styles.location}>
+                {matchProfile.location} • {matchProfile.distance} km away
+              </Text>
+            </View>
+
+            <Text style={styles.bio}>{matchProfile.bio}</Text>
+
+            {matchProfile.occupation && (
+              <Text style={styles.occupation}>
+                {matchProfile.occupation}
+                {matchProfile.company && ` at ${matchProfile.company}`}
+                {matchProfile.school && ` • ${matchProfile.school}`}
+              </Text>
+            )}
+
+            <Text style={styles.sectionTitle}>Interests</Text>
+            <View style={styles.interests}>
+              {matchProfile.interests.map((interest, idx) => (
+                <View key={idx} style={styles.interestTag}>
+                  <Text style={styles.interestText}>{interest}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.actionButtons}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.passButton]}
+              onPress={() => router.back()}
+            >
+              <X size={24} color={colors.text} />
+              <Text style={[styles.buttonText, styles.passButtonText]}>Pass</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.likeButton]}
+              onPress={() => {
+                console.log('Liked:', matchProfile.name);
+                router.back();
+              }}
+            >
+              <Heart size={24} color={colorConstants.white} />
+              <Text style={[styles.buttonText, styles.likeButtonText]}>Like</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.reportButton}>
+            <Info size={16} color={colors.textSecondary} />
+            <Text style={styles.reportText}>Report {matchProfile.name}</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     );
   }
@@ -261,6 +543,8 @@ export default function UserProfileScreen() {
       flex: 1,
     },
   });
+
+  if (!user) return null;
 
   return (
     <View style={styles.container}>
