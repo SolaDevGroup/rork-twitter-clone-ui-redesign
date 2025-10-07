@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
-import { MapPin, Calendar, MoreHorizontal, Heart, X, Info } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { MapPin, Calendar, MoreHorizontal, Heart, X, Info, ChevronDown } from 'lucide-react-native';
 import { PostCard } from '@/components/PostCard';
 import { users, posts, matchProfiles } from '@/mocks/data';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
@@ -18,6 +18,7 @@ export default function UserProfileScreen() {
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'engagement'>('recent');
   const [showImagesOnly, setShowImagesOnly] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
   
   const user = users.find(u => u.id === profileId);
   const matchProfile = matchProfiles.find(p => p.id === profileId);
@@ -459,32 +460,42 @@ export default function UserProfileScreen() {
     },
     tabsContainer: {
       flexDirection: 'row',
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingVertical: spacing.md,
+      gap: spacing.sm,
       borderTopWidth: 1,
       borderTopColor: colors.border,
     },
     tab: {
-      flex: 1,
+      flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: spacing.lg,
-      borderBottomWidth: 2,
-      borderBottomColor: 'transparent',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.lg,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     activeTab: {
-      borderBottomColor: primary,
+      backgroundColor: primary,
+      borderColor: primary,
     },
     tabText: {
-      fontSize: fontSizes.base,
+      fontSize: fontSizes.sm,
       fontFamily: fonts.medium,
       color: colors.textSecondary,
     },
     activeTabText: {
-      color: colors.text,
+      color: '#FFFFFF',
     },
     tabCount: {
       fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
+      fontFamily: fonts.medium,
       color: colors.textSecondary,
-      marginTop: spacing.xs,
+    },
+    activeTabCount: {
+      color: '#FFFFFF',
     },
     filterContainer: {
       flexDirection: 'row',
@@ -495,29 +506,51 @@ export default function UserProfileScreen() {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
-    sortButtons: {
+    sortDropdownButton: {
       flexDirection: 'row',
-      gap: spacing.md,
-    },
-    sortButton: {
+      alignItems: 'center',
+      gap: spacing.sm,
       paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.sm,
-      borderRadius: borderRadius.xl,
+      height: 32,
+      borderRadius: 16,
       backgroundColor: colors.inputBackground,
       borderWidth: 1,
       borderColor: colors.border,
     },
-    activeSortButton: {
-      backgroundColor: primary,
-      borderColor: primary,
-    },
-    sortButtonText: {
+    sortDropdownText: {
       fontSize: fontSizes.sm,
       fontFamily: fonts.medium,
-      color: colors.textSecondary,
+      color: colors.text,
     },
-    activeSortButtonText: {
-      color: '#FFFFFF',
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-end',
+    },
+    dropdownContainer: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: borderRadius.xl,
+      borderTopRightRadius: borderRadius.xl,
+      paddingVertical: spacing.lg,
+    },
+    dropdownItem: {
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingVertical: spacing.lg,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    dropdownItemText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+    dropdownItemSelected: {
+      color: primary,
+    },
+    dropdownCheckmark: {
+      fontSize: fontSizes.lg,
+      color: primary,
     },
     imageFilter: {
       paddingHorizontal: spacing.lg,
@@ -609,45 +642,34 @@ export default function UserProfileScreen() {
             onPress={() => setActiveTab('posts')}
           >
             <Text style={[styles.tabText, activeTab === 'posts' && styles.activeTabText]}>Posts</Text>
-            <Text style={styles.tabCount}>{userPosts.length}</Text>
+            <Text style={[styles.tabCount, activeTab === 'posts' && styles.activeTabCount]}>{userPosts.length}</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.tab, activeTab === 'retweets' && styles.activeTab]}
             onPress={() => setActiveTab('retweets')}
           >
             <Text style={[styles.tabText, activeTab === 'retweets' && styles.activeTabText]}>Retweets</Text>
-            <Text style={styles.tabCount}>{userRetweets.length}</Text>
+            <Text style={[styles.tabCount, activeTab === 'retweets' && styles.activeTabCount]}>{userRetweets.length}</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.tab, activeTab === 'mentions' && styles.activeTab]}
             onPress={() => setActiveTab('mentions')}
           >
             <Text style={[styles.tabText, activeTab === 'mentions' && styles.activeTabText]}>Mentions</Text>
-            <Text style={styles.tabCount}>{userMentions.length}</Text>
+            <Text style={[styles.tabCount, activeTab === 'mentions' && styles.activeTabCount]}>{userMentions.length}</Text>
           </TouchableOpacity>
         </View>
         
         <View style={styles.filterContainer}>
-          <View style={styles.sortButtons}>
-            <TouchableOpacity 
-              style={[styles.sortButton, sortBy === 'recent' && styles.activeSortButton]}
-              onPress={() => setSortBy('recent')}
-            >
-              <Text style={[styles.sortButtonText, sortBy === 'recent' && styles.activeSortButtonText]}>Recent</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.sortButton, sortBy === 'oldest' && styles.activeSortButton]}
-              onPress={() => setSortBy('oldest')}
-            >
-              <Text style={[styles.sortButtonText, sortBy === 'oldest' && styles.activeSortButtonText]}>Oldest</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.sortButton, sortBy === 'engagement' && styles.activeSortButton]}
-              onPress={() => setSortBy('engagement')}
-            >
-              <Text style={[styles.sortButtonText, sortBy === 'engagement' && styles.activeSortButtonText]}>Top</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity 
+            style={styles.sortDropdownButton}
+            onPress={() => setShowSortDropdown(true)}
+          >
+            <Text style={styles.sortDropdownText}>
+              {sortBy === 'recent' ? 'Recent' : sortBy === 'oldest' ? 'Oldest' : 'Top'}
+            </Text>
+            <ChevronDown size={16} color={colors.text} />
+          </TouchableOpacity>
           
           <TouchableOpacity 
             style={[styles.imageFilter, showImagesOnly && styles.activeImageFilter]}
@@ -656,6 +678,52 @@ export default function UserProfileScreen() {
             <Text style={[styles.imageFilterText, showImagesOnly && styles.activeImageFilterText]}>Images only</Text>
           </TouchableOpacity>
         </View>
+        
+        <Modal
+          visible={showSortDropdown}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowSortDropdown(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowSortDropdown(false)}
+          >
+            <View style={styles.dropdownContainer}>
+              <TouchableOpacity 
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSortBy('recent');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.dropdownItemText, sortBy === 'recent' && styles.dropdownItemSelected]}>Recent</Text>
+                {sortBy === 'recent' && <Text style={styles.dropdownCheckmark}>✓</Text>}
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSortBy('oldest');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.dropdownItemText, sortBy === 'oldest' && styles.dropdownItemSelected]}>Oldest</Text>
+                {sortBy === 'oldest' && <Text style={styles.dropdownCheckmark}>✓</Text>}
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSortBy('engagement');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.dropdownItemText, sortBy === 'engagement' && styles.dropdownItemSelected]}>Top</Text>
+                {sortBy === 'engagement' && <Text style={styles.dropdownCheckmark}>✓</Text>}
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
         
         <View style={styles.postsSection}>
           {getFilteredPosts().map(post => (
