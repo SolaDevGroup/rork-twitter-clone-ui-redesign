@@ -33,36 +33,49 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const translateX = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 5;
+        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderGrant: () => {
+        translateX.setOffset(0);
       },
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dx > 0 && gestureState.dx < 100) {
-          translateX.setValue(gestureState.dx);
-        } else if (gestureState.dx < 0 && gestureState.dx > -100) {
-          translateX.setValue(gestureState.dx);
-        }
+        translateX.setValue(gestureState.dx);
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx > 50) {
-          Animated.spring(translateX, {
+        translateX.flattenOffset();
+        
+        if (gestureState.dx > 80) {
+          Animated.timing(translateX, {
             toValue: 0,
+            duration: 200,
             useNativeDriver: true,
           }).start();
           router.push(`/comments?postId=${post.id}`);
-        } else if (gestureState.dx < -50) {
-          Animated.spring(translateX, {
+        } else if (gestureState.dx < -80) {
+          Animated.timing(translateX, {
             toValue: 0,
+            duration: 200,
             useNativeDriver: true,
           }).start();
           handleShare();
         } else {
           Animated.spring(translateX, {
             toValue: 0,
+            friction: 7,
+            tension: 40,
             useNativeDriver: true,
           }).start();
         }
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(translateX, {
+          toValue: 0,
+          friction: 7,
+          tension: 40,
+          useNativeDriver: true,
+        }).start();
       },
     })
   ).current;
