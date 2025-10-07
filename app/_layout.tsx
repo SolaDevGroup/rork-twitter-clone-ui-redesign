@@ -73,6 +73,9 @@ function RootLayoutNav() {
       <Stack.Screen name="video-listing" options={{ headerShown: true }} />
       <Stack.Screen name="upload-video" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="signup" options={{ headerShown: false }} />
+      <Stack.Screen name="job-search" options={{ headerShown: false }} />
+      <Stack.Screen name="job-listing" options={{ headerShown: false }} />
+      <Stack.Screen name="job-detail" options={{ headerShown: false }} />
     </Stack>
   );
 }
