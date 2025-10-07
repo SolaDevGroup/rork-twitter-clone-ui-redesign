@@ -215,4 +215,10 @@ export interface Job {
   postedAt?: string;
   logo?: string;
   isVerified?: boolean;
+  description?: string;
+  aboutCompany?: string;
+  requirements?: string[];
+  responsibilities?: string[];
+  benefits?: string[];
+  department?: string;
 }

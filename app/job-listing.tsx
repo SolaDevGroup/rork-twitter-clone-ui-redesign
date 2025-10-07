@@ -152,7 +152,7 @@ export default function JobListing() {
     <TouchableOpacity 
       style={styles.jobItem}
       onPress={() => {
-        console.log('Job selected:', item.title);
+        router.push(`/job-detail?id=${item.id}`);
       }}
     >
       <View style={styles.logoContainer}>

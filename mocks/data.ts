@@ -916,6 +916,27 @@ export const jobListings: Job[] = [
     companyHandle: '@adyen',
     location: 'Amsterdam',
     logo: 'https://ui-avatars.com/api/?name=adyen&background=0ABF53&color=fff&size=200',
+    department: 'Development',
+    description: 'This is Adyen',
+    aboutCompany: 'Adyen provides payments, data, and financial products in a single solution for customers like Meta, Uber, H&M, and Microsoft - making us the financial technology platform of choice. At Adyen, everything we do is engineered for ambition.\n\nFor our teams, we create an environment with opportunities for our people to succeed, backed by the culture and support to ensure they are enabled to truly own their careers. We are motivated individuals who tackle unique technical challenges at scale and solve them as a team. Together, we deliver innovative and ethical solutions that help businesses achieve their ambitions faster.',
+    responsibilities: [
+      'As Java Software Engineer you will build and improve integrations at a global scale for in-store and online payments',
+      'Design and develop new features and improvements',
+      'Collaborate with cross-functional teams',
+      'Ensure code quality and maintainability'
+    ],
+    requirements: [
+      '5+ years of experience in software development',
+      'Strong knowledge of Java and related technologies',
+      'Experience with payment systems',
+      'Excellent problem-solving skills'
+    ],
+    benefits: [
+      'Competitive salary',
+      'Health insurance',
+      'Professional development opportunities',
+      'Flexible working hours'
+    ],
   },
   {
     id: '5',
