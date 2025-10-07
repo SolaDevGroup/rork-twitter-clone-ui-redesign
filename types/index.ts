@@ -59,6 +59,23 @@ export interface Message {
   isVerified?: boolean;
 }
 
+export interface Conversation {
+  id: string;
+  type: '1on1' | 'group' | 'club';
+  user?: User;
+  name?: string;
+  avatar?: string;
+  members?: User[];
+  topic?: string;
+  lastMessage: string;
+  timestamp: string;
+  unreadCount: number;
+  isOnline?: boolean;
+  hasDoubleCheck?: boolean;
+  yourTurn?: boolean;
+  isPinned?: boolean;
+}
+
 export interface ChatMessage {
   id: string;
   content: string;

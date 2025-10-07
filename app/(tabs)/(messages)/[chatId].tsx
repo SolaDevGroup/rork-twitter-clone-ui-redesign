@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Platform, Alert, ActionSheetIOS } from 'react-native';
 import { Send, Plus, Mic, Image as ImageIcon, Video, Smile, BarChart3, Heart, X } from 'lucide-react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { messages } from '@/mocks/data';
+import { conversations } from '@/mocks/data';
 import { ChatMessage } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
@@ -34,7 +34,7 @@ const mockChatMessages: ChatMessage[] = [
 ];
 
 export default function ChatScreen() {
-  const { chatId } = useLocalSearchParams();
+  const { chatId, type } = useLocalSearchParams<{ chatId: string; type?: string }>();
   const { colors, primary, error } = useTheme();
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState(mockChatMessages);
@@ -44,7 +44,12 @@ export default function ChatScreen() {
   const [showAttachments, setShowAttachments] = useState(false);
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
 
-  const user = messages.find(m => m.id === chatId)?.user;
+  const conversation = conversations.find(c => c.id === chatId);
+  const user = conversation?.type === '1on1' ? conversation.user : undefined;
+  const conversationType = type || conversation?.type || '1on1';
+  const displayName = conversation?.type === '1on1' ? conversation.user?.name : conversation?.name;
+  const displayAvatar = conversation?.type === '1on1' ? conversation.user?.avatar : conversation?.avatar;
+  const memberCount = conversation?.members?.length || 0;
 
   const handleSend = () => {
     if (message.trim()) {
@@ -351,10 +356,28 @@ export default function ChatScreen() {
       borderRadius: 20,
       marginRight: spacing.lg,
     },
+    headerInfo: {
+      flex: 1,
+    },
+    headerNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
     userName: {
       fontSize: fontSizes.md,
       fontFamily: fonts.semiBold,
       color: colors.text,
+    },
+    memberCountBadge: {
+      fontSize: fontSizes.xs,
+      fontFamily: fonts.semiBold,
+      color: colors.background,
+      backgroundColor: primary,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: borderRadius.lg,
+      overflow: 'hidden',
     },
     username: {
       fontSize: fontSizes.base,
@@ -552,15 +575,33 @@ export default function ChatScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.header}>
-        <Image source={{ uri: user?.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
-        <View>
-          <Text style={styles.userName}>{user?.name}</Text>
-          <Text style={styles.username}>@{user?.username}</Text>
+        <Image source={{ uri: displayAvatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
+        <View style={styles.headerInfo}>
+          <View style={styles.headerNameRow}>
+            <Text style={styles.userName}>{displayName}</Text>
+            {conversationType !== '1on1' && memberCount > 0 && (
+              <Text style={styles.memberCountBadge}>{memberCount}</Text>
+            )}
+          </View>
+          {conversationType === '1on1' && user?.username && (
+            <Text style={styles.username}>@{user.username}</Text>
+          )}
+          {conversationType === 'group' && (
+            <Text style={styles.username}>Group · {memberCount} members</Text>
+          )}
+          {conversationType === 'club' && (
+            <Text style={styles.username}>Club · {memberCount} members</Text>
+          )}
         </View>
       </View>
 
       <Text style={styles.notice}>
-        This is the beginning of your conversation with {user?.name}
+        {conversationType === '1on1' 
+          ? `This is the beginning of your conversation with ${displayName}`
+          : conversationType === 'group'
+          ? `Welcome to ${displayName} group`
+          : `Welcome to ${displayName} club`
+        }
       </Text>
 
       <FlatList
@@ -574,7 +615,7 @@ export default function ChatScreen() {
         <View style={styles.replyBar}>
           <View style={styles.replyInfo}>
             <Text style={styles.replyLabel}>
-              {editingMessage ? 'Editing message' : `Replying to ${replyingTo?.isSent ? 'You' : user?.name}`}
+              {editingMessage ? 'Editing message' : `Replying to ${replyingTo?.isSent ? 'You' : displayName}`}
             </Text>
             <Text style={styles.replyPreview} numberOfLines={1}>
               {(editingMessage || replyingTo)?.content}

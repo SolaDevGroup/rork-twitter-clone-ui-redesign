@@ -1,133 +1,86 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Search, Briefcase, MessageCircle, Pin, CheckCheck, MoreVertical } from 'lucide-react-native';
-import { currentUser } from '@/mocks/data';
+import { currentUser, conversations } from '@/mocks/data';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { fonts, fontSizes, spacing, borderRadius } from '@/constants/fonts';
 
-const pinnedConversations = [
-  {
-    id: 'p1',
-    user: {
-      name: 'Viktor Sola',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
-    },
-    topic: 'Looking for Jam Session',
-    lastMessage: 'Heyy, how are you Julian?',
-    timestamp: '10:55 PM',
-    unreadCount: 12,
-    isOnline: true,
-    hasDoubleCheck: true,
-  },
-  {
-    id: 'p2',
-    user: {
-      name: 'Sarah Chen',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
-    },
-    topic: 'Looking for Vocalist',
-    lastMessage: 'I can do the session tomorrow',
-    timestamp: '9:30 PM',
-    unreadCount: 3,
-    isOnline: false,
-    hasDoubleCheck: true,
-  },
-];
 
-const allConversations = [
-  {
-    id: 'c1',
-    user: {
-      name: 'Alex Thompson',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-      isVerified: true,
-    },
-    topic: 'Looking for Drummer',
-    lastMessage: 'What style do you usually play?',
-    timestamp: '8:45 PM',
-    unreadCount: 2,
-    isOnline: false,
-    hasDoubleCheck: true,
-    yourTurn: true,
-  },
-  {
-    id: 'c2',
-    user: {
-      name: 'Emma Wilson',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-      isVerified: false,
-    },
-    topic: 'Studio Recording',
-    lastMessage: 'The studio is booked for Friday',
-    timestamp: '7:20 PM',
-    unreadCount: 0,
-    isOnline: true,
-    hasDoubleCheck: true,
-  },
-];
 
 export default function Messages() {
   const [activeTab, setActiveTab] = useState<'1on1' | 'groups' | 'clubs'>('1on1');
   const insets = useSafeAreaInsets();
   const { colors, primary, success } = useTheme();
 
-  const renderConversationItem = ({ item }: { item: any }) => (
-    <TouchableOpacity 
-      style={styles.conversationItem}
-      onPress={() => router.push(`/(tabs)/(messages)/${item.id}`)}
-    >
-      <View style={[styles.avatarContainer, item.isOnline && { backgroundColor: success }]}>
-        <Image 
-          source={{ uri: item.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} 
-          style={styles.avatar}
-        />
-      </View>
-      <View style={styles.conversationContent}>
-        <View style={styles.topRow}>
-          <View style={styles.topicContainer}>
-            <Text style={styles.topicText}>{item.topic}</Text>
+  const filteredConversations = conversations.filter(conv => conv.type === activeTab);
+  const pinnedConversations = filteredConversations.filter(conv => conv.isPinned);
+  const allConversations = filteredConversations.filter(conv => !conv.isPinned);
+
+  const renderConversationItem = ({ item }: { item: any }) => {
+    const displayName = item.type === '1on1' ? item.user?.name : item.name;
+    const displayAvatar = item.type === '1on1' ? item.user?.avatar : item.avatar;
+    const isVerified = item.type === '1on1' ? item.user?.isVerified : false;
+    const memberCount = item.members?.length || 0;
+
+    return (
+      <TouchableOpacity 
+        style={styles.conversationItem}
+        onPress={() => router.push(`/(tabs)/(messages)/${item.id}?type=${item.type}`)}
+      >
+        <View style={[styles.avatarContainer, item.isOnline && { backgroundColor: success }]}>
+          <Image 
+            source={{ uri: displayAvatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} 
+            style={styles.avatar}
+          />
+        </View>
+        <View style={styles.conversationContent}>
+          <View style={styles.topRow}>
+            <View style={styles.topicContainer}>
+              <Text style={styles.topicText}>{item.topic}</Text>
+            </View>
+            {item.yourTurn && (
+              <View style={[styles.yourTurnBadge, { backgroundColor: primary }]}>
+                <Text style={styles.yourTurnText}>Your Turn</Text>
+              </View>
+            )}
           </View>
-          {item.yourTurn && (
-            <View style={[styles.yourTurnBadge, { backgroundColor: primary }]}>
-              <Text style={styles.yourTurnText}>Your Turn</Text>
+          <View style={styles.bottomRow}>
+            <View style={styles.leftBottomContent}>
+              <View style={styles.userNameRow}>
+                <Text style={styles.userName}>{displayName}</Text>
+                {isVerified && (
+                  <View style={styles.verifiedIcon}>
+                    <CheckCheck size={12} color={primary} />
+                  </View>
+                )}
+                {item.type !== '1on1' && memberCount > 0 && (
+                  <Text style={styles.memberCount}>· {memberCount} members</Text>
+                )}
+              </View>
+              <View style={styles.messageRow}>
+                <View style={[styles.messageIndicator, { backgroundColor: primary }]} />
+                <Text style={styles.lastMessage} numberOfLines={1}>
+                  {item.lastMessage}
+                </Text>
+                <View style={styles.messageSeparator} />
+                <CheckCheck size={12} color={primary} />
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={styles.rightColumn}>
+          <Text style={styles.timestamp}>{item.timestamp}</Text>
+          {item.unreadCount > 0 && (
+            <View style={[styles.unreadBadge, { backgroundColor: primary }]}>
+              <Text style={styles.unreadCount}>{item.unreadCount}</Text>
             </View>
           )}
         </View>
-        <View style={styles.bottomRow}>
-          <View style={styles.leftBottomContent}>
-            <View style={styles.userNameRow}>
-              <Text style={styles.userName}>{item.user.name}</Text>
-              {item.user.isVerified && (
-                <View style={styles.verifiedIcon}>
-                  <CheckCheck size={12} color={primary} />
-                </View>
-              )}
-            </View>
-            <View style={styles.messageRow}>
-              <View style={[styles.messageIndicator, { backgroundColor: primary }]} />
-              <Text style={styles.lastMessage} numberOfLines={1}>
-                {item.lastMessage}
-              </Text>
-              <View style={styles.messageSeparator} />
-              <CheckCheck size={12} color={primary} />
-            </View>
-          </View>
-        </View>
-      </View>
-      <View style={styles.rightColumn}>
-        <Text style={styles.timestamp}>{item.timestamp}</Text>
-        {item.unreadCount > 0 && (
-          <View style={[styles.unreadBadge, { backgroundColor: primary }]}>
-            <Text style={styles.unreadCount}>{item.unreadCount}</Text>
-          </View>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -353,6 +306,12 @@ export default function Messages() {
       fontFamily: fonts.semiBold,
       color: colors.text,
     },
+    memberCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginLeft: spacing.xs,
+    },
     verifiedIcon: {
       width: 16,
       height: 16,
@@ -408,7 +367,18 @@ export default function Messages() {
       color: colors.background,
       textAlign: 'center',
     },
-
+    emptyState: {
+      padding: spacing.xl,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 200,
+    },
+    emptyStateText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
   });
 
   return (
@@ -419,35 +389,47 @@ export default function Messages() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scrollContent, { paddingTop: 151 }]}
       >
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Pin size={12} color={colors.textSecondary} />
-            <Text style={styles.sectionTitle}>ALL PINNED</Text>
-            <Text style={styles.sectionCount}>{pinnedConversations.length}</Text>
+        {pinnedConversations.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Pin size={12} color={colors.textSecondary} />
+              <Text style={styles.sectionTitle}>ALL PINNED</Text>
+              <Text style={styles.sectionCount}>{pinnedConversations.length}</Text>
+            </View>
+            <View style={styles.sectionContent}>
+              {pinnedConversations.map((item) => (
+                <View key={item.id}>
+                  {renderConversationItem({ item })}
+                </View>
+              ))}
+            </View>
           </View>
-          <View style={styles.sectionContent}>
-            {pinnedConversations.map((item) => (
-              <View key={item.id}>
-                {renderConversationItem({ item })}
-              </View>
-            ))}
-          </View>
-        </View>
+        )}
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MessageCircle size={12} color={colors.textSecondary} />
-            <Text style={styles.sectionTitle}>ALL CONVERSATIONS</Text>
-            <Text style={styles.sectionCount}>{allConversations.length}</Text>
+        {allConversations.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <MessageCircle size={12} color={colors.textSecondary} />
+              <Text style={styles.sectionTitle}>ALL CONVERSATIONS</Text>
+              <Text style={styles.sectionCount}>{allConversations.length}</Text>
+            </View>
+            <View style={styles.sectionContent}>
+              {allConversations.map((item) => (
+                <View key={item.id}>
+                  {renderConversationItem({ item })}
+                </View>
+              ))}
+            </View>
           </View>
-          <View style={styles.sectionContent}>
-            {allConversations.map((item) => (
-              <View key={item.id}>
-                {renderConversationItem({ item })}
-              </View>
-            ))}
+        )}
+
+        {filteredConversations.length === 0 && (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>
+              No {activeTab === '1on1' ? '1-on-1' : activeTab} conversations yet
+            </Text>
           </View>
-        </View>
+        )}
       </ScrollView>
 
       {/* Fixed Header */}
