@@ -33,8 +33,9 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const translateX = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
     PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+        return Math.abs(gestureState.dx) > 5;
       },
       onPanResponderMove: (_, gestureState) => {
         if (gestureState.dx > 0 && gestureState.dx < 100) {
