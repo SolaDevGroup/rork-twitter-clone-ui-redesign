@@ -965,7 +965,7 @@ export const jobListings: Job[] = [
     location: 'Amsterdam',
     logo: 'https://ui-avatars.com/api/?name=adyen&background=0ABF53&color=fff&size=200',
     department: 'Development',
-    description: 'This is Adyen',
+    description: 'We are looking for a Senior Software Engineer to join our Payments team. You will be responsible for building and improving integrations at a global scale for in-store and online payments. This role offers the opportunity to work with cutting-edge payment technologies and contribute to solutions used by major global brands.',
     aboutCompany: 'Adyen provides payments, data, and financial products in a single solution for customers like Meta, Uber, H&M, and Microsoft - making us the financial technology platform of choice. At Adyen, everything we do is engineered for ambition.\n\nFor our teams, we create an environment with opportunities for our people to succeed, backed by the culture and support to ensure they are enabled to truly own their careers. We are motivated individuals who tackle unique technical challenges at scale and solve them as a team. Together, we deliver innovative and ethical solutions that help businesses achieve their ambitions faster.',
     responsibilities: [
       'As Java Software Engineer you will build and improve integrations at a global scale for in-store and online payments',
@@ -980,11 +980,24 @@ export const jobListings: Job[] = [
       'Excellent problem-solving skills'
     ],
     benefits: [
-      'Competitive salary',
-      'Health insurance',
-      'Professional development opportunities',
-      'Flexible working hours'
+      'Competitive salary package',
+      'Comprehensive health insurance',
+      'Professional development opportunities and training budget',
+      'Flexible working hours and hybrid work options',
+      '25 vacation days per year',
+      'Pension plan',
+      'Commuter benefits',
+      'Modern office with free lunch and snacks'
     ],
+    degreeRequired: "Bachelor's or Master's degree in Computer Science or related field",
+    experienceYears: '5-8 years',
+    requiredLanguages: ['English', 'Dutch (preferred)'],
+    requiredSkills: ['Java', 'Spring Boot', 'Microservices', 'REST APIs', 'SQL', 'Git', 'Agile/Scrum'],
+    workLocation: {
+      address: 'Simon Carmiggeltstraat 6-50, 1011 DJ Amsterdam, Netherlands',
+      latitude: 52.3783,
+      longitude: 4.9036,
+    },
   },
   {
     id: '5',

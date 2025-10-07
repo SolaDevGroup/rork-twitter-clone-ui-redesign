@@ -245,4 +245,13 @@ export interface Job {
   responsibilities?: string[];
   benefits?: string[];
   department?: string;
+  degreeRequired?: string;
+  experienceYears?: string;
+  requiredLanguages?: string[];
+  requiredSkills?: string[];
+  workLocation?: {
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
 }

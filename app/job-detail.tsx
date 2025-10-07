@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { fontSizes } from '@/constants/fonts';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { jobListings } from '@/mocks/data';
-import { ArrowLeft, Share2, Briefcase } from 'lucide-react-native';
+import { ArrowLeft, Share2, Briefcase, MapPin, GraduationCap, Clock, Languages, Code } from 'lucide-react-native';
 
 export default function JobDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -138,6 +138,74 @@ export default function JobDetail() {
       lineHeight: 24,
       marginBottom: 8,
     },
+    bulletPoint: {
+      fontSize: fontSizes.md,
+      color: colors.textSecondary,
+      lineHeight: 24,
+      marginBottom: 8,
+      paddingLeft: 16,
+    },
+    infoRow: {
+      flexDirection: 'row' as const,
+      alignItems: 'flex-start' as const,
+      gap: 12,
+      marginBottom: 16,
+    },
+    infoIcon: {
+      marginTop: 2,
+    },
+    infoContent: {
+      flex: 1,
+    },
+    infoLabel: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600' as const,
+      color: colors.text,
+      marginBottom: 4,
+    },
+    infoText: {
+      fontSize: fontSizes.md,
+      color: colors.textSecondary,
+      lineHeight: 22,
+    },
+    skillsContainer: {
+      flexDirection: 'row' as const,
+      flexWrap: 'wrap' as const,
+      gap: 8,
+      marginTop: 8,
+    },
+    skillChip: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    skillText: {
+      fontSize: fontSizes.sm,
+      color: colors.text,
+      fontWeight: '500' as const,
+    },
+    mapContainer: {
+      width: '100%',
+      height: 200,
+      borderRadius: 12,
+      overflow: 'hidden' as const,
+      backgroundColor: colors.surface,
+      marginTop: 8,
+    },
+    mapPlaceholder: {
+      width: '100%',
+      height: '100%',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    },
+    mapPlaceholderText: {
+      fontSize: fontSizes.sm,
+      color: colors.textSecondary,
+      marginTop: 8,
+    },
     footer: {
       flexDirection: 'row' as const,
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
@@ -265,12 +333,96 @@ export default function JobDetail() {
 
         {job.description ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{job.description}</Text>
+            <Text style={styles.sectionTitle}>Job Description</Text>
+            <Text style={styles.sectionText}>{job.description}</Text>
+          </View>
+        ) : null}
+
+        {(job.degreeRequired || job.experienceYears || job.requiredLanguages || job.requiredSkills) ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Requirements</Text>
+            
+            {job.degreeRequired ? (
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <GraduationCap size={20} color={colors.text} />
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Education</Text>
+                  <Text style={styles.infoText}>{job.degreeRequired}</Text>
+                </View>
+              </View>
+            ) : null}
+
+            {job.experienceYears ? (
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <Clock size={20} color={colors.text} />
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Experience</Text>
+                  <Text style={styles.infoText}>{job.experienceYears}</Text>
+                </View>
+              </View>
+            ) : null}
+
+            {job.requiredLanguages && job.requiredLanguages.length > 0 ? (
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <Languages size={20} color={colors.text} />
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Languages</Text>
+                  <Text style={styles.infoText}>{job.requiredLanguages.join(', ')}</Text>
+                </View>
+              </View>
+            ) : null}
+
+            {job.requiredSkills && job.requiredSkills.length > 0 ? (
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <Code size={20} color={colors.text} />
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Required Skills</Text>
+                  <View style={styles.skillsContainer}>
+                    {job.requiredSkills.map((skill, index) => (
+                      <View key={index} style={styles.skillChip}>
+                        <Text style={styles.skillText}>{skill}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+
+        {job.responsibilities && job.responsibilities.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Responsibilities</Text>
+            {job.responsibilities.map((item, index) => (
+              <Text key={index} style={styles.bulletPoint}>
+                • {item}
+              </Text>
+            ))}
+          </View>
+        ) : null}
+
+        {job.benefits && job.benefits.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Benefits</Text>
+            {job.benefits.map((item, index) => (
+              <Text key={index} style={styles.bulletPoint}>
+                • {item}
+              </Text>
+            ))}
           </View>
         ) : null}
 
         {job.aboutCompany ? (
           <View style={styles.section}>
+            <Text style={styles.sectionTitle}>About {job.company}</Text>
             {job.aboutCompany.split('\n\n').map((paragraph, index) => (
               <Text key={index} style={[styles.sectionText, styles.paragraph]}>
                 {paragraph}
@@ -279,14 +431,26 @@ export default function JobDetail() {
           </View>
         ) : null}
 
-        {job.responsibilities && job.responsibilities.length > 0 ? (
+        {job.workLocation ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Payments Solution</Text>
-            {job.responsibilities.map((item, index) => (
-              <Text key={index} style={styles.listItem}>
-                {item}
-              </Text>
-            ))}
+            <Text style={styles.sectionTitle}>Work Location</Text>
+            <View style={styles.infoRow}>
+              <View style={styles.infoIcon}>
+                <MapPin size={20} color={colors.text} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoText}>{job.workLocation.address}</Text>
+              </View>
+            </View>
+            <View style={styles.mapContainer}>
+              <View style={styles.mapPlaceholder}>
+                <MapPin size={32} color={colors.textSecondary} />
+                <Text style={styles.mapPlaceholderText}>Map View</Text>
+                <Text style={styles.mapPlaceholderText}>
+                  {job.workLocation.latitude.toFixed(4)}, {job.workLocation.longitude.toFixed(4)}
+                </Text>
+              </View>
+            </View>
           </View>
         ) : null}
       </ScrollView>
