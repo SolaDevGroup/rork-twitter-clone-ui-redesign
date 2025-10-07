@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions, CameraMode } from 'expo-camera';
 import { IconButton } from '@/components/IconButton';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -19,6 +19,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 export default function CameraCaptureScreen() {
   const { primary } = useTheme();
   const [cameraType, setCameraType] = useState<CameraType>('back');
+  const [cameraMode] = useState<CameraMode>('picture');
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedMedia, setCapturedMedia] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -269,6 +270,7 @@ export default function CameraCaptureScreen() {
         ref={cameraRef}
         style={styles.camera}
         facing={cameraType}
+        mode={cameraMode}
       >
         <SafeAreaView style={styles.cameraControls}>
           <View style={styles.cameraHeader}>
