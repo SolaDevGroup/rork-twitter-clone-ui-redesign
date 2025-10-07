@@ -1,4 +1,4 @@
-import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short, MatchProfile, Video, LiveStream } from '@/types';
+import { User, Post, Notification, Message, TrendingTopic, Comment, Room, Story, Short, MatchProfile, Video, LiveStream, JobRecommendation } from '@/types';
 
 export const currentUser: User = {
   id: '1',
@@ -811,6 +811,79 @@ export const liveStreams: LiveStream[] = [
     streamUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     description: 'Making fresh pasta and authentic Italian sauce. Family recipe passed down for generations!',
     hashtags: ['cooking', 'italian', 'pasta'],
+  },
+];
+
+export const jobRecommendations: JobRecommendation[] = [
+  {
+    id: '1',
+    title: 'Software Engineer',
+    company: 'Google',
+    location: 'New York, NY',
+    type: 'Full-time',
+    salary: '$120k - $180k',
+    postedAt: '2 days ago',
+    logo: 'https://ui-avatars.com/api/?name=Google&background=4285F4&color=fff&size=200',
+  },
+  {
+    id: '2',
+    title: 'Product Manager',
+    company: 'Meta',
+    location: 'Remote',
+    type: 'Remote',
+    salary: '$140k - $200k',
+    postedAt: '1 week ago',
+    logo: 'https://ui-avatars.com/api/?name=Meta&background=0668E1&color=fff&size=200',
+  },
+  {
+    id: '3',
+    title: 'Designer',
+    company: 'Apple',
+    location: 'San Francisco, CA',
+    type: 'Full-time',
+    salary: '$110k - $160k',
+    postedAt: '3 days ago',
+    logo: 'https://ui-avatars.com/api/?name=Apple&background=000000&color=fff&size=200',
+  },
+  {
+    id: '4',
+    title: 'Marketing Manager',
+    company: 'Amazon',
+    location: 'Seattle, WA',
+    type: 'Full-time',
+    salary: '$100k - $150k',
+    postedAt: '5 days ago',
+    logo: 'https://ui-avatars.com/api/?name=Amazon&background=FF9900&color=000&size=200',
+  },
+  {
+    id: '5',
+    title: 'Account Executive',
+    company: 'Salesforce',
+    location: 'New York, NY',
+    type: 'Full-time',
+    salary: '$90k - $130k',
+    postedAt: '1 day ago',
+    logo: 'https://ui-avatars.com/api/?name=Salesforce&background=00A1E0&color=fff&size=200',
+  },
+  {
+    id: '6',
+    title: 'Account Manager',
+    company: 'Microsoft',
+    location: 'Remote',
+    type: 'Remote',
+    salary: '$95k - $140k',
+    postedAt: '4 days ago',
+    logo: 'https://ui-avatars.com/api/?name=Microsoft&background=00A4EF&color=fff&size=200',
+  },
+  {
+    id: '7',
+    title: 'Project Manager',
+    company: 'Netflix',
+    location: 'Los Angeles, CA',
+    type: 'Full-time',
+    salary: '$105k - $155k',
+    postedAt: '6 days ago',
+    logo: 'https://ui-avatars.com/api/?name=Netflix&background=E50914&color=fff&size=200',
   },
 ];
 

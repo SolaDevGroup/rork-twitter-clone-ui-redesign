@@ -192,3 +192,14 @@ export interface LiveStream {
   description?: string;
   hashtags?: string[];
 }
+
+export interface JobRecommendation {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: 'Full-time' | 'Part-time' | 'Contract' | 'Remote';
+  salary?: string;
+  postedAt: string;
+  logo?: string;
+}

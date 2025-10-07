@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Pressable } from 'react-native';
 import AnimatedSearchBar from '@/components/AnimatedSearchBar';
 import { trendingTopics } from '@/mocks/data';
 import { router } from 'expo-router';
@@ -71,13 +71,13 @@ export default function Search() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+      <Pressable onPress={() => router.push('/job-search')} style={styles.header}>
         <AnimatedSearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
           topics={['Search Twitter', 'Search people', 'Search topics', 'Search hashtags', 'Search posts']}
         />
-      </View>
+      </Pressable>
 
       <FlatList
         data={trendingTopics}
