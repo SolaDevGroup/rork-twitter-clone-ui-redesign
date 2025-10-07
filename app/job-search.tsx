@@ -172,7 +172,7 @@ export default function JobSearch() {
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.jobItem}
-            onPress={handleSearch}
+            onPress={() => router.push('/job-listing')}
           >
             <View style={styles.jobContent}>
               <Text style={styles.jobTitle}>{item.title}</Text>

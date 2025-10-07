@@ -168,7 +168,7 @@ export default function JobDetail() {
       flex: 1,
       height: 48,
       borderRadius: 24,
-      backgroundColor: '#78706B',
+      backgroundColor: colors.text,
       alignItems: 'center' as const,
       justifyContent: 'center' as const,
       flexDirection: 'row' as const,
@@ -177,7 +177,7 @@ export default function JobDetail() {
     applyButtonText: {
       fontSize: fontSizes.md,
       fontWeight: '600' as const,
-      color: '#FFFFFF',
+      color: colors.background,
     },
     notFoundContainer: {
       flex: 1,

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, PanResponder, Animated, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, PanResponder, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { matchProfiles } from '@/mocks/data';
@@ -8,6 +8,7 @@ import { Heart, X, Star, RotateCcw, MapPin, Search, ChevronRight } from 'lucide-
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { BlurView } from 'expo-blur';
 import { colors as colorConstants } from '@/constants/colors';
+import { router } from 'expo-router';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -234,14 +235,15 @@ export default function Matching() {
   const renderJobsTab = () => {
     return (
       <View style={styles.jobsContainer}>
-        <View style={styles.searchContainer}>
+        <TouchableOpacity 
+          style={styles.searchContainer}
+          onPress={() => router.push('/job-search')}
+        >
           <Search size={20} color={colors.textSecondary} />
-          <TextInput
-            style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search jobs"
-            placeholderTextColor={colors.textSecondary}
-          />
-        </View>
+          <Text style={[styles.searchInput, { color: colors.textSecondary }]}>
+            Search jobs
+          </Text>
+        </TouchableOpacity>
 
         <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
           Try searching for
@@ -256,7 +258,7 @@ export default function Matching() {
             <TouchableOpacity
               key={index}
               style={[styles.jobItem, { borderBottomColor: colors.border }]}
-              onPress={() => console.log('Selected job:', job)}
+              onPress={() => router.push('/job-search')}
             >
               <Text style={[styles.jobText, { color: colors.text }]}>{job}</Text>
               <ChevronRight size={20} color={colors.textSecondary} />
@@ -501,6 +503,7 @@ export default function Matching() {
       flex: 1,
       fontSize: 16,
       fontWeight: '400' as const,
+      lineHeight: 44,
     },
     sectionTitle: {
       fontSize: 14,

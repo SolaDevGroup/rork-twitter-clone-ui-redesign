@@ -5,13 +5,13 @@ export default function MatchingLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
       }}
     >
       <Stack.Screen
         name="matching"
         options={{
-          title: "Matching",
+          headerShown: false,
         }}
       />
     </Stack>
