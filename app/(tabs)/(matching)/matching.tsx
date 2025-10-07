@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, PanResponder, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -237,52 +237,7 @@ export default function Matching() {
     );
   };
 
-  const renderJobsTab = () => {
-    return (
-      <View style={styles.jobsContainer}>
-        <TouchableOpacity 
-          style={styles.searchContainer}
-          onPress={() => {
-            console.log('Navigating to job search');
-            router.push('/job-search');
-          }}
-          activeOpacity={0.7}
-        >
-          <Search size={20} color={colors.textSecondary} />
-          <Text style={[styles.searchInput, { color: colors.textSecondary }]}>
-            Search jobs
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-          Try searching for
-        </Text>
-
-        <ScrollView 
-          style={styles.jobsList}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.jobsListContent}
-        >
-          {jobsList.map((job, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.jobItem, { borderBottomColor: colors.border }]}
-              onPress={() => {
-                console.log('Job clicked:', job);
-                router.push('/job-search');
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.jobText, { color: colors.text }]}>{job}</Text>
-              <ChevronRight size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-    );
-  };
-
-  const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -539,7 +494,52 @@ export default function Matching() {
       fontSize: 16,
       fontWeight: '400' as const,
     },
-  });
+  }), [colors]);
+
+  const renderJobsTab = () => {
+    return (
+      <View style={styles.jobsContainer}>
+        <TouchableOpacity 
+          style={styles.searchContainer}
+          onPress={() => {
+            console.log('Navigating to job search');
+            router.push('/job-search');
+          }}
+          activeOpacity={0.7}
+        >
+          <Search size={20} color={colors.textSecondary} />
+          <Text style={[styles.searchInput, { color: colors.textSecondary }]}>
+            Search jobs
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+          Try searching for
+        </Text>
+
+        <ScrollView 
+          style={styles.jobsList}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.jobsListContent}
+        >
+          {jobsList.map((job, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.jobItem, { borderBottomColor: colors.border }]}
+              onPress={() => {
+                console.log('Job clicked:', job);
+                router.push('/job-search');
+              }}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.jobText, { color: colors.text }]}>{job}</Text>
+              <ChevronRight size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
 
   const renderMatchingTab = () => {
     if (currentIndex >= matchProfiles.length) {
