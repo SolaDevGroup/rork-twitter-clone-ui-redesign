@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Share as RNShare, Platform, Modal, TextInput } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Share as RNShare, Platform, Modal, TextInput, Animated, PanResponder } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { Post } from '@/types';
 import { router } from 'expo-router';
@@ -29,6 +29,42 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+
+  const translateX = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dx > 0 && gestureState.dx < 100) {
+          translateX.setValue(gestureState.dx);
+        } else if (gestureState.dx < 0 && gestureState.dx > -100) {
+          translateX.setValue(gestureState.dx);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx > 50) {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+          router.push(`/comments?postId=${post.id}`);
+        } else if (gestureState.dx < -50) {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+          handleShare();
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   const styles = StyleSheet.create({
     container: {
@@ -406,7 +442,15 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      style={[
+        styles.container,
+        {
+          transform: [{ translateX }],
+        },
+      ]}
+      {...panResponder.panHandlers}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push(`/(tabs)/(profile)/${post.user.id}`)}>
           <Image source={{ uri: post.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
@@ -599,6 +643,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
           </View>
         </View>
       </Modal>
-    </View>
+    </Animated.View>
   );
 }
