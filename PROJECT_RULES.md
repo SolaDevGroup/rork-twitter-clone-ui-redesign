@@ -202,6 +202,13 @@ const styles = StyleSheet.create({
 
 ## 📱 Navigation & Headers
 
+### 🚨 CRITICAL: Custom Header Rule
+**NEVER use default Expo Router headers. ALWAYS implement custom headers using our design system:**
+
+1. **Disable Default Header**: Always set `headerShown: false` in Stack.Screen options
+2. **Custom Header Implementation**: Create custom header using our design system
+3. **Consistency**: All screens must use the same header pattern
+
 ### Standard Header Pattern
 - **Back Button**: 48x48px, fully rounded, icon should be half the size of the group (24px if parent is 48px)
   - 64% opacity for icon default state
@@ -210,6 +217,63 @@ const styles = StyleSheet.create({
 - **Title**: 20px, Semibold, middle, left aligned
 - **Spacer**: For visual balance
 - **Blur Header**: For scroll states
+
+### Custom Header Implementation Example
+```typescript
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ArrowLeft } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { useTheme } from '@/contexts/ThemeContext';
+import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { fontSizes, spacing } from '@/constants/fonts';
+
+// In your screen component:
+<View style={styles.header}>
+  <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+    <ArrowLeft size={24} color={colors.text} style={{ opacity: 0.64 }} />
+  </TouchableOpacity>
+  <Text style={styles.headerTitle}>Screen Title</Text>
+  <View style={styles.spacer} />
+</View>
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+    paddingVertical: spacing.lg,
+    gap: spacing.lg,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 1000,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.inputBackground,
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: fontSizes.xl,
+    fontWeight: '600' as const,
+    color: colors.text,
+  },
+  spacer: {
+    width: 48,
+  },
+});
+```
+
+### Stack.Screen Configuration
+```typescript
+// In _layout.tsx files:
+<Stack.Screen 
+  name="screen-name" 
+  options={{ 
+    headerShown: false  // ALWAYS set this
+  }} 
+/>
+```
 
 ## 🎯 Key Design Principles
 
