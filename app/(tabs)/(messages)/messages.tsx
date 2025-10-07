@@ -71,7 +71,7 @@ const allConversations = [
 ];
 
 export default function Messages() {
-  const [activeTab, setActiveTab] = useState<'1on1' | 'groups' | 'rooms'>('1on1');
+  const [activeTab, setActiveTab] = useState<'1on1' | 'groups' | 'clubs'>('1on1');
   const insets = useSafeAreaInsets();
   const { colors, primary, success } = useTheme();
 
@@ -232,7 +232,7 @@ export default function Messages() {
     activeTabText: {
       color: colors.background,
     },
-    roomsBadge: {
+    clubsBadge: {
       borderRadius: borderRadius.lg,
       paddingHorizontal: spacing.sm,
       paddingVertical: spacing.xs,
@@ -242,7 +242,7 @@ export default function Messages() {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    roomsBadgeText: {
+    clubsBadgeText: {
       fontSize: fontSizes.xs,
       fontFamily: fonts.semiBold,
       color: colors.text,
@@ -486,12 +486,12 @@ export default function Messages() {
             <Text style={[styles.tabText, activeTab === 'groups' && styles.activeTabText]}>Groups</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.tab, activeTab === 'rooms' && styles.activeTab]}
-            onPress={() => setActiveTab('rooms')}
+            style={[styles.tab, activeTab === 'clubs' && styles.activeTab]}
+            onPress={() => setActiveTab('clubs')}
           >
-            <Text style={[styles.tabText, activeTab === 'rooms' && styles.activeTabText]}>Rooms</Text>
-            <View style={[styles.roomsBadge, { backgroundColor: primary }]}>
-              <Text style={styles.roomsBadgeText}>+36</Text>
+            <Text style={[styles.tabText, activeTab === 'clubs' && styles.activeTabText]}>Clubs</Text>
+            <View style={[styles.clubsBadge, { backgroundColor: primary }]}>
+              <Text style={styles.clubsBadgeText}>+36</Text>
             </View>
           </TouchableOpacity>
         </View>

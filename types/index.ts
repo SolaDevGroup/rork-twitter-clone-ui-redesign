@@ -78,14 +78,21 @@ export interface PollOption {
   votes: number;
 }
 
-export interface Room {
+export interface Club {
   id: string;
   name: string;
   topic: string;
   memberCount: number;
-  lastMessage: string;
-  timestamp: string;
+  isLive: boolean;
+  speakerCount: number;
+  speakers: User[];
+  host: User;
+  description?: string;
+  startedAt: string;
+  scheduledFor?: string;
   avatar?: string;
+  isRecording?: boolean;
+  language?: string;
 }
 
 export interface Collection {
