@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, PanResponder, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, PanResponder, Animated, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { matchProfiles } from '@/mocks/data';
 import { MatchProfile } from '@/types';
-import { Heart, X, Star, RotateCcw, MapPin } from 'lucide-react-native';
+import { Heart, X, Star, RotateCcw, MapPin, Search, ChevronRight } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { BlurView } from 'expo-blur';
 import { colors as colorConstants } from '@/constants/colors';
@@ -13,9 +13,25 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SWIPE_THRESHOLD = 120;
 
+type TabType = 'matching' | 'jobs';
+
+const jobsList = [
+  'Software Engineer',
+  'Product Manager',
+  'Designer',
+  'Marketing Manager',
+  'Account Executive',
+  'Account Manager',
+  'Project Manager',
+  'Business Analyst',
+  'Customer Support',
+  'Talent Acquisition Specialist',
+];
+
 export default function Matching() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState<TabType>('matching');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const position = useRef(new Animated.ValueXY()).current;
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
@@ -215,11 +231,75 @@ export default function Matching() {
     );
   };
 
+  const renderJobsTab = () => {
+    return (
+      <View style={styles.jobsContainer}>
+        <View style={styles.searchContainer}>
+          <Search size={20} color={colors.textSecondary} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search jobs"
+            placeholderTextColor={colors.textSecondary}
+          />
+        </View>
+
+        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+          Try searching for
+        </Text>
+
+        <ScrollView 
+          style={styles.jobsList}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.jobsListContent}
+        >
+          {jobsList.map((job, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.jobItem, { borderBottomColor: colors.border }]}
+              onPress={() => console.log('Selected job:', job)}
+            >
+              <Text style={[styles.jobText, { color: colors.text }]}>{job}</Text>
+              <ChevronRight size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
       paddingTop: insets.top,
+    },
+    toggleContainer: {
+      flexDirection: 'row',
+      marginHorizontal: SCREEN_HORIZONTAL_PADDING,
+      marginTop: 16,
+      marginBottom: 16,
+      backgroundColor: colors.surface,
+      borderRadius: 1000,
+      padding: 4,
+    },
+    toggleButton: {
+      flex: 1,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 1000,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    toggleButtonActive: {
+      backgroundColor: colorConstants.primary,
+    },
+    toggleText: {
+      fontSize: 14,
+      fontWeight: '600' as const,
+      color: colors.textSecondary,
+    },
+    toggleTextActive: {
+      color: colorConstants.white,
     },
     cardsContainer: {
       flex: 1,
@@ -403,55 +483,138 @@ export default function Matching() {
       color: colors.textSecondary,
       textAlign: 'center',
     },
+    jobsContainer: {
+      flex: 1,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.inputBackground,
+      borderRadius: 1000,
+      paddingHorizontal: 16,
+      height: 44,
+      marginBottom: 24,
+      gap: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '400' as const,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '400' as const,
+      marginBottom: 16,
+    },
+    jobsList: {
+      flex: 1,
+    },
+    jobsListContent: {
+      paddingBottom: 100,
+    },
+    jobItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+    },
+    jobText: {
+      fontSize: 16,
+      fontWeight: '400' as const,
+    },
   });
 
-  if (currentIndex >= matchProfiles.length) {
-    return (
-      <View style={styles.container}>
+  const renderMatchingTab = () => {
+    if (currentIndex >= matchProfiles.length) {
+      return (
         <View style={styles.noMoreCards}>
           <Text style={styles.noMoreText}>No More Profiles</Text>
           <Text style={styles.noMoreSubtext}>
             Check back later for new matches in your area
           </Text>
         </View>
-      </View>
+      );
+    }
+
+    return (
+      <>
+        <View style={styles.cardsContainer}>
+          {matchProfiles.map((profile, index) => renderCard(profile, index))}
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleUndo}
+            disabled={currentIndex === 0}
+          >
+            <RotateCcw size={24} color={currentIndex === 0 ? '#CCC' : '#F59E0B'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionButton} onPress={swipeLeft}>
+            <X size={28} color="#EF4444" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionButton, styles.superLikeButton]}
+            onPress={handleSuperLike}
+          >
+            <Star size={28} color="#3B82F6" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionButton} onPress={swipeRight}>
+            <Heart size={28} color="#22C55E" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('Boost')}>
+            <Star size={24} color="#8B5CF6" />
+          </TouchableOpacity>
+        </View>
+      </>
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.cardsContainer}>
-        {matchProfiles.map((profile, index) => renderCard(profile, index))}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            activeTab === 'matching' && styles.toggleButtonActive,
+          ]}
+          onPress={() => setActiveTab('matching')}
+        >
+          <Text
+            style={[
+              styles.toggleText,
+              activeTab === 'matching' && styles.toggleTextActive,
+            ]}
+          >
+            Matching
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            activeTab === 'jobs' && styles.toggleButtonActive,
+          ]}
+          onPress={() => setActiveTab('jobs')}
+        >
+          <Text
+            style={[
+              styles.toggleText,
+              activeTab === 'jobs' && styles.toggleTextActive,
+            ]}
+          >
+            Jobs
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleUndo}
-          disabled={currentIndex === 0}
-        >
-          <RotateCcw size={24} color={currentIndex === 0 ? '#CCC' : '#F59E0B'} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={swipeLeft}>
-          <X size={28} color="#EF4444" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionButton, styles.superLikeButton]}
-          onPress={handleSuperLike}
-        >
-          <Star size={28} color="#3B82F6" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={swipeRight}>
-          <Heart size={28} color="#22C55E" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={() => console.log('Boost')}>
-          <Star size={24} color="#8B5CF6" />
-        </TouchableOpacity>
-      </View>
+      {activeTab === 'matching' ? renderMatchingTab() : renderJobsTab()}
     </View>
   );
 }
