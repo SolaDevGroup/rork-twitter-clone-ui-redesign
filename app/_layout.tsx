@@ -88,7 +88,17 @@ const styles = StyleSheet.create({
 
 export default function RootLayout() {
   useEffect(() => {
-    SplashScreen.hideAsync();
+    const prepare = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    prepare();
   }, []);
 
   return (
