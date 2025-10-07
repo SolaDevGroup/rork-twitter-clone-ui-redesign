@@ -16,6 +16,8 @@ import {
 } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
+import { colors } from '@/constants/colors';
+import { fontSizes, spacing, borderRadius } from '@/constants/fonts';
 
 export default function Settings() {
   const { user } = useAuth();
@@ -73,10 +75,20 @@ export default function Settings() {
   ];
 
   const handleOptionPress = (optionId: string) => {
-    if (optionId === 'privacy') {
-      router.push('/privacy-settings');
+    const routes: Record<string, string> = {
+      account: '/account-settings',
+      security: '/security-settings',
+      premium: '/premium-settings',
+      monetization: '/monetization-settings',
+      privacy: '/privacy-settings',
+      notifications: '/notifications-settings',
+      accessibility: '/accessibility-settings',
+      resources: '/resources-settings',
+    };
+    
+    if (routes[optionId]) {
+      router.push(routes[optionId] as any);
     }
-    console.log('Selected option:', optionId);
   };
 
   return (
@@ -138,45 +150,45 @@ export default function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: colors.dark.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingVertical: 12,
+    paddingVertical: spacing.lg,
   },
   backButton: {
-    marginRight: 16,
+    marginRight: spacing.xl,
   },
   headerContent: {
     flex: 1,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#fff',
+    fontSize: fontSizes.xl,
+    fontWeight: '700' as const,
+    color: colors.dark.text,
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#687684',
-    marginTop: 2,
+    fontSize: fontSizes.base,
+    color: colors.dark.textSecondary,
+    marginTop: spacing.xs,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: colors.dark.surface,
     borderRadius: 20,
     paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingVertical: 10,
+    paddingVertical: spacing.md,
     marginHorizontal: SCREEN_HORIZONTAL_PADDING,
-    marginVertical: 12,
+    marginVertical: spacing.lg,
   },
   searchInput: {
     flex: 1,
-    marginLeft: 8,
-    fontSize: 15,
-    color: '#fff',
+    marginLeft: spacing.sm,
+    fontSize: fontSizes.md,
+    color: colors.dark.text,
   },
   content: {
     flex: 1,
@@ -184,34 +196,33 @@ const styles = StyleSheet.create({
   optionItem: {
     flexDirection: 'row',
     paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    paddingVertical: 16,
+    paddingVertical: spacing.xl,
     borderBottomWidth: 1,
-    borderBottomColor: '#2F3336',
+    borderBottomColor: colors.dark.border,
   },
   highlightedOption: {
-    backgroundColor: '#F91880',
-    borderWidth: 2,
-    borderColor: '#F91880',
+    backgroundColor: colors.primary,
+    borderWidth: 0,
     marginHorizontal: SCREEN_HORIZONTAL_PADDING,
-    marginVertical: 4,
-    borderRadius: 8,
+    marginVertical: spacing.xs,
+    borderRadius: borderRadius.md,
   },
   optionContent: {
     flex: 1,
     marginLeft: SCREEN_HORIZONTAL_PADDING,
   },
   optionTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#fff',
-    marginBottom: 4,
+    fontSize: fontSizes.md,
+    fontWeight: '600' as const,
+    color: colors.dark.text,
+    marginBottom: spacing.xs,
   },
   highlightedText: {
-    color: '#fff',
+    color: colors.dark.text,
   },
   optionDescription: {
-    fontSize: 14,
-    color: '#687684',
+    fontSize: fontSizes.base,
+    color: colors.dark.textSecondary,
     lineHeight: 18,
   },
   highlightedDescription: {
