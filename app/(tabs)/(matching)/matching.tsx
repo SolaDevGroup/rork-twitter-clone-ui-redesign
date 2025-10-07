@@ -242,7 +242,11 @@ export default function Matching() {
       <View style={styles.jobsContainer}>
         <TouchableOpacity 
           style={styles.searchContainer}
-          onPress={() => router.push('/job-search')}
+          onPress={() => {
+            console.log('Navigating to job search');
+            router.push('/job-search');
+          }}
+          activeOpacity={0.7}
         >
           <Search size={20} color={colors.textSecondary} />
           <Text style={[styles.searchInput, { color: colors.textSecondary }]}>
@@ -263,7 +267,11 @@ export default function Matching() {
             <TouchableOpacity
               key={index}
               style={[styles.jobItem, { borderBottomColor: colors.border }]}
-              onPress={() => router.push('/job-search')}
+              onPress={() => {
+                console.log('Job clicked:', job);
+                router.push('/job-search');
+              }}
+              activeOpacity={0.7}
             >
               <Text style={[styles.jobText, { color: colors.text }]}>{job}</Text>
               <ChevronRight size={20} color={colors.textSecondary} />
@@ -278,7 +286,6 @@ export default function Matching() {
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: insets.top,
     },
     toggleContainer: {
       flexDirection: 'row',
@@ -585,7 +592,7 @@ export default function Matching() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.toggleContainer}>
         <TouchableOpacity
           style={[
