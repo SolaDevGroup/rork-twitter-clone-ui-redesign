@@ -19,17 +19,11 @@ import { useRouter } from 'expo-router';
 import AnimatedSearchBar from '@/components/AnimatedSearchBar';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH_SMALL = width * 0.32;
-const CARD_HEIGHT_SMALL = CARD_WIDTH_SMALL * 1.5;
-const CARD_WIDTH_MEDIUM = width * 0.45;
-const CARD_HEIGHT_MEDIUM = CARD_WIDTH_MEDIUM * 1.4;
-const CARD_WIDTH_LARGE = (width - 48) / 2;
-const CARD_HEIGHT_LARGE = CARD_WIDTH_LARGE;
+const CARD_WIDTH = 240;
+const CARD_HEIGHT = 135;
 const CREATOR_SIZE = (width - 80) / 4;
-const CARD_WIDTH_RECT = width - 32;
-const CARD_HEIGHT_RECT = CARD_WIDTH_RECT * 0.56;
 
-type CardType = 'small' | 'medium' | 'large' | 'creator' | 'rectangular';
+type CardType = 'horizontal' | 'creator';
 
 type HeadingStyle = 'default' | 'withSubtitle' | 'withIcon' | 'numbered';
 
@@ -43,62 +37,36 @@ const CATEGORIES: {
   headingStyle?: HeadingStyle;
   icon?: string;
 }[] = [
-  { id: 'continue', name: 'Continue Watching', videos: videos.slice(0, 3), cardType: 'medium', headingStyle: 'default' },
+  { id: 'continue', name: 'Continue Watching', videos: videos.slice(0, 6), cardType: 'horizontal', headingStyle: 'default' },
   { 
     id: 'trending', 
     name: 'Top MEETUPS', 
     subtitle: 'Best Of 2025',
-    videos: videos.slice(0, 4), 
-    cardType: 'rectangular',
+    videos: videos.slice(0, 6), 
+    cardType: 'horizontal',
     headingStyle: 'withSubtitle'
   },
-  { id: 'popular', name: 'Popular on Shows', videos: videos.slice(2, 6), cardType: 'small', headingStyle: 'default' },
+  { id: 'popular', name: 'Popular on Shows', videos: videos.slice(2, 8), cardType: 'horizontal', headingStyle: 'default' },
   { 
     id: 'daily', 
     name: 'Electronics', 
     subtitle: 'Your Daily Update\nAbout',
-    videos: videos.slice(0, 3), 
-    cardType: 'rectangular',
+    videos: videos.slice(0, 6), 
+    cardType: 'horizontal',
     headingStyle: 'withSubtitle'
   },
   { 
     id: 'deals', 
     name: 'New Deals', 
-    videos: videos.slice(1, 5), 
-    cardType: 'creator',
+    videos: videos.slice(1, 7), 
+    cardType: 'horizontal',
     headingStyle: 'withIcon',
     icon: 'tag'
   },
-  { 
-    id: 'dealsRect', 
-    name: 'Deals', 
-    subtitle: 'You Would Not Like To Miss!',
-    videos: videos.slice(2, 4), 
-    cardType: 'rectangular',
-    headingStyle: 'withIcon',
-    icon: 'tag'
-  },
-  { 
-    id: 'topAsia', 
-    name: 'Asia', 
-    subtitle: 'Top 10 In',
-    videos: videos.slice(0, 4), 
-    cardType: 'rectangular',
-    headingStyle: 'numbered'
-  },
-  { 
-    id: 'jamaica', 
-    name: 'Love These', 
-    subtitle: 'People From Jamaica',
-    videos: videos.slice(1, 3), 
-    cardType: 'rectangular',
-    headingStyle: 'withIcon',
-    icon: 'tag'
-  },
-  { id: 'technology', name: 'Technology', videos: videos.filter(v => v.category === 'Technology'), cardType: 'large', headingStyle: 'default' },
+  { id: 'technology', name: 'Technology', videos: videos.filter(v => v.category === 'Technology'), cardType: 'horizontal', headingStyle: 'default' },
   { id: 'creators', name: 'Top Creators', creators: creators, cardType: 'creator', headingStyle: 'default' },
-  { id: 'entertainment', name: 'Entertainment', videos: videos.filter(v => v.category === 'Entertainment'), cardType: 'small', headingStyle: 'default' },
-  { id: 'fashion', name: 'Fashion & Design', videos: videos.filter(v => v.category === 'Fashion'), cardType: 'medium', headingStyle: 'default' },
+  { id: 'entertainment', name: 'Entertainment', videos: videos.filter(v => v.category === 'Entertainment'), cardType: 'horizontal', headingStyle: 'default' },
+  { id: 'fashion', name: 'Fashion & Design', videos: videos.filter(v => v.category === 'Fashion'), cardType: 'horizontal', headingStyle: 'default' },
 ];
 
 export default function ShowsScreen() {
@@ -116,48 +84,37 @@ export default function ShowsScreen() {
       })).filter(cat => (cat.videos && cat.videos.length > 0) || (cat.creators && cat.creators.length > 0))
     : CATEGORIES;
 
-  const renderVideoCard = (video: Video, cardType: CardType, index?: number) => {
-    let cardStyle, thumbnailStyle;
-    
-    switch (cardType) {
-      case 'small':
-        cardStyle = styles.videoCardSmall;
-        thumbnailStyle = styles.cardThumbnailSmall;
-        break;
-      case 'medium':
-        cardStyle = styles.videoCardMedium;
-        thumbnailStyle = styles.cardThumbnailMedium;
-        break;
-      case 'large':
-        cardStyle = styles.videoCardLarge;
-        thumbnailStyle = styles.cardThumbnailLarge;
-        break;
-      case 'rectangular':
-        cardStyle = styles.videoCardRect;
-        thumbnailStyle = styles.cardThumbnailRect;
-        break;
-      default:
-        cardStyle = styles.videoCardSmall;
-        thumbnailStyle = styles.cardThumbnailSmall;
-    }
-
+  const renderVideoCard = (video: Video) => {
     return (
       <TouchableOpacity
         key={video.id}
-        style={cardStyle}
+        style={styles.videoCard}
         onPress={() => router.push(`/video-player?id=${video.id}`)}
         activeOpacity={0.8}
       >
-        {index !== undefined && (
-          <View style={styles.numberBadge}>
-            <Text style={styles.numberText}>{index + 1}</Text>
-          </View>
-        )}
         <Image
           source={{ uri: video.thumbnail || '' }}
-          style={thumbnailStyle}
+          style={styles.cardThumbnail}
           resizeMode="cover"
         />
+        <View style={styles.cardInfo}>
+          <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={2}>
+            {video.title}
+          </Text>
+          <View style={styles.cardMeta}>
+            <Text style={[styles.cardMetaText, { color: colors.textSecondary }]}>
+              {video.views} views
+            </Text>
+            <Text style={[styles.cardMetaText, { color: colors.textSecondary }]}> • </Text>
+            <Text style={[styles.cardMetaText, { color: colors.textSecondary }]}>
+              {video.category || 'General'}
+            </Text>
+            <Text style={[styles.cardMetaText, { color: colors.textSecondary }]}> • </Text>
+            <Text style={[styles.cardMetaText, { color: colors.textSecondary }]}>
+              {video.uploadedAt}
+            </Text>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -268,58 +225,11 @@ export default function ShowsScreen() {
             />
           </View>
         );
-      } else if (category.videos && category.videos.length > 0) {
-        return (
-          <View key={category.id} style={styles.categorySection}>
-            {renderHeading(category)}
-            <FlatList
-              horizontal
-              data={category.videos}
-              renderItem={({ item }) => (
-                <View style={styles.creatorCard}>
-                  <Image
-                    source={{ uri: item.thumbnail || '' }}
-                    style={styles.creatorAvatar}
-                    resizeMode="cover"
-                  />
-                </View>
-              )}
-              keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.categoryList}
-            />
-          </View>
-        );
       }
       return null;
     }
 
     if (!category.videos || category.videos.length === 0) return null;
-
-    if (category.cardType === 'large') {
-      return (
-        <View key={category.id} style={styles.categorySection}>
-          {renderHeading(category)}
-          <View style={styles.largeCardGrid}>
-            {category.videos.slice(0, 4).map((video) => renderVideoCard(video, 'large'))}
-          </View>
-        </View>
-      );
-    }
-
-    if (category.cardType === 'rectangular') {
-      const showNumbers = category.headingStyle === 'numbered';
-      return (
-        <View key={category.id} style={styles.categorySection}>
-          {renderHeading(category)}
-          <View style={styles.rectangularContainer}>
-            {category.videos.slice(0, 4).map((video, index) => 
-              renderVideoCard(video, 'rectangular', showNumbers ? index : undefined)
-            )}
-          </View>
-        </View>
-      );
-    }
 
     return (
       <View key={category.id} style={styles.categorySection}>
@@ -327,7 +237,7 @@ export default function ShowsScreen() {
         <FlatList
           horizontal
           data={category.videos}
-          renderItem={({ item }) => renderVideoCard(item, category.cardType)}
+          renderItem={({ item }) => renderVideoCard(item)}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryList}
@@ -401,41 +311,34 @@ export default function ShowsScreen() {
     categoryList: {
       paddingHorizontal: 16,
     },
-    videoCardSmall: {
-      width: CARD_WIDTH_SMALL,
-      marginRight: 8,
+    videoCard: {
+      width: CARD_WIDTH,
+      marginRight: 12,
     },
-    cardThumbnailSmall: {
-      width: CARD_WIDTH_SMALL,
-      height: CARD_HEIGHT_SMALL,
+    cardThumbnail: {
+      width: CARD_WIDTH,
+      height: CARD_HEIGHT,
       borderRadius: 8,
       backgroundColor: colors.surface,
+      marginBottom: 8,
     },
-    videoCardMedium: {
-      width: CARD_WIDTH_MEDIUM,
-      marginRight: 8,
+    cardInfo: {
+      width: CARD_WIDTH,
     },
-    cardThumbnailMedium: {
-      width: CARD_WIDTH_MEDIUM,
-      height: CARD_HEIGHT_MEDIUM,
-      borderRadius: 8,
-      backgroundColor: colors.surface,
+    cardTitle: {
+      fontSize: 14,
+      fontWeight: '600' as const,
+      marginBottom: 4,
+      lineHeight: 18,
     },
-    videoCardLarge: {
-      width: CARD_WIDTH_LARGE,
-      marginBottom: 12,
-    },
-    cardThumbnailLarge: {
-      width: CARD_WIDTH_LARGE,
-      height: CARD_HEIGHT_LARGE,
-      borderRadius: 12,
-      backgroundColor: colors.surface,
-    },
-    largeCardGrid: {
-      paddingHorizontal: 16,
+    cardMeta: {
       flexDirection: 'row',
+      alignItems: 'center',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
+    },
+    cardMetaText: {
+      fontSize: 12,
+      fontWeight: '400' as const,
     },
     creatorCard: {
       width: CREATOR_SIZE,
@@ -453,37 +356,6 @@ export default function ShowsScreen() {
       fontSize: 12,
       fontWeight: '500' as const,
       textAlign: 'center',
-    },
-    videoCardRect: {
-      width: CARD_WIDTH_RECT,
-      marginBottom: 12,
-      position: 'relative',
-    },
-    cardThumbnailRect: {
-      width: CARD_WIDTH_RECT,
-      height: CARD_HEIGHT_RECT,
-      borderRadius: 12,
-      backgroundColor: colors.surface,
-    },
-    rectangularContainer: {
-      paddingHorizontal: 16,
-    },
-    numberBadge: {
-      position: 'absolute',
-      left: -8,
-      top: '50%',
-      transform: [{ translateY: -30 }],
-      zIndex: 10,
-      width: 60,
-      height: 60,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    numberText: {
-      fontSize: 48,
-      fontWeight: '700' as const,
-      color: colors.textSecondary,
-      opacity: 0.5,
     },
   });
 
