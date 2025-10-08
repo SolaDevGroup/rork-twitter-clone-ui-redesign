@@ -72,9 +72,15 @@ export default function CreatePost() {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
-    cancelText: {
-      fontSize: 16,
-      color: colors.text,
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    headerAvatar: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
     },
     postButton: {
       backgroundColor: primary,
@@ -109,17 +115,9 @@ export default function CreatePost() {
       marginRight: 4,
     },
     inputContainer: {
-      flexDirection: 'row',
       marginTop: 12,
     },
-    avatar: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      marginRight: 12,
-    },
     textInput: {
-      flex: 1,
       fontSize: 16,
       color: colors.text,
       paddingTop: 4,
@@ -127,7 +125,6 @@ export default function CreatePost() {
     },
     imagePreview: {
       marginTop: 16,
-      marginLeft: 60,
       borderRadius: 16,
       overflow: 'hidden',
     },
@@ -148,7 +145,6 @@ export default function CreatePost() {
       alignItems: 'center',
     },
     pollContainer: {
-      marginLeft: 60,
       marginTop: 16,
     },
     pollOption: {
@@ -194,7 +190,6 @@ export default function CreatePost() {
     locationContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginLeft: 60,
       marginTop: 16,
       paddingBottom: 16,
       borderBottomWidth: 1,
@@ -210,7 +205,6 @@ export default function CreatePost() {
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 16,
-      marginLeft: 60,
     },
     replyText: {
       color: primary,
@@ -529,9 +523,15 @@ export default function CreatePost() {
         style={styles.keyboardView}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.cancelText}>Cancel</Text>
-          </TouchableOpacity>
+          <View style={styles.headerLeft}>
+            <IconButton 
+              icon="arrow-back"
+              size={40}
+              onPress={() => router.back()}
+              testID="back-button"
+            />
+            <Image source={{ uri: user?.avatar }} style={styles.headerAvatar} />
+          </View>
           <TouchableOpacity
             style={[styles.postButton, !canPost && styles.postButtonDisabled]}
             onPress={handlePost}
@@ -559,7 +559,6 @@ export default function CreatePost() {
           </View>
 
           <View style={styles.inputContainer}>
-            <Image source={{ uri: user?.avatar }} style={styles.avatar} />
             <TextInput
               style={styles.textInput}
               placeholder={showPoll ? "Ask a question..." : "What's happening?"}
