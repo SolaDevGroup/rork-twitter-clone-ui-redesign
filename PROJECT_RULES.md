@@ -192,6 +192,30 @@ const styles = StyleSheet.create({
 
 ## 🖼️ Images & Media
 
+### 🚨 CRITICAL: Image Source Rule
+**ALWAYS use correct Image source syntax:**
+
+**Correct Syntax:**
+```typescript
+<Image source={{ uri: imageUrl }} style={styles.image} />
+```
+
+**Common Mistakes to NEVER Make:**
+- ❌ `<Image sources={{ uri: imageUrl }} />` (typo: "sources" instead of "source")
+- ❌ `<Image source={imageUrl} />` (missing object wrapper)
+- ❌ `<Image source={{ url: imageUrl }} />` (wrong property: "url" instead of "uri")
+- ❌ `<Image src={imageUrl} />` (wrong property: "src" instead of "source")
+
+**Rules:**
+1. Property name is `source` (singular, not "sources")
+2. Value must be an object: `{{ uri: string }}`
+3. For local images: `source={require('./path/to/image.png')}`
+4. For remote images: `source={{ uri: 'https://...' }}`
+5. Always provide fallback for undefined URIs:
+   ```typescript
+   source={{ uri: user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }}
+   ```
+
 ### Profile Pictures
 5 sizes: 12, 16, 32, 40, 48px - all fully rounded
 
@@ -320,6 +344,8 @@ When creating a new screen:
 - [ ] Button states follow opacity rules
 - [ ] Icons are half the container height
 - [ ] Border radius follows system rules
+- [ ] All images use `source={{ uri: url }}` (not "sources", not "src", not "url")
+- [ ] All image URIs have fallback values for undefined cases
 
 ## 🚫 Common Mistakes to Avoid
 
@@ -352,6 +378,15 @@ When creating a new screen:
 
 10. ❌ Odd spacing numbers (13px, 15px, etc.)
     ✅ Even numbers only (2pt grid system)
+
+11. ❌ Image with `sources={{ uri: url }}` (typo)
+    ✅ Image with `source={{ uri: url }}` (correct)
+
+12. ❌ Image with `source={url}` (missing object wrapper)
+    ✅ Image with `source={{ uri: url }}` (correct)
+
+13. ❌ Image with `src={url}` (wrong property)
+    ✅ Image with `source={{ uri: url }}` (correct)
 
 ## 📚 Import Patterns
 
