@@ -14,24 +14,28 @@ export default function AccessibilitySettings() {
       title: 'Vision',
       description: 'Manage visual settings like font size and color contrast.',
       icon: Eye,
+      route: '/accessibility-vision',
     },
     {
       id: 'display',
       title: 'Display',
       description: 'Manage your font size, color, and background. These settings affect all the X accounts on this browser.',
       icon: Palette,
+      route: '/accessibility-display',
     },
     {
       id: 'languages',
       title: 'Languages',
       description: 'Manage which languages are used to personalize your X experience.',
       icon: Globe,
+      route: '/accessibility-languages',
     },
     {
       id: 'data-usage',
       title: 'Data usage',
       description: 'Limit how X uses some of your network data.',
       icon: Type,
+      route: '/accessibility-data-usage',
     },
   ];
 
@@ -57,7 +61,7 @@ export default function AccessibilitySettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>

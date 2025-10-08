@@ -14,36 +14,42 @@ export default function PrivacySettings() {
       title: 'Audience and tagging',
       description: 'Manage what information you allow other people on X to see.',
       icon: Users,
+      route: '/privacy-audience',
     },
     {
       id: 'content',
       title: 'Your posts',
       description: 'Manage the information associated with your posts.',
       icon: MessageSquare,
+      route: '/privacy-posts',
     },
     {
       id: 'location',
       title: 'Location information',
       description: 'Manage the location information X uses to personalize your experience.',
       icon: MapPin,
+      route: '/privacy-location',
     },
     {
       id: 'discoverability',
       title: 'Discoverability and contacts',
       description: 'Control your discoverability settings and manage contacts.',
       icon: Eye,
+      route: '/privacy-discoverability',
     },
     {
       id: 'data-sharing',
       title: 'Data sharing and personalization',
       description: 'Control how X shares your data with business partners and how we personalize your experience.',
       icon: Tag,
+      route: '/privacy-data-sharing',
     },
     {
       id: 'blocking',
       title: 'Blocking and muting',
       description: 'Manage the accounts, words, and notifications that you have muted or blocked.',
       icon: Shield,
+      route: '/privacy-blocking',
     },
   ];
 
@@ -69,7 +75,7 @@ export default function PrivacySettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>

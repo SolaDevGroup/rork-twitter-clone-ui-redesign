@@ -14,24 +14,28 @@ export default function PremiumSettings() {
       title: 'Manage subscription',
       description: 'View and manage your Premium subscription.',
       icon: Star,
+      route: '/premium-subscription',
     },
     {
       id: 'billing',
       title: 'Billing information',
       description: 'Update your payment method and billing details.',
       icon: CreditCard,
+      route: '/premium-billing',
     },
     {
       id: 'benefits',
       title: 'Premium benefits',
       description: 'See all the benefits included in your Premium subscription.',
       icon: Gift,
+      route: '/premium-benefits',
     },
     {
       id: 'badges',
       title: 'Premium badges',
       description: 'Manage your Premium badges and verification.',
       icon: Award,
+      route: '/premium-badges',
     },
   ];
 
@@ -68,7 +72,7 @@ export default function PremiumSettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>

@@ -17,18 +17,21 @@ export default function NotificationsSettings() {
       title: 'Filters',
       description: 'Choose the notifications you would like to see - and those you don&apos;t.',
       icon: Bell,
+      route: '/notification-filters',
     },
     {
       id: 'preferences',
       title: 'Preferences',
       description: 'Select your preferences by notification type.',
       icon: Smartphone,
+      route: '/notification-preferences',
     },
     {
       id: 'email',
       title: 'Email notifications',
       description: 'Control when and how often X sends you emails.',
       icon: Mail,
+      route: '/email-notifications',
     },
   ];
 
@@ -86,7 +89,7 @@ export default function NotificationsSettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>

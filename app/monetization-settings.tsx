@@ -14,24 +14,28 @@ export default function MonetizationSettings() {
       title: 'Your earnings',
       description: 'View your earnings and payment history.',
       icon: DollarSign,
+      route: '/monetization-earnings',
     },
     {
       id: 'subscriptions',
       title: 'Subscriptions',
       description: 'Manage your subscription offerings for your followers.',
       icon: TrendingUp,
+      route: '/monetization-subscriptions',
     },
     {
       id: 'payout',
       title: 'Payout settings',
       description: 'Set up your payout method and schedule.',
       icon: Wallet,
+      route: '/monetization-payout',
     },
     {
       id: 'analytics',
       title: 'Monetization analytics',
       description: 'View detailed analytics about your monetization performance.',
       icon: BarChart3,
+      route: '/monetization-analytics',
     },
   ];
 
@@ -57,7 +61,7 @@ export default function MonetizationSettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>

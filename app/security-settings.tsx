@@ -14,30 +14,35 @@ export default function SecuritySettings() {
       title: 'Two-factor authentication',
       description: 'Manage two-factor authentication options.',
       icon: Shield,
+      route: '/security-two-factor',
     },
     {
       id: 'password',
       title: 'Password',
       description: 'Change your password at any time.',
       icon: Lock,
+      route: '/change-password',
     },
     {
       id: 'sessions',
       title: 'Apps and sessions',
       description: 'See information about when you logged into your account and the apps you connected to your account.',
       icon: Smartphone,
+      route: '/security-sessions',
     },
     {
       id: 'connected-accounts',
       title: 'Connected accounts',
       description: 'Manage Google or Apple accounts connected to your account to log in.',
       icon: Key,
+      route: '/security-connected-accounts',
     },
     {
       id: 'account-access',
       title: 'Account access history',
       description: 'See your account access history.',
       icon: Eye,
+      route: '/security-access-history',
     },
   ];
 
@@ -63,7 +68,7 @@ export default function SecuritySettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>
