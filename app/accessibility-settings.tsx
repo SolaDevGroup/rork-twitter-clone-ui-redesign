@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { ArrowLeft, ChevronRight, Eye, Type, Globe, Palette } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { colors } from '@/constants/colors';
@@ -40,7 +40,9 @@ export default function AccessibilitySettings() {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={colors.dark.text} />
@@ -76,6 +78,7 @@ export default function AccessibilitySettings() {
         })}
       </ScrollView>
     </SafeAreaView>
+    </>
   );
 }
 

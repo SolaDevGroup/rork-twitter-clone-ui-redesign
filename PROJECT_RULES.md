@@ -299,6 +299,35 @@ const styles = StyleSheet.create({
 />
 ```
 
+### 🚨 CRITICAL: Screen Header Configuration
+**EVERY new screen file MUST include `<Stack.Screen options={{ headerShown: false }} />` at the top:**
+
+```typescript
+import { Stack } from 'expo-router';
+
+export default function MyScreen() {
+  return (
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      {/* Rest of your screen content */}
+    </>
+  );
+}
+```
+
+**Why this is critical:**
+1. Prevents double headers (default + custom)
+2. Ensures consistent design system usage
+3. Avoids layout issues and spacing problems
+4. Must be done for EVERY screen, even if it seems to work without it
+
+**This applies to:**
+- All new screens in the app/ directory
+- All settings screens
+- All modal screens
+- All detail screens
+- Every single screen file without exception
+
 ## 🎯 Key Design Principles
 
 1. **Consistency**: Use design system values consistently
@@ -331,6 +360,8 @@ const styles = StyleSheet.create({
 ## ✅ Checklist for New Screens
 
 When creating a new screen:
+- [ ] **CRITICAL**: Add `<Stack.Screen options={{ headerShown: false }} />` at the top of the component
+- [ ] Implement custom header using design system pattern
 - [ ] Use `SCREEN_HORIZONTAL_PADDING` (12px) for horizontal padding
 - [ ] Input fields use 16px font size
 - [ ] No borders on input fields
