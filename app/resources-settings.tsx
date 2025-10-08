@@ -14,30 +14,35 @@ export default function ResourcesSettings() {
       title: 'Help Center',
       description: 'Get answers to your questions and learn how to use X.',
       icon: HelpCircle,
+      route: '/resources-help-center',
     },
     {
       id: 'terms',
       title: 'Terms of Service',
       description: 'Review the terms of service.',
       icon: FileText,
+      route: '/resources-terms',
     },
     {
       id: 'privacy-policy',
       title: 'Privacy Policy',
       description: 'Read our privacy policy.',
       icon: BookOpen,
+      route: '/resources-privacy-policy',
     },
     {
       id: 'support',
       title: 'Contact Support',
       description: 'Get help from our support team.',
       icon: MessageCircle,
+      route: '/resources-support',
     },
     {
       id: 'about',
       title: 'About X',
       description: 'Learn more about X and our mission.',
       icon: Info,
+      route: '/resources-about',
     },
   ];
 
@@ -63,7 +68,7 @@ export default function ResourcesSettings() {
             <TouchableOpacity
               key={option.id}
               style={styles.optionItem}
-              onPress={() => console.log('Selected:', option.id)}
+              onPress={() => router.push(option.route as any)}
             >
               <Icon size={20} color={colors.dark.textSecondary} />
               <View style={styles.optionContent}>
