@@ -20,11 +20,11 @@ import { PostCard } from '@/components/PostCard';
 import { posts as mockPosts, trendingTopics, currentUser, stories as mockStories } from '@/mocks/data';
 import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Plus, TrendingUp, Bell, Search, MessageCircle, ArrowUp, MessageSquare, Repeat, Bookmark, Hash } from 'lucide-react-native';
+import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle, ArrowUp, MessageSquare, Repeat, Bookmark, Hash } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
 import { Icon } from '@/components/Icon';
 
-type TopicFilter = 'Technology' | 'Politics' | 'Sports' | 'Entertainment' | 'Music' | 'Food' | 'Gaming' | 'Health';
+type FeedFilter = 'for-you' | 'following' | 'trending';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -388,6 +388,7 @@ export default function HomeScreen() {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 12,
+      marginTop: 16,
       paddingHorizontal: 16,
       paddingVertical: 12,
       borderRadius: 24,
@@ -439,7 +440,7 @@ export default function HomeScreen() {
   });
   const [posts, setPosts] = useState<Post[]>(mockPosts);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<TopicFilter>('Technology');
+  const [activeFilter, setActiveFilter] = useState<FeedFilter>('for-you');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [showTrendingModal, setShowTrendingModal] = useState(false);
@@ -499,8 +500,15 @@ export default function HomeScreen() {
   }, []);
 
   const filteredPosts = useMemo(() => {
-    return posts;
-  }, [posts]);
+    switch (activeFilter) {
+      case 'following':
+        return posts.filter(post => post.user.id !== currentUser.id);
+      case 'trending':
+        return posts.filter(post => (post.likes + post.reposts + post.comments) > 20);
+      default:
+        return posts;
+    }
+  }, [posts, activeFilter]);
 
   const handleCreatePost = () => {
     if (Platform.OS === 'web') {
@@ -684,64 +692,52 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  const TopicFilterButton = ({ topic }: { topic: TopicFilter }) => (
+  const FilterButton = ({ filter, title, icon }: { filter: FeedFilter; title: string; icon: React.ReactNode }) => (
     <TouchableOpacity
       style={[
         styles.filterButton,
         {
-          backgroundColor: activeFilter === topic ? primary : 'transparent',
-          borderColor: activeFilter === topic ? primary : colors.border,
+          backgroundColor: activeFilter === filter ? primary : 'transparent',
+          borderColor: activeFilter === filter ? primary : colors.border,
         }
       ]}
-      onPress={() => setActiveFilter(topic)}
+      onPress={() => setActiveFilter(filter)}
     >
-      <Text style={[
-        styles.filterText,
-        {
-          color: activeFilter === topic ? 'white' : colors.text,
-        }
-      ]}>
-        {topic}
-      </Text>
+      <View style={styles.filterButtonContent}>
+        {icon}
+        <Text style={[
+          styles.filterText,
+          {
+            color: activeFilter === filter ? 'white' : colors.text,
+            marginLeft: 8,
+          }
+        ]}>
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 
   const ListHeader = () => (
     <View>
-      {/* Post Creation Input */}
-      <View style={{ paddingHorizontal: SCREEN_HORIZONTAL_PADDING, paddingTop: 16 }}>
-        <TouchableOpacity 
-          style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}
-          onPress={handleCreatePost}
-          activeOpacity={0.7}
-        >
-          <Image source={{ uri: currentUser.avatar }} style={styles.momentInputAvatar} />
-          <Text style={[styles.momentInputText, { color: colors.textSecondary }]}>Tell everyone what&apos;s new...</Text>
-          <View style={styles.momentInputActions}>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Camera'); }}>
-              <Icon name="photo-camera" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Poll'); }}>
-              <Icon name="poll" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Audio'); }}>
-              <Icon name="mic" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/* Topic Filters */}
+      {/* Feed Filters */}
       <View style={styles.filtersContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <TopicFilterButton topic="Technology" />
-          <TopicFilterButton topic="Politics" />
-          <TopicFilterButton topic="Sports" />
-          <TopicFilterButton topic="Entertainment" />
-          <TopicFilterButton topic="Music" />
-          <TopicFilterButton topic="Food" />
-          <TopicFilterButton topic="Gaming" />
-          <TopicFilterButton topic="Health" />
+          <FilterButton
+            filter="for-you"
+            title="For You"
+            icon={<Sparkles size={16} color={activeFilter === 'for-you' ? 'white' : colors.text} />}
+          />
+          <FilterButton
+            filter="following"
+            title="Following"
+            icon={<Users size={16} color={activeFilter === 'following' ? 'white' : colors.text} />}
+          />
+          <FilterButton
+            filter="trending"
+            title="Trending"
+            icon={<TrendingUp size={16} color={activeFilter === 'trending' ? 'white' : colors.text} />}
+          />
         </ScrollView>
       </View>
 
@@ -812,6 +808,26 @@ export default function HomeScreen() {
               <Text style={[{ fontSize: 11, color: 'rgba(255, 255, 255, 0.6)', marginTop: 4 }]}>Parent group&apos;s Feed Post&apos;s t - Topic&apos;s Display uppercase</Text>
               <Text style={[{ fontSize: 10, color: 'rgba(255, 255, 255, 0.5)' }]}>Parent group&apos;s Feed Post&apos;s Creation Date formatted as 05/10/2025 at 14:00pm</Text>
             </View>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}
+          onPress={handleCreatePost}
+          activeOpacity={0.7}
+        >
+          <Image source={{ uri: currentUser.avatar }} style={styles.momentInputAvatar} />
+          <Text style={[styles.momentInputText, { color: colors.textSecondary }]}>Tell everyone what&apos;s new...</Text>
+          <View style={styles.momentInputActions}>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Camera'); }}>
+              <Icon name="photo-camera" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Poll'); }}>
+              <Icon name="poll" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Audio'); }}>
+              <Icon name="mic" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </View>
@@ -903,7 +919,7 @@ export default function HomeScreen() {
 
       {/* Main Content */}
       <FlatList
-        data={[]}
+        data={filteredPosts}
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={ListHeader}
