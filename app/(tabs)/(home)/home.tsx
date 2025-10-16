@@ -98,9 +98,11 @@ export default function HomeScreen() {
       backgroundColor: '#FF385C',
     },
     topicsRow: {
+      marginBottom: 12,
+    },
+    topicsRowContent: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 12,
     },
     topicChip: {
       paddingHorizontal: 16,
@@ -198,8 +200,10 @@ export default function HomeScreen() {
       color: colors.text,
     },
     storiesRow: {
-      flexDirection: 'row',
       marginBottom: 16,
+    },
+    storiesRowContent: {
+      flexDirection: 'row',
     },
     storyItem: {
       marginRight: 12,
@@ -527,7 +531,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesRow} contentContainerStyle={styles.storiesRowContent}>
           <TouchableOpacity style={styles.storyItem} onPress={() => router.push('/camera-capture')}>
             <View style={styles.addStoryContainer}>
               <Camera size={32} color={colors.textSecondary} />
@@ -658,7 +662,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.topicsRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.topicsRow} contentContainerStyle={styles.topicsRowContent}>
           {topics.map((topic) => (
             <TouchableOpacity
               key={topic}
