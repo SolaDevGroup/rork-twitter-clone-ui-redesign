@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Share as RNShare, Platform, Modal, TextInput, Animated, PanResponder } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Share as RNShare, Modal, TextInput, Animated, PanResponder } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { Post } from '@/types';
 import { router } from 'expo-router';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ArrowUp, ArrowDown, MessageCircle, Repeat, Bookmark, Share, TrendingUp } from 'lucide-react-native';
+import { ArrowUp, ArrowDown, MessageCircle, Repeat, Bookmark, TrendingUp, VolumeX, Volume2 } from 'lucide-react-native';
+import { Video } from 'expo-av';
 
 interface PostCardProps {
   post: Post;
@@ -16,20 +17,16 @@ interface PostCardProps {
 
 export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const { collections, addCollection, addToCollection } = useAuth();
-  const { colors, primary, isDark } = useTheme();
-  const [upvoted, setUpvoted] = useState(false);
-  const [downvoted, setDownvoted] = useState(false);
-  const [voteCount, setVoteCount] = useState(post.likes);
-  const [reposted, setReposted] = useState(post.isReposted || false);
-  const [repostCount, setRepostCount] = useState(post.reposts);
-  const [bookmarked, setBookmarked] = useState(post.isBookmarked || false);
-  const [bookmarkCount, setBookmarkCount] = useState(post.bookmarks || 0);
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [translatedText, setTranslatedText] = useState('');
-  const [isTranslating, setIsTranslating] = useState(false);
+  const { colors, primary } = useTheme();
+  const [voteCount] = useState(post.likes);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+  const [selectedPollOption, setSelectedPollOption] = useState<string | null>(post.poll?.votedOptionId || null);
+  const [pollVotes, setPollVotes] = useState(post.poll?.options || []);
+  const [hasVotedPoll, setHasVotedPoll] = useState(post.poll?.hasVoted || false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<Video>(null);
 
   const translateX = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
@@ -376,42 +373,133 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       fontFamily: fonts.medium,
       color: colors.textSecondary,
     },
+    pollContainer: {
+      paddingHorizontal: spacing.lg,
+      marginBottom: spacing.md,
+    },
+    pollOption: {
+      marginBottom: spacing.sm,
+      borderRadius: 8,
+      overflow: 'hidden' as const,
+      position: 'relative' as const,
+    },
+    pollOptionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.md,
+      borderWidth: 1,
+      borderRadius: 8,
+      position: 'relative' as const,
+    },
+    pollOptionSelected: {
+      borderWidth: 2,
+    },
+    pollOptionBar: {
+      position: 'absolute' as const,
+      left: 0,
+      top: 0,
+      bottom: 0,
+      opacity: 0.15,
+    },
+    pollOptionContent: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      zIndex: 1,
+    },
+    pollOptionLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+      gap: spacing.sm,
+    },
+    pollOptionText: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.medium,
+      color: colors.text,
+      flex: 1,
+    },
+    pollVoteCount: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.semiBold,
+      color: colors.textSecondary,
+      marginRight: spacing.xs,
+    },
+    pollPercentage: {
+      fontSize: fontSizes.base,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    pollVoters: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: spacing.xs,
+    },
+    pollVoterAvatar: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      marginLeft: -6,
+      borderWidth: 1,
+      borderColor: colors.background,
+    },
+    videoContainer: {
+      width: '100%',
+      paddingHorizontal: spacing.lg,
+      marginBottom: spacing.md,
+      position: 'relative' as const,
+    },
+    video: {
+      width: '100%',
+      height: 220,
+      borderRadius: 12,
+      backgroundColor: '#000',
+    },
+    videoOverlay: {
+      position: 'absolute' as const,
+      bottom: spacing.md,
+      left: spacing.lg,
+      right: spacing.lg,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+    videoDuration: {
+      fontSize: fontSizes.sm,
+      fontFamily: fonts.semiBold,
+      color: 'white',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    muteButton: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    subtitleBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    subtitleText: {
+      fontSize: 11,
+      fontFamily: fonts.medium,
+      color: 'white',
+    },
   });
-
-  const handleUpvote = () => {
-    if (upvoted) {
-      setUpvoted(false);
-      setVoteCount(voteCount - 1);
-    } else {
-      setUpvoted(true);
-      if (downvoted) {
-        setDownvoted(false);
-        setVoteCount(voteCount + 2);
-      } else {
-        setVoteCount(voteCount + 1);
-      }
-    }
-  };
-
-  const handleDownvote = () => {
-    if (downvoted) {
-      setDownvoted(false);
-      setVoteCount(voteCount + 1);
-    } else {
-      setDownvoted(true);
-      if (upvoted) {
-        setUpvoted(false);
-        setVoteCount(voteCount - 2);
-      } else {
-        setVoteCount(voteCount - 1);
-      }
-    }
-  };
-
-  const handleRepost = () => {
-    setReposted(!reposted);
-    setRepostCount(reposted ? repostCount - 1 : repostCount + 1);
-  };
 
   const handleShare = async () => {
     try {
@@ -424,20 +512,8 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     }
   };
 
-  const handleBookmark = () => {
-    if (Platform.OS === 'web') {
-      setBookmarked(!bookmarked);
-      setBookmarkCount(bookmarked ? bookmarkCount - 1 : bookmarkCount + 1);
-      onBookmark?.();
-    } else {
-      setShowCollectionModal(true);
-    }
-  };
-
   const handleAddToCollection = (collectionId: string) => {
     addToCollection(collectionId, post);
-    setBookmarked(true);
-    setBookmarkCount(bookmarkCount + 1);
     setShowCollectionModal(false);
     onBookmark?.();
   };
@@ -448,6 +524,38 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       setNewCollectionName('');
       setIsCreatingCollection(false);
     }
+  };
+
+  const handlePollVote = (optionId: string) => {
+    if (hasVotedPoll) return;
+    
+    setSelectedPollOption(optionId);
+    setHasVotedPoll(true);
+    
+    const updatedOptions = pollVotes.map(opt => {
+      if (opt.id === optionId) {
+        return { ...opt, votes: opt.votes + 1 };
+      }
+      return opt;
+    });
+    setPollVotes(updatedOptions);
+  };
+
+  const getTotalVotes = () => {
+    return pollVotes.reduce((sum, opt) => sum + opt.votes, 0);
+  };
+
+  const getVotePercentage = (votes: number) => {
+    const total = getTotalVotes();
+    if (total === 0) return 0;
+    return Math.round((votes / total) * 100);
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000) {
+      return `+${(num / 1000).toFixed(1)}k`;
+    }
+    return `+${num}`;
   };
 
   const handleMoreOptions = () => {
@@ -512,6 +620,98 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       {post.image && (
         <View style={styles.postImageContainer}>
           <Image source={{ uri: post.image }} style={styles.postImage} resizeMode="cover" />
+        </View>
+      )}
+
+      {post.poll && (
+        <View style={styles.pollContainer}>
+          {pollVotes.map((option) => {
+            const percentage = getVotePercentage(option.votes);
+            const isSelected = selectedPollOption === option.id;
+            const isLeading = option.votes === Math.max(...pollVotes.map(o => o.votes));
+            
+            return (
+              <View key={option.id} style={styles.pollOption}>
+                <TouchableOpacity
+                  style={[
+                    styles.pollOptionButton,
+                    { borderColor: hasVotedPoll ? (isLeading ? primary : colors.border) : colors.border },
+                    isSelected && hasVotedPoll && styles.pollOptionSelected,
+                  ]}
+                  onPress={() => handlePollVote(option.id)}
+                  disabled={hasVotedPoll}
+                  activeOpacity={0.7}
+                >
+                  {hasVotedPoll && (
+                    <View style={[
+                      styles.pollOptionBar,
+                      { backgroundColor: isLeading ? primary : colors.textSecondary, width: `${percentage}%` }
+                    ]} />
+                  )}
+                  <View style={styles.pollOptionContent}>
+                    <View style={styles.pollOptionLeft}>
+                      <Text style={styles.pollOptionText}>{option.text}</Text>
+                      {hasVotedPoll && isLeading && option.voters && option.voters.length > 0 && (
+                        <View style={styles.pollVoters}>
+                          {option.voters.slice(0, 3).map((voter, idx) => (
+                            <Image
+                              key={voter.id}
+                              source={{ uri: voter.avatar }}
+                              style={[styles.pollVoterAvatar, idx === 0 && { marginLeft: 0 }]}
+                            />
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                    {hasVotedPoll && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        {option.votes > 0 && (
+                          <Text style={styles.pollVoteCount}>{formatNumber(option.votes)}</Text>
+                        )}
+                        <Text style={styles.pollPercentage}>{percentage}%</Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {post.video && (
+        <View style={styles.videoContainer}>
+          <Video
+            ref={videoRef}
+            source={{ uri: post.video.url }}
+            style={styles.video}
+            useNativeControls={false}
+            resizeMode={'cover' as any}
+            isLooping
+            isMuted={isMuted}
+            shouldPlay={false}
+          />
+          <View style={styles.videoOverlay}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+              <Text style={styles.videoDuration}>{post.video.duration}</Text>
+              {post.video.hasSubtitles && (
+                <View style={styles.subtitleBadge}>
+                  <Icon name="closed-caption" size={12} color="white" />
+                  <Text style={styles.subtitleText}>These are auto-generated subtitles</Text>
+                </View>
+              )}
+            </View>
+            <TouchableOpacity
+              style={styles.muteButton}
+              onPress={() => setIsMuted(!isMuted)}
+            >
+              {isMuted ? (
+                <VolumeX size={16} color="white" />
+              ) : (
+                <Volume2 size={16} color="white" />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 

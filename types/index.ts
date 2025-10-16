@@ -12,6 +12,30 @@ export interface User {
   isVerified?: boolean;
 }
 
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: number;
+  voters?: User[];
+}
+
+export interface Poll {
+  id: string;
+  question: string;
+  options: PollOption[];
+  totalVotes: number;
+  endsAt?: string;
+  hasVoted?: boolean;
+  votedOptionId?: string;
+}
+
+export interface PostVideo {
+  url: string;
+  thumbnail: string;
+  duration: string;
+  hasSubtitles?: boolean;
+}
+
 export interface Post {
   id: string;
   user: User;
@@ -22,6 +46,7 @@ export interface Post {
   comments: number;
   reposts: number;
   bookmarks: number;
+  views: number;
   isLiked?: boolean;
   isReposted?: boolean;
   isBookmarked?: boolean;
@@ -30,6 +55,8 @@ export interface Post {
   hashtags?: string[];
   type?: 'post' | 'repost' | 'reply';
   originalPost?: Post;
+  poll?: Poll;
+  video?: PostVideo;
 }
 
 export interface Comment {
@@ -89,11 +116,7 @@ export interface ChatMessage {
   pollOptions?: PollOption[];
 }
 
-export interface PollOption {
-  id: string;
-  text: string;
-  votes: number;
-}
+
 
 export interface Club {
   id: string;
