@@ -20,11 +20,11 @@ import { PostCard } from '@/components/PostCard';
 import { posts as mockPosts, trendingTopics, currentUser, stories as mockStories } from '@/mocks/data';
 import { Post, TrendingTopic, Story } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Plus, Sparkles, TrendingUp, Users, Bell, Search, MessageCircle, ArrowUp, MessageSquare, Repeat, Bookmark, Hash } from 'lucide-react-native';
+import { Bell, Search, MessageCircle, Camera, BarChart2, Mic, ChevronDown, PlayCircle, X, Hash, TrendingUp } from 'lucide-react-native';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
-import { Icon } from '@/components/Icon';
 
-type FeedFilter = 'for-you' | 'following' | 'trending';
+type FeedFilter = 'Following' | 'For You' | 'Trending';
+type TopicType = 'All' | 'Technology' | 'Politics' | 'Sports' | 'Music';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -35,18 +35,31 @@ export default function HomeScreen() {
   const [stories] = useState<Story[]>(mockStories);
   const swipeX = useRef(new Animated.Value(0)).current;
   const [isSwipingToCamera, setIsSwipingToCamera] = useState(false);
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FeedFilter>('Following');
+  const [activeTopic, setActiveTopic] = useState<TopicType>('All');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [showTrendingModal, setShowTrendingModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'feed' | 'shorts'>('feed');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
     header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingVertical: 12,
       borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    headerTop: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 12,
     },
     headerLeft: {
       flexDirection: 'row',
@@ -54,13 +67,14 @@ export default function HomeScreen() {
       gap: 16,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: 28,
       fontWeight: '600' as const,
     },
     headerTextActive: {
-      opacity: 1,
+      color: colors.text,
     },
     headerTextInactive: {
+      color: colors.textSecondary,
       opacity: 0.64,
     },
     headerActions: {
@@ -74,36 +88,137 @@ export default function HomeScreen() {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    storiesSection: {
-      paddingVertical: 16,
+    notificationBadge: {
+      position: 'absolute' as const,
+      top: 8,
+      right: 8,
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#FF385C',
     },
-    storiesContainer: {
+    topicsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    topicChip: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      marginRight: 8,
+      backgroundColor: colors.surface,
+    },
+    topicChipActive: {
+      backgroundColor: colors.text,
+    },
+    topicChipText: {
+      fontSize: 14,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    topicChipTextActive: {
+      color: colors.background,
+    },
+    filterRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    filterDropdown: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    filterText: {
+      fontSize: 16,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    filterActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    postInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingVertical: 16,
+      backgroundColor: colors.surface,
+      marginHorizontal: SCREEN_HORIZONTAL_PADDING,
+      borderRadius: 24,
+      marginTop: 16,
+    },
+    postInputAvatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+    },
+    postInputText: {
+      flex: 1,
+      fontSize: 14,
+      color: colors.textSecondary,
+    },
+    postInputActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    momentsSection: {
+      paddingVertical: 16,
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
     },
-    storyContainer: {
+    momentsHeader: {
+      flexDirection: 'row',
       alignItems: 'center',
-      marginRight: 16,
-      width: 70,
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    momentsTitle: {
+      fontSize: 11,
+      fontWeight: '700' as const,
+      letterSpacing: 1,
+      color: colors.textSecondary,
+    },
+    momentsCount: {
+      fontSize: 18,
+      fontWeight: '700' as const,
+      color: colors.text,
+    },
+    playAllButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    playAllText: {
+      fontSize: 13,
+      fontWeight: '600' as const,
+      color: colors.text,
+    },
+    storiesRow: {
+      flexDirection: 'row',
+      marginBottom: 16,
+    },
+    storyItem: {
+      marginRight: 12,
+      alignItems: 'center',
+    },
+    addStoryContainer: {
+      width: 100,
+      height: 150,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderStyle: 'dashed' as const,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     storyImageContainer: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-      padding: 1,
-      position: 'relative' as const,
-    },
-    storyRing: {
-      position: 'absolute' as const,
-      top: 0,
-      left: 0,
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-    },
-    storyImageWrapper: {
-      width: '100%' as const,
-      height: '100%' as const,
-      borderRadius: 31,
+      width: 100,
+      height: 150,
+      borderRadius: 12,
       overflow: 'hidden' as const,
       position: 'relative' as const,
     },
@@ -113,62 +228,126 @@ export default function HomeScreen() {
     },
     storyGradient: {
       position: 'absolute' as const,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: '50%' as const,
+      padding: 8,
+      justifyContent: 'flex-end',
+    },
+    storyName: {
+      fontSize: 12,
+      fontWeight: '700' as const,
+      color: 'white',
+    },
+    storySurname: {
+      fontSize: 12,
+      fontWeight: '700' as const,
+      color: 'white',
+    },
+    storyBorder: {
+      position: 'absolute' as const,
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
+      borderRadius: 12,
+      borderWidth: 3,
     },
-    addStoryButton: {
+    investmentCard: {
+      marginHorizontal: SCREEN_HORIZONTAL_PADDING,
+      marginBottom: 16,
+      borderRadius: 16,
+      padding: 20,
+      position: 'relative' as const,
+      overflow: 'hidden' as const,
+    },
+    investmentBg: {
       position: 'absolute' as const,
-      bottom: -2,
-      right: -2,
-      width: 20,
-      height: 20,
-      borderRadius: 10,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: '#8B5CF6',
+    },
+    investmentHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    investmentTitle: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    investmentTitleText: {
+      fontSize: 11,
+      fontWeight: '700' as const,
+      letterSpacing: 1,
+      color: 'white',
+    },
+    closeButton: {
+      width: 24,
+      height: 24,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    storyName: {
-      fontSize: 12,
-      marginTop: 4,
-      textAlign: 'center' as const,
+    investmentContent: {
+      fontSize: 13,
+      lineHeight: 20,
+      color: 'white',
+      marginBottom: 16,
     },
-    filtersContainer: {
+    investmentROI: {
+      fontSize: 32,
+      fontWeight: '700' as const,
+      color: 'white',
+      marginBottom: 8,
+    },
+    investmentSignature: {
+      fontSize: 24,
+      fontStyle: 'italic' as const,
+      color: 'white',
+      textAlign: 'right' as const,
+    },
+    investmentThankYou: {
+      fontSize: 13,
+      fontWeight: '600' as const,
+      color: 'white',
+    },
+    trendingSection: {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingBottom: 16,
+      paddingVertical: 16,
     },
-    filterButton: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
-      borderWidth: 1,
-      marginRight: 12,
+    trendingSectionTitle: {
+      fontSize: 11,
+      fontWeight: '700' as const,
+      letterSpacing: 1,
+      color: colors.textSecondary,
+      marginBottom: 12,
     },
-    filterButtonContent: {
+    trendingTopicsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    trendingTopicPill: {
       flexDirection: 'row',
       alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 1000,
+      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
     },
-    filterText: {
-      fontSize: 14,
+    trendingTopicName: {
+      fontSize: 13,
       fontWeight: '500' as const,
+      color: colors.text,
     },
     feedContainer: {
       paddingBottom: 100,
-    },
-    fab: {
-      position: 'absolute' as const,
-      bottom: 20,
-      right: 20,
-      width: 56,
-      height: 56,
-      borderRadius: 28,
-      alignItems: 'center',
-      justifyContent: 'center',
-      elevation: 8,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
     },
     modalOverlay: {
       flex: 1,
@@ -212,239 +391,7 @@ export default function HomeScreen() {
       fontSize: 16,
       fontWeight: '600' as const,
     },
-    trendingModalContent: {
-      width: '90%' as const,
-      maxWidth: 400,
-      maxHeight: '80%' as const,
-      borderRadius: 12,
-      padding: 20,
-    },
-    trendingModalTitle: {
-      fontSize: 18,
-      fontWeight: '600' as const,
-      textAlign: 'center' as const,
-      marginBottom: 20,
-    },
-    trendingItem: {
-      padding: 16,
-      borderRadius: 12,
-      marginBottom: 8,
-    },
-    trendingCategory: {
-      fontSize: 12,
-      marginBottom: 4,
-    },
-    trendingName: {
-      fontSize: 16,
-      fontWeight: '600' as const,
-      marginBottom: 4,
-    },
-    trendingCount: {
-      fontSize: 14,
-    },
-    modalCloseButton: {
-      paddingVertical: 12,
-      borderRadius: 12,
-      alignItems: 'center',
-      marginTop: 16,
-    },
-    modalCloseText: {
-      fontSize: 16,
-      fontWeight: '600' as const,
-    },
-    momentsSection: {
-      paddingVertical: 16,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    },
-    momentsHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 16,
-    },
-    momentsTitle: {
-      fontSize: 14,
-      fontWeight: '600' as const,
-      letterSpacing: 1,
-    },
-    momentsSubtitle: {
-      fontSize: 11,
-      marginTop: 2,
-    },
-    momentsAvatars: {
-      flexDirection: 'row',
-      gap: 12,
-      marginBottom: 16,
-    },
-    addMomentButton: {
-      width: 64,
-      height: 64,
-      borderRadius: 100,
-      borderWidth: 3,
-      borderStyle: 'dashed' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    momentAvatar: {
-      width: 56,
-      height: 56,
-      borderRadius: 100,
-    },
-    momentCard: {
-      borderRadius: 16,
-      overflow: 'hidden' as const,
-      height: 400,
-      position: 'relative' as const,
-    },
-    momentCardImage: {
-      width: '100%' as const,
-      height: '100%' as const,
-    },
-    momentCardOverlay: {
-      position: 'absolute' as const,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      padding: 16,
-      justifyContent: 'space-between',
-    },
-    momentCardGradient: {
-      position: 'absolute' as const,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: '60%' as const,
-    },
-    momentTopicBadge: {
-      alignSelf: 'flex-start' as const,
-      backgroundColor: 'rgba(0, 0, 0, 0.6)',
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 20,
-      backdropFilter: 'blur(10px)',
-    },
-    momentTopicText: {
-      fontSize: 11,
-      fontWeight: '600' as const,
-      letterSpacing: 0.5,
-      textTransform: 'uppercase' as const,
-    },
-    momentCardContent: {
-      gap: 8,
-    },
-    momentCardTitle: {
-      fontSize: 24,
-      fontWeight: '700' as const,
-      lineHeight: 28,
-    },
-    momentCardCaption: {
-      fontSize: 13,
-      lineHeight: 18,
-    },
-    momentCardUser: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-      marginTop: 8,
-    },
-    momentCardUsername: {
-      fontSize: 13,
-      fontWeight: '500' as const,
-    },
-    momentCardStats: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 16,
-      marginTop: 8,
-    },
-    momentCardStat: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 4,
-    },
-    momentCardStatText: {
-      fontSize: 12,
-      fontWeight: '500' as const,
-    },
-    endOfFeedContainer: {
-      paddingVertical: 48,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    endOfFeedLabel: {
-      fontSize: 11,
-      fontWeight: '600' as const,
-      letterSpacing: 1.5,
-      marginBottom: 8,
-    },
-    endOfFeedTitle: {
-      fontSize: 24,
-      fontWeight: '600' as const,
-      textAlign: 'center' as const,
-    },
-    momentInputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-      marginTop: 16,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      borderRadius: 24,
-    },
-    momentInputAvatar: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-    },
-    momentInputText: {
-      flex: 1,
-      fontSize: 14,
-    },
-    momentInputIcon: {
-      padding: 4,
-    },
-    momentInputActions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-    },
-    trendingSection: {
-      paddingVertical: 16,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-    },
-    trendingSectionTitle: {
-      fontSize: 14,
-      fontWeight: '700' as const,
-      letterSpacing: 1,
-      marginBottom: 16,
-    },
-    trendingTopicsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 8,
-    },
-    trendingTopicPill: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      borderRadius: 1000,
-    },
-    trendingTopicName: {
-      fontSize: 14,
-      fontWeight: '500' as const,
-    },
   });
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [refreshing, setRefreshing] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FeedFilter>('for-you');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newPostContent, setNewPostContent] = useState('');
-  const [showTrendingModal, setShowTrendingModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<'feed' | 'shorts'>('feed');
 
   const panResponder = useRef(
     PanResponder.create({
@@ -500,15 +447,8 @@ export default function HomeScreen() {
   }, []);
 
   const filteredPosts = useMemo(() => {
-    switch (activeFilter) {
-      case 'following':
-        return posts.filter(post => post.user.id !== currentUser.id);
-      case 'trending':
-        return posts.filter(post => (post.likes + post.reposts + post.comments) > 20);
-      default:
-        return posts;
-    }
-  }, [posts, activeFilter]);
+    return posts;
+  }, [posts]);
 
   const handleCreatePost = () => {
     if (Platform.OS === 'web') {
@@ -537,127 +477,11 @@ export default function HomeScreen() {
     }
   };
 
-  const handleStoryPress = (story: Story) => {
-    if (story.user.id === currentUser.id) {
-      router.push('/camera-preview');
-    } else {
-      console.log('Viewing story:', story.user.name);
-    }
-  };
-
   const handleCommentPress = (post: Post) => {
     router.push({
       pathname: '/comments',
       params: { postId: post.id }
     });
-  };
-
-  const renderStoryRing = (story: Story) => {
-    const totalPosts = story.posts.length;
-    if (totalPosts === 1) {
-      const isViewed = story.posts[0].isViewed;
-      return (
-        <View
-          style={[
-            styles.storyRing,
-            {
-              borderWidth: 2,
-              borderColor: isViewed
-                ? isDark
-                  ? 'rgba(255, 255, 255, 0.16)'
-                  : 'rgba(0, 0, 0, 0.16)'
-                : primary,
-            },
-          ]}
-        />
-      );
-    }
-
-    const segmentAngle = 360 / totalPosts;
-
-    return (
-      <View style={styles.storyRing}>
-        {story.posts.map((post, index) => {
-          const startAngle = index * segmentAngle;
-          const isViewed = post.isViewed;
-
-          const segmentColor = isViewed
-            ? isDark
-              ? 'rgba(255, 255, 255, 0.16)'
-              : 'rgba(0, 0, 0, 0.16)'
-            : primary;
-
-          return (
-            <View
-              key={post.id}
-              style={{
-                position: 'absolute' as const,
-                top: 0,
-                left: 0,
-                width: 64,
-                height: 64,
-                borderRadius: 32,
-                borderWidth: 2,
-                borderColor: segmentColor,
-                transform: [{ rotate: `${startAngle}deg` }],
-                borderTopColor: segmentColor,
-                borderRightColor: 'transparent',
-                borderBottomColor: 'transparent',
-                borderLeftColor: 'transparent',
-              }}
-            />
-          );
-        })}
-      </View>
-    );
-  };
-
-  const renderStory = ({ item }: { item: Story }) => {
-    const firstPost = item.posts[0];
-    const dominantColor = firstPost.dominantColor || '#000000';
-
-    return (
-      <TouchableOpacity
-        style={styles.storyContainer}
-        onPress={() => handleStoryPress(item)}
-      >
-        <View style={styles.storyImageContainer}>
-          {renderStoryRing(item)}
-          <View style={styles.storyImageWrapper}>
-            <Image source={{ uri: firstPost.image }} style={styles.storyImage} />
-            <View
-              style={[
-                styles.storyGradient,
-                {
-                  backgroundColor: 'transparent',
-                },
-              ]}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: `${dominantColor}00`,
-                }}
-              />
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: dominantColor,
-                }}
-              />
-            </View>
-            {item.user.id === currentUser.id && (
-              <View style={[styles.addStoryButton, { backgroundColor: primary }]}>
-                <Plus size={12} color="white" />
-              </View>
-            )}
-          </View>
-        </View>
-        <Text style={[styles.storyName, { color: colors.text }]} numberOfLines={1}>
-          {item.user.name}
-        </Text>
-      </TouchableOpacity>
-    );
   };
 
   const renderPost = ({ item }: { item: Post }) => (
@@ -668,187 +492,104 @@ export default function HomeScreen() {
     />
   );
 
-  const ListFooter = () => (
-    <View style={styles.endOfFeedContainer}>
-      <Text style={[styles.endOfFeedLabel, { color: colors.textSecondary }]}>EXPLORE MORE POSTS IN</Text>
-      <Text style={[styles.endOfFeedTitle, { color: colors.text }]}>Current cell&apos;s Grouping&apos;s h - City</Text>
-    </View>
-  );
-
-  const renderTrendingTopic = ({ item }: { item: TrendingTopic }) => (
-    <TouchableOpacity
-      style={[styles.trendingItem, { backgroundColor: colors.surface }]}
-      onPress={() => router.push(`/search-results?query=${item.name.replace('#', '')}`)}
-    >
-      <Text style={[styles.trendingCategory, { color: colors.textSecondary }]}>
-        {item.category}
-      </Text>
-      <Text style={[styles.trendingName, { color: colors.text }]}>
-        {item.name}
-      </Text>
-      <Text style={[styles.trendingCount, { color: colors.textSecondary }]}>
-        {item.tweets}
-      </Text>
-    </TouchableOpacity>
-  );
-
-  const FilterButton = ({ filter, title, icon }: { filter: FeedFilter; title: string; icon: React.ReactNode }) => (
-    <TouchableOpacity
-      style={[
-        styles.filterButton,
-        {
-          backgroundColor: activeFilter === filter ? primary : 'transparent',
-          borderColor: activeFilter === filter ? primary : colors.border,
-        }
-      ]}
-      onPress={() => setActiveFilter(filter)}
-    >
-      <View style={styles.filterButtonContent}>
-        {icon}
-        <Text style={[
-          styles.filterText,
-          {
-            color: activeFilter === filter ? 'white' : colors.text,
-            marginLeft: 8,
-          }
-        ]}>
-          {title}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const topics: TopicType[] = ['All', 'Technology', 'Politics', 'Sports', 'Music'];
 
   const ListHeader = () => (
     <View>
-      {/* Feed Filters */}
-      <View style={styles.filtersContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <FilterButton
-            filter="for-you"
-            title="For You"
-            icon={<Sparkles size={16} color={activeFilter === 'for-you' ? 'white' : colors.text} />}
-          />
-          <FilterButton
-            filter="following"
-            title="Following"
-            icon={<Users size={16} color={activeFilter === 'following' ? 'white' : colors.text} />}
-          />
-          <FilterButton
-            filter="trending"
-            title="Trending"
-            icon={<TrendingUp size={16} color={activeFilter === 'trending' ? 'white' : colors.text} />}
-          />
-        </ScrollView>
-      </View>
+      <TouchableOpacity 
+        style={styles.postInputContainer}
+        onPress={handleCreatePost}
+        activeOpacity={0.7}
+      >
+        <Image source={{ uri: currentUser.avatar }} style={styles.postInputAvatar} />
+        <Text style={styles.postInputText}>Hey! What&apos;s new...?</Text>
+        <View style={styles.postInputActions}>
+          <TouchableOpacity onPress={(e) => { e.stopPropagation(); router.push('/camera-capture'); }}>
+            <Camera size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={(e) => { e.stopPropagation(); console.log('Poll'); }}>
+            <BarChart2 size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={(e) => { e.stopPropagation(); console.log('Audio'); }}>
+            <Mic size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
 
-      {/* MOMENTS Section */}
       <View style={styles.momentsSection}>
         <View style={styles.momentsHeader}>
           <View>
-            <Text style={[styles.momentsTitle, { color: colors.text }]}>MOMENTS</Text>
-            <Text style={[styles.momentsSubtitle, { color: colors.textSecondary }]}>Search for Storys filtered unique elements count</Text>
+            <Text style={styles.momentsTitle}>MOMENTS <Text style={styles.momentsCount}>14</Text></Text>
           </View>
+          <TouchableOpacity style={styles.playAllButton}>
+            <PlayCircle size={16} color={colors.text} />
+            <Text style={styles.playAllText}>PLAY ALL</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.storiesSection}>
-          <FlatList
-            data={stories}
-            renderItem={renderStory}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.storiesContainer}
-          />
-        </View>
-
-        <TouchableOpacity 
-          style={styles.momentCard}
-          activeOpacity={0.9}
-          onPress={() => console.log('View moment')}
-        >
-          <Image 
-            source={{ uri: posts[0]?.image || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4' }} 
-            style={styles.momentCardImage}
-          />
-          <View style={styles.momentCardGradient}>
-            <View style={{ flex: 1, backgroundColor: 'transparent' }} />
-            <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} />
-          </View>
-          <View style={styles.momentCardOverlay}>
-            <View style={styles.momentTopicBadge}>
-              <Text style={[styles.momentTopicText, { color: 'white' }]}>TOPIC&apos;S DISPLAY</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesRow}>
+          <TouchableOpacity style={styles.storyItem} onPress={() => router.push('/camera-capture')}>
+            <View style={styles.addStoryContainer}>
+              <Camera size={32} color={colors.textSecondary} />
             </View>
-            
-            <View style={styles.momentCardContent}>
-              <Text style={[styles.momentCardTitle, { color: 'white' }]}>Parent group&apos;s Feed Post&apos;s p - post-title</Text>
-              <Text style={[styles.momentCardCaption, { color: 'rgba(255, 255, 255, 0.9)' }]} numberOfLines={2}>
-                Parent group&apos;s Feed Post&apos;s p - caption number of characters &gt; 240 formatted as text
-              </Text>
-              <View style={styles.momentCardUser}>
-                <Text style={[styles.momentCardUsername, { color: 'rgba(255, 255, 255, 0.8)' }]}>@{posts[0]?.user.username || 'username'}</Text>
-              </View>
-              <View style={styles.momentCardStats}>
-                <View style={styles.momentCardStat}>
-                  <ArrowUp size={14} color="rgba(255, 255, 255, 0.8)" />
-                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.likes || 0}</Text>
-                </View>
-                <View style={styles.momentCardStat}>
-                  <MessageSquare size={14} color="rgba(255, 255, 255, 0.8)" />
-                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.comments || 0}</Text>
-                </View>
-                <View style={styles.momentCardStat}>
-                  <Repeat size={14} color="rgba(255, 255, 255, 0.8)" />
-                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>{posts[0]?.reposts || 0}</Text>
-                </View>
-                <View style={styles.momentCardStat}>
-                  <Bookmark size={14} color="rgba(255, 255, 255, 0.8)" />
-                  <Text style={[styles.momentCardStatText, { color: 'rgba(255, 255, 255, 0.8)' }]}>Saved Collections count</Text>
-                </View>
-              </View>
-              <Text style={[{ fontSize: 11, color: 'rgba(255, 255, 255, 0.6)', marginTop: 4 }]}>Parent group&apos;s Feed Post&apos;s t - Topic&apos;s Display uppercase</Text>
-              <Text style={[{ fontSize: 10, color: 'rgba(255, 255, 255, 0.5)' }]}>Parent group&apos;s Feed Post&apos;s Creation Date formatted as 05/10/2025 at 14:00pm</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.momentInputContainer, { backgroundColor: colors.surface }]}
-          onPress={handleCreatePost}
-          activeOpacity={0.7}
-        >
-          <Image source={{ uri: currentUser.avatar }} style={styles.momentInputAvatar} />
-          <Text style={[styles.momentInputText, { color: colors.textSecondary }]}>Tell everyone what&apos;s new...</Text>
-          <View style={styles.momentInputActions}>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Camera'); }}>
-              <Icon name="photo-camera" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Poll'); }}>
-              <Icon name="poll" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.momentInputIcon} onPress={(e) => { e.stopPropagation(); console.log('Audio'); }}>
-              <Icon name="mic" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+          {stories.slice(1, 4).map((story, index) => {
+            const firstPost = story.posts[0];
+            const borderColors = ['#EF4444', '#3B82F6', '#EF4444'];
+            return (
+              <TouchableOpacity key={story.id} style={styles.storyItem}>
+                <View style={styles.storyImageContainer}>
+                  <Image source={{ uri: firstPost.image }} style={styles.storyImage} />
+                  <View style={[styles.storyGradient, { backgroundColor: 'rgba(0, 0, 0, 0.4)' }]}>
+                    <Text style={styles.storyName}>Firstname</Text>
+                    <Text style={styles.storySurname}>Surname</Text>
+                  </View>
+                  <View style={[styles.storyBorder, { borderColor: borderColors[index] }]} />
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
 
-      {/* TRENDING TOPICS Section */}
+      <View style={styles.investmentCard}>
+        <View style={styles.investmentBg} />
+        <View style={styles.investmentHeader}>
+          <View style={styles.investmentTitle}>
+            <TrendingUp size={16} color="white" />
+            <Text style={styles.investmentTitleText}>INVEST IN THE FUTURE</Text>
+          </View>
+          <TouchableOpacity style={styles.closeButton}>
+            <X size={18} color="white" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.investmentContent}>
+          WE ARE A NON-PROFIT COMPANY AIMING TO PROVIDE BETTER SERVICES AND PRODUCTS TO HUMANS ACROSS THE WORLD. YOU CAN TAKE PART OF THIS JOURNEY AND LEVERAGE OUR SHARED ASCENSION.
+        </Text>
+        <Text style={styles.investmentROI}>Up to 60% ROI.</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Text style={styles.investmentThankYou}>THANK YOU!</Text>
+          <Text style={styles.investmentSignature}>Viktor Sola</Text>
+        </View>
+      </View>
+
       <View style={styles.trendingSection}>
-        <Text style={[styles.trendingSectionTitle, { color: colors.textSecondary }]}>TRENDING TOPICS</Text>
+        <Text style={styles.trendingSectionTitle}>TRENDING TOPICS</Text>
         
         <View style={styles.trendingTopicsGrid}>
-          {trendingTopics.map((topic) => (
+          {['#Crypto', '#Italy', '#Europe', '#Crypto', '#Crypto', '#Crypto', 'Basketball', 'Aaron Ramsey', 'Basketball', 'Basketball', 'Basketball'].map((topic, index) => (
             <TouchableOpacity
-              key={topic.id}
-              style={[styles.trendingTopicPill, { backgroundColor: 'rgba(255, 255, 255, 0.08)' }]}
-              onPress={() => router.push(`/search-results?query=${topic.name.replace('#', '')}`)}
+              key={`topic-${index}`}
+              style={styles.trendingTopicPill}
+              onPress={() => router.push(`/search-results?query=${topic.replace('#', '')}`)}
             >
-              {topic.name.startsWith('#') ? (
+              {topic.startsWith('#') ? (
                 <Hash size={14} color={colors.textSecondary} />
               ) : (
                 <TrendingUp size={14} color={colors.textSecondary} />
               )}
-              <Text style={[styles.trendingTopicName, { color: colors.text }]}>{topic.name}</Text>
+              <Text style={styles.trendingTopicName}>{topic}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -876,69 +617,97 @@ export default function HomeScreen() {
           pointerEvents="none"
         />
       )}
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => setActiveTab('feed')}>
-            <Text style={[
-              styles.headerText,
-              { color: colors.text },
-              activeTab === 'feed' ? styles.headerTextActive : styles.headerTextInactive
-            ]}>Feed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/(shorts)/shorts')}>
-            <Text style={[
-              styles.headerText,
-              { color: colors.text },
-              activeTab === 'shorts' ? styles.headerTextActive : styles.headerTextInactive
-            ]}>Shorts</Text>
-          </TouchableOpacity>
+
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity onPress={() => setActiveTab('feed')}>
+              <Text style={[
+                styles.headerText,
+                activeTab === 'feed' ? styles.headerTextActive : styles.headerTextInactive
+              ]}>Feed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/(shorts)/shorts')}>
+              <Text style={[
+                styles.headerText,
+                activeTab === 'shorts' ? styles.headerTextActive : styles.headerTextInactive
+              ]}>shorts</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => router.push('/(tabs)/(search)/search')}
+            >
+              <Search size={24} color={colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => router.push('/(tabs)/(notifications)/notifications')}
+            >
+              <Bell size={24} color={colors.text} />
+              <View style={styles.notificationBadge} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => router.push('/(tabs)/(messages)/messages')}
+            >
+              <MessageCircle size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
         </View>
-        
-        <View style={styles.headerActions}>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.topicsRow}>
+          {topics.map((topic) => (
+            <TouchableOpacity
+              key={topic}
+              style={[
+                styles.topicChip,
+                activeTopic === topic && styles.topicChipActive
+              ]}
+              onPress={() => setActiveTopic(topic)}
+            >
+              <Text style={[
+                styles.topicChipText,
+                activeTopic === topic && styles.topicChipTextActive
+              ]}>
+                {topic}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <View style={styles.filterRow}>
           <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => router.push('/(tabs)/(search)/search')}
+            style={styles.filterDropdown}
+            onPress={() => setShowFilterDropdown(!showFilterDropdown)}
           >
-            <Search size={24} color={colors.text} />
+            <Text style={styles.filterText}>{activeFilter}</Text>
+            <ChevronDown size={20} color={colors.text} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => router.push('/(tabs)/(notifications)/notifications')}
-          >
-            <Bell size={24} color={colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => router.push('/(tabs)/(messages)/messages')}
-          >
-            <MessageCircle size={24} color={colors.text} />
-          </TouchableOpacity>
+          <View style={styles.filterActions}>
+            <TouchableOpacity>
+              <MessageCircle size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <BarChart2 size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
-      {/* Main Content */}
       <FlatList
         data={filteredPosts}
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={ListHeader}
-        ListFooterComponent={ListFooter}
         onRefresh={onRefresh}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.feedContainer}
       />
 
-      {/* Floating Action Button */}
-      <TouchableOpacity
-        style={[styles.fab, { backgroundColor: primary }]}
-        onPress={handleCreatePost}
-      >
-        <Plus size={24} color="white" />
-      </TouchableOpacity>
-
-      {/* Create Post Modal (Web) */}
       <Modal
         visible={showCreateModal}
         transparent
@@ -980,34 +749,6 @@ export default function HomeScreen() {
                 <Text style={[styles.createModalButtonText, { color: 'white' }]}>Post</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Trending Modal */}
-      <Modal
-        visible={showTrendingModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowTrendingModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.trendingModalContent, { backgroundColor: colors.background }]}>
-            <Text style={[styles.trendingModalTitle, { color: colors.text }]}>Trending Topics</Text>
-            
-            <FlatList
-              data={trendingTopics}
-              renderItem={renderTrendingTopic}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-            
-            <TouchableOpacity
-              style={[styles.modalCloseButton, { backgroundColor: colors.surface }]}
-              onPress={() => setShowTrendingModal(false)}
-            >
-              <Text style={[styles.modalCloseText, { color: colors.text }]}>Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>

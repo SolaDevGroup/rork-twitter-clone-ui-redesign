@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { fontSizes, fonts, spacing, borderRadius } from '@/constants/fonts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { ArrowUp, ArrowDown, MessageCircle, Repeat, Bookmark, Share, TrendingUp } from 'lucide-react-native';
 
 interface PostCardProps {
   post: Post;
@@ -15,7 +16,7 @@ interface PostCardProps {
 
 export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
   const { collections, addCollection, addToCollection } = useAuth();
-  const { colors, primary } = useTheme();
+  const { colors, primary, isDark } = useTheme();
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
   const [voteCount, setVoteCount] = useState(post.likes);
@@ -84,8 +85,22 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     container: {
       backgroundColor: colors.background,
       paddingVertical: spacing.lg,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+    },
+    repostInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: spacing.lg,
+      marginBottom: spacing.sm,
+    },
+    repostText: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    repostName: {
+      fontSize: 12,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
     },
     header: {
       flexDirection: 'row',
@@ -93,10 +108,10 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       paddingHorizontal: spacing.lg,
     },
     avatar: {
-      width: 32,
-      height: 32,
+      width: 40,
+      height: 40,
       borderRadius: 100,
-      marginRight: spacing.lg,
+      marginRight: spacing.md,
     },
     headerContent: {
       flex: 1,
@@ -112,111 +127,152 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       marginRight: spacing.xs,
     },
     verified: {
-      color: primary,
-      fontSize: fontSizes.base,
       marginRight: spacing.xs,
     },
     username: {
       fontSize: fontSizes.base,
       fontFamily: fonts.regular,
       color: colors.textSecondary,
-      marginRight: spacing.xs,
-    },
-    dot: {
-      color: colors.textSecondary,
-      marginRight: spacing.xs,
-    },
-    timestamp: {
-      fontSize: fontSizes.base,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
-    },
-    bio: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
-      marginTop: 2,
-    },
-    locationContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 2,
-    },
-    locationText: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      color: colors.textSecondary,
-      marginLeft: spacing.xs,
     },
     moreButton: {
       padding: spacing.xs,
     },
     content: {
-      marginTop: spacing.md,
       paddingHorizontal: spacing.lg,
+      marginBottom: spacing.md,
     },
     text: {
       fontSize: fontSizes.base,
       fontFamily: fonts.regular,
       color: colors.text,
       lineHeight: 20,
-      marginBottom: spacing.md,
+      marginBottom: spacing.sm,
     },
-    mention: {
-      color: primary,
-      fontFamily: fonts.medium,
-    },
-    hashtag: {
-      color: primary,
-      fontFamily: fonts.medium,
+    hashtags: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 4,
+      marginTop: spacing.xs,
     },
     hashtagButton: {
       backgroundColor: `${primary}0A`,
       paddingHorizontal: spacing.sm,
       paddingVertical: 2,
       borderRadius: 1000,
-      marginRight: 4,
     },
-    hashtagButtonPressed: {
-      backgroundColor: `${primary}1A`,
+    hashtagText: {
+      color: primary,
+      fontFamily: fonts.medium,
+      fontSize: fontSizes.sm,
     },
     postImageContainer: {
       width: '100%',
-      aspectRatio: 1,
-      marginTop: spacing.md,
-      paddingHorizontal: 6,
+      paddingHorizontal: spacing.lg,
+      marginBottom: spacing.md,
     },
     postImage: {
       width: '100%',
-      height: '100%',
+      aspectRatio: 1.5,
       borderRadius: 12,
+    },
+    stats: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      marginBottom: spacing.sm,
+      gap: spacing.lg,
+    },
+    statItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    statText: {
+      fontSize: 13,
+      fontFamily: fonts.medium,
+      color: colors.textSecondary,
+    },
+    reactions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: colors.border,
+      marginBottom: spacing.sm,
+    },
+    reactionAvatars: {
+      flexDirection: 'row',
+      marginRight: spacing.sm,
+    },
+    reactionAvatar: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors.background,
+      marginLeft: -6,
+    },
+    reactionText: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: colors.text,
+    },
+    reactionBold: {
+      fontFamily: fonts.semiBold,
+    },
+    commentPreview: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderBottomWidth: 1,
+      borderColor: colors.border,
+      marginBottom: spacing.sm,
+    },
+    commentHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: spacing.xs,
+    },
+    commentUser: {
+      fontSize: 14,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    commentText: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: colors.text,
+    },
+    viewComments: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+    timestamp: {
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+      paddingHorizontal: spacing.lg,
     },
     actions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: spacing.lg,
-      paddingRight: 20,
+      paddingTop: spacing.md,
     },
     actionButton: {
       flexDirection: 'row',
       alignItems: 'center',
       padding: spacing.xs,
+      gap: 4,
     },
     actionText: {
       fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      marginLeft: spacing.xs,
-    },
-    translateButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: spacing.md,
-      marginBottom: spacing.md,
-    },
-    translateText: {
-      fontSize: fontSizes.sm,
-      fontFamily: fonts.regular,
-      marginLeft: spacing.sm,
+      fontFamily: fonts.medium,
     },
     modalOverlay: {
       flex: 1,
@@ -398,63 +454,6 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
     console.log('More options');
   };
 
-  const handleTranslate = async () => {
-    if (showTranslation) {
-      setShowTranslation(false);
-      return;
-    }
-
-    setIsTranslating(true);
-    try {
-      const response = await fetch('https://toolkit.rork.com/text/llm/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a translator. Translate the following text to English. Only respond with the translation, nothing else.'
-            },
-            {
-              role: 'user',
-              content: post.content
-            }
-          ]
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const text = await response.text();
-      console.log('Translation response:', text);
-      
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError);
-        console.error('Response text:', text);
-        throw new Error('Invalid JSON response from translation API');
-      }
-
-      if (data.completion) {
-        setTranslatedText(data.completion);
-        setShowTranslation(true);
-      } else {
-        throw new Error('No completion in response');
-      }
-    } catch (error) {
-      console.error('Translation error:', error);
-      setTranslatedText('Translation failed. Please try again.');
-    } finally {
-      setIsTranslating(false);
-    }
-  };
-
   return (
     <Animated.View 
       style={[
@@ -465,6 +464,14 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       ]}
       {...panResponder.panHandlers}
     >
+      {post.type === 'repost' && (
+        <View style={styles.repostInfo}>
+          <Repeat size={14} color={colors.textSecondary} />
+          <Text style={styles.repostText}>Reposted from</Text>
+          <Text style={styles.repostName}>ClubHouse</Text>
+        </View>
+      )}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push(`/(tabs)/(profile)/${post.user.id}`)}>
           <Image source={{ uri: post.user.avatar ?? 'https://ui-avatars.com/api/?name=User&background=78706B&color=fff&size=200' }} style={styles.avatar} />
@@ -472,18 +479,13 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
         <View style={styles.headerContent}>
           <View style={styles.userInfo}>
             <Text style={styles.name}>{post.user.name}</Text>
-            {post.user.isVerified && <Text style={styles.verified}>✓</Text>}
-            <Text style={styles.username}>@{post.user.username}</Text>
-            <Text style={styles.dot}>·</Text>
-            <Text style={styles.timestamp}>{post.timestamp}</Text>
+            {post.user.isVerified && (
+              <View style={styles.verified}>
+                <Icon name="verified" size={16} color={primary} />
+              </View>
+            )}
           </View>
-          {post.user.bio && <Text style={styles.bio}>{post.user.bio}</Text>}
-          {post.location && (
-            <View style={styles.locationContainer}>
-              <Icon name="location-on" size={14} color={colors.textSecondary} />
-              <Text style={styles.locationText}>{post.location}</Text>
-            </View>
-          )}
+          <Text style={styles.username}>@{post.user.username}</Text>
         </View>
         <TouchableOpacity style={styles.moreButton} onPress={handleMoreOptions}>
           <Icon name="more-horiz" size={20} color={colors.textSecondary} />
@@ -491,51 +493,20 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.text}>
-          {(showTranslation ? translatedText : post.content)
-            .split(' ')
-            .map((word, index) => {
-              if (word.startsWith('@')) {
-                return (
-                  <Text
-                    key={`mention-${index}-${word}`}
-                    style={styles.mention}
-                    onPress={() => {
-                      const username = word.substring(1);
-                      router.push(`/(tabs)/(profile)/${username}`);
-                    }}
-                  >
-                    {word}{' '}
-                  </Text>
-                );
-              } else if (word.startsWith('#')) {
-                return (
-                  <React.Fragment key={`hashtag-${index}-${word}`}>
-                    <TouchableOpacity
-                      style={styles.hashtagButton}
-                      onPress={() => {
-                        router.push(`/search-results?query=${encodeURIComponent(word.substring(1))}`);
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.hashtag}>
-                        #{word.substring(1)}
-                      </Text>
-                    </TouchableOpacity>
-                    <Text> </Text>
-                  </React.Fragment>
-                );
-              }
-              return word + ' ';
-            })}
-        </Text>
-
-        <TouchableOpacity onPress={handleTranslate} style={styles.translateButton}>
-          <Icon name="translate" size={16} color={primary} />
-          <Text style={[styles.translateText, { color: primary }]}>
-            {isTranslating ? 'Translating...' : showTranslation ? 'Show original' : 'Translate post'}
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.text}>{post.content}</Text>
+        {post.hashtags && post.hashtags.length > 0 && (
+          <View style={styles.hashtags}>
+            {post.hashtags.map((tag, index) => (
+              <TouchableOpacity
+                key={`tag-${index}`}
+                style={styles.hashtagButton}
+                onPress={() => router.push(`/search-results?query=${encodeURIComponent(tag)}`)}
+              >
+                <Text style={styles.hashtagText}>#{tag}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </View>
 
       {post.image && (
@@ -544,50 +515,63 @@ export function PostCard({ post, onComment, onBookmark }: PostCardProps) {
         </View>
       )}
 
-      <View style={styles.actions}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleUpvote}>
-            <Icon 
-              name="arrow-upward" 
-              size={24} 
-              color={upvoted ? '#22C55E' : colors.textSecondary} 
-            />
-          </TouchableOpacity>
-          <Text style={[styles.actionText, { color: colors.textSecondary, marginHorizontal: 4 }, upvoted && { color: '#22C55E' }, downvoted && { color: '#EF4444' }]}>
-            {voteCount}
-          </Text>
-          <TouchableOpacity style={styles.actionButton} onPress={handleDownvote}>
-            <Icon 
-              name="arrow-downward" 
-              size={24} 
-              color={downvoted ? '#EF4444' : colors.textSecondary} 
-            />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.actionButton} onPress={onComment}>
-          <Icon name="chat-bubble-outline" size={24} color={colors.textSecondary} />
-          <Text style={[styles.actionText, { color: colors.textSecondary }]}>{post.comments}</Text>
+      <View style={styles.stats}>
+        <TouchableOpacity style={styles.statItem}>
+          <ArrowUp size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>{voteCount}k</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={handleRepost}>
-          <Icon name="repeat" size={24} color={reposted ? '#22C55E' : colors.textSecondary} />
-          <Text style={[styles.actionText, { color: colors.textSecondary }, reposted && { color: '#22C55E' }]}>
-            {repostCount}
-          </Text>
+        <TouchableOpacity style={styles.statItem}>
+          <ArrowDown size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>{voteCount}k</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={handleBookmark}>
-          <Icon 
-            name={bookmarked ? "bookmark" : "bookmark-border"} 
-            size={24} 
-            color={bookmarked ? primary : colors.textSecondary} 
-          />
-          <Text style={[styles.actionText, { color: colors.textSecondary }, bookmarked && { color: primary }]}>
-            {bookmarkCount}
-          </Text>
+        <TouchableOpacity style={styles.statItem}>
+          <MessageCircle size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>1.5M</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-          <Icon name="share" size={24} color={colors.textSecondary} />
+        <TouchableOpacity style={styles.statItem}>
+          <Repeat size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>1.5M</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statItem}>
+          <TrendingUp size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>1.5M</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statItem}>
+          <Bookmark size={16} color={colors.textSecondary} />
+          <Text style={styles.statText}>1.5M</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.reactions}>
+        <View style={styles.reactionAvatars}>
+          <Image 
+            source={{ uri: 'https://ui-avatars.com/api/?name=Webflow&background=4353FF&color=fff&size=40' }} 
+            style={[styles.reactionAvatar, { marginLeft: 0 }]} 
+          />
+          <Image 
+            source={{ uri: 'https://ui-avatars.com/api/?name=User1&background=22C55E&color=fff&size=40' }} 
+            style={styles.reactionAvatar} 
+          />
+          <Image 
+            source={{ uri: 'https://ui-avatars.com/api/?name=User2&background=EF4444&color=fff&size=40' }} 
+            style={styles.reactionAvatar} 
+          />
+        </View>
+        <Text style={styles.reactionText}>
+          <Text style={styles.reactionBold}>Webflow & 2 friends</Text> reacted to this post
+        </Text>
+      </View>
+
+      <TouchableOpacity style={styles.commentPreview} onPress={onComment}>
+        <View style={styles.commentHeader}>
+          <Text style={styles.commentUser}>User</Text>
+          <Icon name="favorite" size={16} color={colors.textSecondary} />
+        </View>
+        <Text style={styles.commentText}>With the most liked comment</Text>
+        <Text style={styles.viewComments}>View all {post.comments} comments</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.timestamp}>{post.timestamp}</Text>
       
       <Modal
         visible={showCollectionModal}
