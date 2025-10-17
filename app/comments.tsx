@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { safeGoBack } from '@/utils/navigation';
 import { posts, comments as mockComments, currentUser } from '@/mocks/data';
 import { PostCard } from '@/components/PostCard';
 import { SCREEN_HORIZONTAL_PADDING } from '@/constants/layout';
@@ -28,7 +29,7 @@ export default function CommentsModal() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={[styles.header, { borderBottomColor: themeColors.border }]}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => safeGoBack()}>
           <Text style={[styles.closeButton, { color: '#D4AF37' }]}>Close</Text>
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: themeColors.text }]}>Comments</Text>

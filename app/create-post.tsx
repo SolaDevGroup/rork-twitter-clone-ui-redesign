@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
+import { safeGoBack } from '@/utils/navigation';
 import { Icon } from '@/components/Icon';
 import { IconButton } from '@/components/IconButton';
 import { fontSizes } from '@/constants/fonts';
@@ -448,7 +449,7 @@ export default function CreatePost() {
       audience,
       poll: showPoll ? { question: pollQuestion, options: pollOptions, duration: pollDuration } : null,
     });
-    router.back();
+    safeGoBack();
   };
 
   const canPost = content.trim().length > 0 || selectedImage;
@@ -527,7 +528,7 @@ export default function CreatePost() {
             <IconButton 
               icon="arrow-back"
               size={40}
-              onPress={() => router.back()}
+              onPress={() => safeGoBack()}
               testID="back-button"
             />
             <Image source={{ uri: user?.avatar }} style={styles.headerAvatar} />
